@@ -56,6 +56,47 @@ async function carregarDashboard() {
   }
 }
 
+// ── Wake schedule no dashboard ─────────────────────────────────
+async function carregarPowerSchedule() {
+  const el = document.getElementById('power-schedule-info');
+  if (!el) return;
+  try {
+    const res = await fetch('/api/power');
+    const d = await res.json();
+    if (d.ok && d.enabled) {
+      el.innerHTML = '🛌 Dorme às <b>' + d.shutdown + '</b> · Acorda às <b>' + d.wake + '</b>' +
+        '<br><span class="dim">Night-off automático</span>';
+    } else if (d.ok && !d.enabled) {
+      el.textContent = '⏸️ Night-off desativado';
+    } else {
+      el.textContent = '❌ ' + (d.error || 'indisponível');
+    }
+  } catch (e) {
+    el.textContent = '❌ ' + e.message;
+  }
+}
+
+// ── Histórico de ações ─────────────────────────────────────────
+async function carregarHistoricoAcoes() {
+  const el = document.getElementById('historico-acoes');
+  if (!el) return;
+  try {
+    const res = await fetch('/api/acoes');
+    const d = await res.json();
+    if (!d.ok || !d.acoes || d.acoes.length === 0) {
+      el.innerHTML = '<span class="dim">Nenhuma ação registrada ainda.</span>';
+      return;
+    }
+    el.innerHTML = d.acoes.map(function (a) {
+      const icone = a.ok ? '✅' : '❌';
+      const quando = new Date(a.quando).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      return icone + ' <b>' + a.acao + '</b> · ' + quando + (a.detalhe ? ' <span class="dim">— ' + a.detalhe + '</span>' : '');
+    }).join('<br>');
+  } catch (e) {
+    el.textContent = '❌ ' + e.message;
+  }
+}
+
 async function carregarServidor() {
   const el = document.getElementById('servidor-detalhe');
   if (!el) return;

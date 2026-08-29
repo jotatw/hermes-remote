@@ -100,16 +100,26 @@
           </div>
 
           <h3 class="view-subtitle">⚡ Ações Rápidas</h3>
-          <div class="quick-actions">
-            <button class="action-btn" onclick="acaoDiario()">📋 Diário de Saúde</button>
-            <button class="action-btn" onclick="acaoRevisar()">🔄 Code Review</button>
-            <button class="action-btn" onclick="acaoDormir()">😴 Dormir Servidor</button>
-            <button class="action-btn" onclick="acaoAcordar()">🌅 Acordar Servidor</button>
-            <button class="action-btn" onclick="irPara('chat')">💬 Conversar</button>
-          </div>
+                    <div class="quick-actions">
+                      <button class="action-btn" onclick="acaoDiario()">📋 Diário de Saúde</button>
+                      <button class="action-btn" onclick="acaoRevisar()">🔄 Code Review</button>
+                      <button class="action-btn" onclick="acaoDormir()">😴 Dormir Servidor</button>
+                      <button class="action-btn" onclick="acaoAcordar()">🌅 Acordar Servidor</button>
+                      <button class="action-btn" onclick="irPara('chat')">💬 Conversar</button>
+                    </div>
 
-          <div id="acao-resultado" class="acao-resultado"></div>
-        </div>
+                    <div id="acao-resultado" class="acao-resultado hidden"></div>
+
+                    <div class="card" style="margin-top:14px">
+                      <div class="card-header">🛌 <b>Agenda</b></div>
+                      <div class="card-body" id="power-schedule-info">Carregando...</div>
+                    </div>
+
+                    <div class="card" style="margin-top:10px">
+                      <div class="card-header">🕐 <b>Últimas Ações</b></div>
+                      <div class="card-body" id="historico-acoes">Carregando...</div>
+                    </div>
+                  </div>
       </section>
 
       <!-- ── View: Chat ── -->

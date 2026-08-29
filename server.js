@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { execSync } = require('child_process');
+const { execSync, exec } = require('child_process');
 const path = require('path');
 require('dotenv').config();
 
@@ -188,10 +188,46 @@ app.get('/api/servidor', (req, res) => {
   }
 });
 
+// ── Próximo wake schedule ───────────────────────────────────────
+// Lê o agendamento de energia configurado (via hs.sh power status)
+app.get('/api/power', (req, res) => {
+  const cmd = IS_HOMESERVER
+    ? 'sudo -n /opt/homeserver/core/hs.sh power status 2>/dev/null'
+    : `ssh -o ConnectTimeout=6 -o BatchMode=yes usuario@${HOMESERVER_IP} 'sudo -n /opt/homeserver/core/hs.sh power status 2>/dev/null'`;
+
+  exec(cmd, { timeout: 10000, shell: '/bin/bash' }, (err, stdout) => {
+    if (err || !stdout) return res.json({ ok: false, error: 'power status indisponível' });
+    try {
+      const data = JSON.parse(stdout.trim());
+      res.json({ ok: true, ...data });
+    } catch (e) {
+      res.json({ ok: false, error: 'resposta inválida: ' + stdout.slice(0, 80) });
+    }
+  });
+});
+
+// ── Histórico de ações ─────────────────────────────────────────
+const fs = require('fs');
+const ACOES_LOG = path.join(__dirname, 'acoes.log.json');
+
+function registrarAcao(nome, ok, detalhe) {
+  const agora = new Date().toISOString();
+  let lista = [];
+  try { lista = JSON.parse(fs.readFileSync(ACOES_LOG, 'utf8')); } catch (e) { lista = []; }
+  lista.unshift({ acao: nome, ok: !!ok, detalhe: detalhe || '', quando: agora });
+  lista = lista.slice(0, 30); // mantém só as 30 últimas
+  try { fs.writeFileSync(ACOES_LOG, JSON.stringify(lista, null, 2)); } catch (e) { /* best effort */ }
+}
+
+app.get('/api/acoes', (req, res) => {
+  let lista = [];
+  try { lista = JSON.parse(fs.readFileSync(ACOES_LOG, 'utf8')); } catch (e) { lista = []; }
+  res.json({ ok: true, acoes: lista });
+});
+
 // ── Ações rápidas (diário, revisar, dormir) ────────────────────
 // Executam os scripts existentes. Rodam em background para não
 // bloquear a resposta (alguns demoram ~30s).
-const { exec } = require('child_process');
 const HOME = process.env.HOME;
 
 function runScript(cmd, callback) {
@@ -206,7 +242,8 @@ app.post('/api/acao/diario', (req, res) => {
   const local = 'bash /opt/homeserver/scripts/health-check.sh 2>/dev/null';
   const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes usuario@${HOMESERVER_IP} '${local}'`;
   runScript(IS_HOMESERVER ? local : viaSsh, (err, out) => {
-    if (err) return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err });
+    if (err) { registrarAcao('diario', false, err); return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err }); }
+    registrarAcao('diario', true, 'diário enviado');
     res.json({ ok: true, output: out });
   });
 });
@@ -216,7 +253,8 @@ app.post('/api/acao/revisar', (req, res) => {
   const script = `${HOME}/.hermes/scripts/code-review.sh`;
   const cmd = `nohup bash ${script} > /dev/null 2>&1 & echo "ok"`;
   runScript(cmd, (err) => {
-    if (err) return res.status(500).json({ ok: false, error: err });
+    if (err) { registrarAcao('revisar', false, err); return res.status(500).json({ ok: false, error: err }); }
+    registrarAcao('revisar', true, 'code review disparado');
     res.json({ ok: true, message: 'Code review disparado' });
   });
 });
@@ -226,7 +264,8 @@ app.post('/api/acao/dormir', (req, res) => {
   const local = 'sudo /usr/sbin/rtcwake -m mem -t $(date -d "tomorrow 08:00" +%s) > /dev/null 2>&1 & echo ok';
   const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes usuario@${HOMESERVER_IP} '${local}'`;
   runScript(IS_HOMESERVER ? local : viaSsh, (err) => {
-    if (err) return res.status(500).json({ ok: false, error: 'Não conseguiu dormir: ' + err });
+    if (err) { registrarAcao('dormir', false, err); return res.status(500).json({ ok: false, error: 'Não conseguiu dormir: ' + err }); }
+    registrarAcao('dormir', true, 'servidor suspenso');
     res.json({ ok: true, message: 'Servidor vai dormir (acorda 08:00)' });
   });
 });
@@ -235,8 +274,9 @@ app.post('/api/acao/dormir', (req, res) => {
 app.post('/api/acao/acordar', (req, res) => {
   const script = `${HOME}/.hermes/scripts/server-wol.sh`;
   runScript(`bash ${script} 2>&1`, (err, out) => {
-    if (err) return res.status(500).json({ ok: false, error: 'WOL falhou: ' + err });
+    if (err) { registrarAcao('acordar', false, err); return res.status(500).json({ ok: false, error: 'WOL falhou: ' + err }); }
     const jaAcordado = out.includes('já está acordado');
+    registrarAcao('acordar', true, jaAcordado ? 'já acordado' : 'WOL enviado');
     res.json({ ok: true, ja_acordado: jaAcordado, output: out });
   });
 });

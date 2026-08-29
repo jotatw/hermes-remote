@@ -25,7 +25,7 @@ function irPara(view) {
   const titles = { dashboard: '📊 Visão Geral', chat: '💬 Chat', servidor: '🖥️ Servidor', config: '⚙️ Config' };
   document.getElementById('pageTitle').textContent = titles[view] || 'Hermes Remote';
 
-  if (view === 'dashboard') carregarDashboard();
+  if (view === 'dashboard') { carregarDashboard(); carregarPowerSchedule(); carregarHistoricoAcoes(); }
   if (view === 'servidor') carregarServidor();
   if (view === 'chat') carregarModelos();
 }
