@@ -76,50 +76,116 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // ── Status da infraestrutura (dashboard) ────────────────────────
+// Auto-detecta onde o app roda: no HOMESERVER → servidor é local,
+// notebook via SSH (best-effort). No NOTEBOOK → notebook é local,
+// servidor via SSH.
+const os = require('os');
+const HOSTNAME = os.hostname().toLowerCase();
+const IS_HOMESERVER = HOSTNAME.includes('homeserver');
+const NOTEBOOK_IP = process.env.NOTEBOOK_IP || '100.78.xx.xx'; // tailnet
+const HOMESERVER_IP = process.env.HOMESERVER_IP || '100.118.xx.xx'; // tailnet
+
+function localStatus() {
+  const uptime = execSync('uptime -p', { timeout: 5000 }).toString().trim().replace(/^up\s+/, '');
+  const load = execSync("uptime | grep -oP 'load average:.*' | cut -d: -f2", { timeout: 5000 }).toString().trim();
+  const ram = execSync("free -h | grep Mem | awk '{print $3 \"/\" $2}'", { timeout: 5000 }).toString().trim();
+  const disco = execSync("df -h / | tail -1 | awk '{print $3 \"/\" $2 \" (\" $5 \")\"}'", { timeout: 5000 }).toString().trim();
+  return { uptime, load, ram, disco };
+}
+
+function sshStatus(host) {
+  try {
+    return execSync(
+      `ssh -o ConnectTimeout=6 -o BatchMode=yes usuario@${host} 'uptime -p 2>/dev/null; echo ---; free -h | grep Mem | awk "{print \\$3\\"/\\"\\$2}"; df -h / | tail -1 | awk "{print \\$3\\"/\\"\\$2 \\"(\\" \\$5 \\")\\"}"'`,
+      { timeout: 15000 }
+    ).toString().trim();
+  } catch (e) {
+    return null;
+  }
+}
+
 app.get('/api/status', (req, res) => {
-  const result = { notebook: null, servidor: null, cota: null };
+  const result = { notebook: null, servidor: null, cota: null, app: HOSTNAME };
 
-  // Notebook
-  try {
-    const uptime = execSync('uptime -p', { timeout: 5000 }).toString().trim().replace(/^up\s+/, '');
-    const load = execSync("uptime | grep -oP 'load average:.*' | cut -d: -f2", { timeout: 5000 }).toString().trim();
-    const ram = execSync("free -h | grep Mem | awk '{print $3 \"/\" $2}'", { timeout: 5000 }).toString().trim();
-    const disco = execSync("df -h / | tail -1 | awk '{print $3 \"/\" $2 \" (\" $5 \")\"}'", { timeout: 5000 }).toString().trim();
-    result.notebook = { uptime, load, ram, disco };
-  } catch (e) {
-    result.notebook = { erro: e.message };
+  if (IS_HOMESERVER) {
+    // Servidor = local; notebook via SSH (pode estar dormindo)
+    try { result.servidor = { local: true, ...localStatus() }; }
+    catch (e) { result.servidor = { erro: e.message }; }
+
+    const nb = sshStatus(NOTEBOOK_IP);
+    if (nb) {
+      const [uptime, ram, disco] = nb.split('---').map(s => (s || '').trim());
+      result.notebook = { uptime, ram, disco };
+    } else {
+      result.notebook = { offline: 'notebook dormindo ou inacessível' };
+    }
+  } else {
+    // Notebook = local; servidor via SSH
+    try { result.notebook = { local: true, ...localStatus() }; }
+    catch (e) { result.notebook = { erro: e.message }; }
+
+    const sv = sshStatus(HOMESERVER_IP);
+    if (sv) {
+      const [uptime, ram, disco] = sv.split('---').map(s => (s || '').trim());
+      result.servidor = { uptime, ram, disco };
+    } else {
+      result.servidor = { offline: 'servidor offline ou ssh falhou' };
+    }
   }
 
-  // Servidor (via SSH — mesmo mecanismo do diário)
-  try {
-    const ssh = execSync(
-      "ssh -o ConnectTimeout=8 -o BatchMode=yes usuario@homeserver 'uptime -p 2>/dev/null; echo ---; cd /opt/homeserver 2>/dev/null && bash scripts/health-check.sh 2>/dev/null | grep -E \"temperatura|load|mem\"'",
-      { timeout: 20000 }
-    ).toString().trim();
-    result.servidor = { raw: ssh };
-  } catch (e) {
-    result.servidor = { erro: 'servidor offline ou ssh falhou' };
-  }
-
-  // Cota FreeLLMAPI
-  try {
-    const key = require('fs').readFileSync(process.env.HOME + '/.hermes/.env', 'utf8')
-      .match(/HERMES_CUSTOM_FREELLMAPI_API_KEY=(\S+)/)?.[1] || '';
-    const models = execSync(
-      `curl -sS http://127.0.0.1:3001/v1/models -H "Authorization: Bearer ${key}" 2>/dev/null | grep -o '"id":"[^"]*"' | wc -l`,
-      { timeout: 8000 }
-    ).toString().trim();
-    result.cota = { modelos: parseInt(models || '0', 10) };
-  } catch (e) {
-    result.cota = { erro: 'FreeLLMAPI offline' };
-  }
-
-  res.json(result);
+  // Cota de IA — modelos disponíveis no Hermes API server
+  fetch(`${HERMES_URL}/v1/models`, { headers: hermesHeaders() })
+    .then(r => r.json())
+    .then(data => {
+      result.cota = { modelos: (data.data || []).length, pool: 'Hermes API server' };
+      res.json(result);
+    })
+    .catch(() => {
+      result.cota = { erro: 'API server indisponível' };
+      res.json(result);
+    });
 });
 
 app.listen(PORT, () => {
   console.log(`Hermes Remote rodando em http://localhost:${PORT}`);
   console.log(`Conectado ao Hermes API server em ${HERMES_URL}`);
+});
+
+// ── Detalhes do servidor (containers, serviços, temperatura) ────
+app.get('/api/servidor', (req, res) => {
+  const resultado = { host: HOSTNAME, containers: [], temperatura: null, erro: null };
+
+  try {
+    // Containers Docker (status + nome)
+    const docker = execSync(
+      "docker ps -a --format '{{.Names}}|{{.Status}}' 2>/dev/null",
+      { timeout: 10000, shell: '/bin/bash' }
+    ).toString().trim();
+
+    if (docker) {
+      resultado.containers = docker.split('\n').filter(Boolean).map(function (linha) {
+        const [nome, status] = linha.split('|');
+        const rodando = status.startsWith('Up');
+        const healthy = status.includes('healthy');
+        return { nome, status, rodando, healthy };
+      });
+    }
+
+    // Temperatura (se health-check existir)
+    try {
+      const health = execSync(
+        "bash /opt/homeserver/scripts/health-check.sh 2>/dev/null | grep -i 'temperatura' || true",
+        { timeout: 15000, shell: '/bin/bash' }
+      ).toString().trim();
+      const temp = (health.match(/(\d+)C/) || [])[1];
+      if (temp) resultado.temperatura = parseInt(temp, 10);
+    } catch (e) { /* temperatura indisponível */ }
+
+    res.json(resultado);
+  } catch (e) {
+    resultado.erro = e.message;
+    res.status(500).json(resultado);
+  }
 });
 
 // ── Ações rápidas (diário, revisar, dormir) ────────────────────
@@ -135,28 +201,31 @@ function runScript(cmd, callback) {
   });
 }
 
-// Diário de saúde (no homeserver)
+// Diário de saúde — local se no homeserver, senão via SSH
 app.post('/api/acao/diario', (req, res) => {
-  const cmd = `ssh -o ConnectTimeout=10 -o BatchMode=yes usuario@homeserver 'bash /opt/homeserver/scripts/server-power.sh 2>/dev/null; bash /opt/homeserver/scripts/health-check.sh 2>/dev/null'`;
-  runScript(cmd, (err, out) => {
+  const local = 'bash /opt/homeserver/scripts/health-check.sh 2>/dev/null';
+  const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes usuario@${HOMESERVER_IP} '${local}'`;
+  runScript(IS_HOMESERVER ? local : viaSsh, (err, out) => {
     if (err) return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err });
     res.json({ ok: true, output: out });
   });
 });
 
-// Code review (via script local — precisa do notebook acordado)
+// Code review (script local do Hermes — no homeserver também existe cópia)
 app.post('/api/acao/revisar', (req, res) => {
-  const cmd = `nohup bash ${HOME}/.hermes/scripts/code-review.sh > /dev/null 2>&1 & echo "ok"`;
+  const script = `${HOME}/.hermes/scripts/code-review.sh`;
+  const cmd = `nohup bash ${script} > /dev/null 2>&1 & echo "ok"`;
   runScript(cmd, (err) => {
     if (err) return res.status(500).json({ ok: false, error: err });
     res.json({ ok: true, message: 'Code review disparado' });
   });
 });
 
-// Dormir servidor (via SSH — só funciona se servidor acordado)
+// Dormir servidor — local se no homeserver, senão via SSH
 app.post('/api/acao/dormir', (req, res) => {
-  const cmd = `ssh -o ConnectTimeout=10 -o BatchMode=yes usuario@homeserver 'sudo /usr/sbin/rtcwake -m mem -t $(date -d "tomorrow 08:00" +%s) > /dev/null 2>&1 &' && echo ok`;
-  runScript(cmd, (err) => {
+  const local = 'sudo /usr/sbin/rtcwake -m mem -t $(date -d "tomorrow 08:00" +%s) > /dev/null 2>&1 & echo ok';
+  const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes usuario@${HOMESERVER_IP} '${local}'`;
+  runScript(IS_HOMESERVER ? local : viaSsh, (err) => {
     if (err) return res.status(500).json({ ok: false, error: 'Não conseguiu dormir: ' + err });
     res.json({ ok: true, message: 'Servidor vai dormir (acorda 08:00)' });
   });

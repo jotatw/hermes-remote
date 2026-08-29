@@ -16,12 +16,15 @@ async function carregarDashboard() {
     // Notebook
     if (data.notebook && data.notebook.erro) {
       corpo.notebook.textContent = '❌ ' + data.notebook.erro;
+    } else if (data.notebook && data.notebook.offline) {
+      corpo.notebook.textContent = '😴 ' + data.notebook.offline;
     } else if (data.notebook) {
       corpo.notebook.innerHTML =
-        '⏱️ Uptime: <b>' + data.notebook.uptime + '</b><br>' +
-        '💾 RAM: <b>' + data.notebook.ram + '</b><br>' +
-        '💽 Disco: <b>' + data.notebook.disco + '</b><br>' +
-        '📊 Load: ' + data.notebook.load;
+        '⏱️ Uptime: <b>' + (data.notebook.uptime || '?') + '</b><br>' +
+        '💾 RAM: <b>' + (data.notebook.ram || '?') + '</b><br>' +
+        '💽 Disco: <b>' + (data.notebook.disco || '?') + '</b><br>' +
+        (data.notebook.load ? '📊 Load: ' + data.notebook.load : '') +
+        (data.notebook.local ? '<br>📍 rodando neste host' : '');
     } else {
       corpo.notebook.textContent = 'Sem dados';
     }
@@ -29,13 +32,15 @@ async function carregarDashboard() {
     // Servidor
     if (data.servidor && data.servidor.erro) {
       corpo.servidor.textContent = '🔴 ' + data.servidor.erro;
-    } else if (data.servidor && data.servidor.raw) {
-      const linhas = data.servidor.raw.split('\n').filter(Boolean);
-      corpo.servidor.innerHTML = linhas.slice(0, 4).map(l => {
-        const limpa = l.replace(/✔|✘/g, '').trim();
-        const ok = l.includes('✔');
-        return (ok ? '🟢 ' : '🔴 ') + limpa;
-      }).join('<br>');
+    } else if (data.servidor && data.servidor.offline) {
+      corpo.servidor.textContent = '😴 ' + data.servidor.offline;
+    } else if (data.servidor) {
+      corpo.servidor.innerHTML =
+        '⏱️ Uptime: <b>' + (data.servidor.uptime || '?') + '</b><br>' +
+        '💾 RAM: <b>' + (data.servidor.ram || '?') + '</b><br>' +
+        '💽 Disco: <b>' + (data.servidor.disco || '?') + '</b><br>' +
+        (data.servidor.load ? '📊 Load: ' + data.servidor.load : '') +
+        (data.servidor.local ? '<br>📍 rodando neste host' : '');
     } else {
       corpo.servidor.textContent = 'Sem dados';
     }
@@ -44,7 +49,7 @@ async function carregarDashboard() {
     if (data.cota && data.cota.erro) {
       corpo.cota.textContent = '❌ ' + data.cota.erro;
     } else if (data.cota) {
-      corpo.cota.innerHTML = '🎯 Modelos: <b>' + data.cota.modelos + '</b><br>Pool FreeLLMAPI';
+      corpo.cota.innerHTML = '🎯 Modelos: <b>' + data.cota.modelos + '</b><br>Pool: ' + (data.cota.pool || '?');
     }
   } catch (error) {
     Object.values(corpo).forEach(el => { if (el) el.textContent = '❌ Erro: ' + error.message; });
@@ -57,55 +62,112 @@ async function carregarServidor() {
   el.textContent = 'Carregando...';
 
   try {
-    const res = await fetch('/api/status');
-    const data = await res.json();
-    if (data.servidor && data.servidor.erro) {
-      el.innerHTML = '🔴 <b>Servidor offline</b><br>' + data.servidor.erro;
+    // Status básico + detalhes (containers, temperatura)
+    const [resStatus, resDetalhes] = await Promise.all([
+      fetch('/api/status').then(function (r) { return r.json(); }),
+      fetch('/api/servidor').then(function (r) { return r.json(); })
+    ]);
+
+    const s = resStatus.servidor || {};
+    if (s.erro) {
+      el.innerHTML = '🔴 <b>Servidor offline</b><br>' + s.erro;
       return;
     }
-    if (data.servidor && data.servidor.raw) {
-      const linhas = data.servidor.raw.split('\n').filter(Boolean);
-      el.innerHTML = linhas.map(l => {
-        const limpa = l.replace(/✔|✘/g, '').trim();
-        const ok = l.includes('✔');
-        return (ok ? '🟢 ' : '🔴 ') + limpa;
-      }).join('<br>');
+    if (s.offline) {
+      el.innerHTML = '😴 <b>Servidor dormindo</b><br>' + s.offline;
+      return;
     }
+
+    let html =
+      '⏱️ Uptime: <b>' + (s.uptime || '?') + '</b><br>' +
+      '💾 RAM: <b>' + (s.ram || '?') + '</b><br>' +
+      '💽 Disco: <b>' + (s.disco || '?') + '</b><br>' +
+      (s.load ? '📊 Load: ' + s.load + '<br>' : '') +
+      (s.local ? '📍 Servidor é este host<br>' : '');
+
+    // Temperatura
+    if (resDetalhes.temperatura) {
+      const temp = resDetalhes.temperatura;
+      html += '🌡️ Temperatura: <b>' + temp + '°C</b> ' + (temp >= 80 ? '⚠️' : '✅') + '<br>';
+    }
+
+    // Containers Docker
+    if (resDetalhes.containers && resDetalhes.containers.length) {
+      html += '<br><b>🐳 Containers (' + resDetalhes.containers.length + ')</b><br>';
+      resDetalhes.containers.forEach(function (c) {
+        const icone = c.rodando ? (c.healthy ? '🟢' : '🟡') : '⚪';
+        html += icone + ' ' + c.nome + (c.rodando ? ' <span class="dim">' + c.status + '</span>' : ' <span class="dim">parado</span>') + '<br>';
+      });
+    }
+
+    html += '<br>ℹ️ Detalhes completos no Diário de Saúde.';
+    el.innerHTML = html;
   } catch (error) {
     el.textContent = '❌ Erro: ' + error.message;
   }
 }
 
 // ── Ações rápidas ──────────────────────────────────────────────
-function mostrarResultado(texto) {
+function mostrarResultado(texto, tipo) {
   const el = document.getElementById('acao-resultado');
-  if (el) { el.textContent = texto; el.classList.remove('hidden'); }
+  if (el) {
+    el.textContent = texto;
+    el.classList.remove('hidden');
+    el.classList.remove('ok', 'erro', 'loading');
+    if (tipo) el.classList.add(tipo);
+  }
+}
+
+function desabilitarBotoes(desabilitar) {
+  document.querySelectorAll('.action-btn').forEach(function (b) {
+    b.disabled = desabilitar;
+  });
 }
 
 function acaoDiario() {
-  mostrarResultado('📋 Enviando diário de saúde ao Telegram...');
-  fetch('/api/acao/diario').then(r => r.json()).then(d => {
-    mostrarResultado(d.ok ? '✅ Diário enviado!' : '❌ ' + (d.error || 'falha'));
-  }).catch(e => mostrarResultado('❌ ' + e.message));
+  desabilitarBotoes(true);
+  mostrarResultado('📋 Enviando diário de saúde...', 'loading');
+  fetch('/api/acao/diario').then(function (r) { return r.json(); }).then(function (d) {
+    desabilitarBotoes(false);
+    if (d.ok) {
+      mostrarResultado('✅ Diário enviado ao Telegram!', 'ok');
+    } else {
+      mostrarResultado('❌ ' + (d.error || 'falha'), 'erro');
+    }
+  }).catch(function (e) {
+    desabilitarBotoes(false);
+    mostrarResultado('❌ ' + e.message, 'erro');
+  });
 }
 
 function acaoRevisar() {
-  mostrarResultado('🔄 Disparando code review...');
-  fetch('/api/acao/revisar').then(r => r.json()).then(d => {
-    mostrarResultado(d.ok ? '✅ Code review enviado ao Telegram!' : '❌ ' + (d.error || 'falha'));
-  }).catch(e => mostrarResultado('❌ ' + e.message));
+  desabilitarBotoes(true);
+  mostrarResultado('🔄 Disparando code review...', 'loading');
+  fetch('/api/acao/revisar').then(function (r) { return r.json(); }).then(function (d) {
+    desabilitarBotoes(false);
+    mostrarResultado(d.ok ? '✅ Code review enviado ao Telegram!' : '❌ ' + (d.error || 'falha'), d.ok ? 'ok' : 'erro');
+  }).catch(function (e) {
+    desabilitarBotoes(false);
+    mostrarResultado('❌ ' + e.message, 'erro');
+  });
 }
 
 function acaoDormir() {
-  if (!confirm('Deseja suspender o homeserver?')) return;
-  mostrarResultado('😴 Suspending servidor...');
-  fetch('/api/acao/dormir').then(r => r.json()).then(d => {
-    mostrarResultado(d.ok ? '😴 Servidor suspenso!' : '❌ ' + (d.error || 'falha'));
-  }).catch(e => mostrarResultado('❌ ' + e.message));
+  if (!confirm('Deseja suspender o homeserver? Ele acorda às 08:00.')) return;
+  desabilitarBotoes(true);
+  mostrarResultado('😴 Suspending servidor...', 'loading');
+  fetch('/api/acao/dormir').then(function (r) { return r.json(); }).then(function (d) {
+    desabilitarBotoes(false);
+    mostrarResultado(d.ok ? '😴 Servidor suspenso! (acorda 08:00)' : '❌ ' + (d.error || 'falha'), d.ok ? 'ok' : 'erro');
+  }).catch(function (e) {
+    desabilitarBotoes(false);
+    mostrarResultado('❌ ' + e.message, 'erro');
+  });
 }
 
 function acaoStatus() {
   carregarServidor();
+  carregarDashboard();
 }
 
 // ── Configurações ──────────────────────────────────────────────

@@ -53,6 +53,8 @@
         <button id="sidebarToggle" class="btn-new" onclick="toggleSidebar()" title="Abrir/fechar painel lateral">☰</button>
         <h1 id="pageTitle">Hermes Remote</h1>
 
+        <span id="conexaoStatus" class="conexao-status online" title="Status do servidor">🟢 online</span>
+
         <!-- Nav (mobile-friendly) -->
         <nav class="topnav" id="topnav">
           <button class="nav-btn active" data-view="dashboard" onclick="irPara('dashboard')">🏠</button>
@@ -64,6 +66,7 @@
         <button id="stopBtn" class="btn-new" onclick="pararResposta()" style="display:none">⏹</button>
 
         <div class="theme-picker">
+          <button id="installBtn" class="btn-new" onclick="instalarPWA()" title="Instalar app" style="display:none">📲</button>
           <button id="themeBtn" class="btn-new theme-btn" onclick="toggleThemeMenu()" title="Tema">☀️</button>
           <div id="themeMenu" class="theme-menu">
             <button data-theme="" onclick="selectTheme('')">☀️ Claro</button>
@@ -173,6 +176,7 @@
     </div>
   </div>
 
+  <script src="js/markdown.js"></script>
   <script src="js/sidebar.js"></script>
   <script src="js/todos.js"></script>
   <script src="js/dashboard.js"></script>

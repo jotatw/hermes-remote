@@ -66,7 +66,7 @@ function criarBolha(role, content, timestamp, isStreaming) {
 
   const contentEl = document.createElement('div');
   contentEl.className = 'content';
-  contentEl.textContent = content;
+  contentEl.innerHTML = renderMarkdown(content);
   div.appendChild(contentEl);
 
   const timeEl = document.createElement('div');
@@ -96,9 +96,15 @@ function addMessage(role, content, isStreaming) {
   return div;
 }
 
-function updateMessageContent(div, content) {
+function updateMessageContent(div, content, final) {
   const contentEl = div.querySelector('.content');
-  if (contentEl) contentEl.textContent = content;
+  if (contentEl) {
+    if (final) {
+      contentEl.innerHTML = renderMarkdown(content);
+    } else {
+      contentEl.textContent = content;
+    }
+  }
   messagesEl.scrollTo({ top: messagesEl.scrollHeight, behavior: 'smooth' });
 }
 
@@ -223,7 +229,7 @@ async function enviarMensagem() {
 
     if (!res.ok) {
       var err = await res.json();
-      updateMessageContent(bolha, 'Erro: ' + (err.error || res.statusText));
+      updateMessageContent(bolha, 'Erro: ' + (err.error || res.statusText), true);
       setLoading(false);
       return;
     }
@@ -248,10 +254,11 @@ async function enviarMensagem() {
       }
     }
     bolha.classList.remove('streaming');
+    updateMessageContent(bolha, resposta, true);
     if (typeof adicionarMensagemNaConversa === 'function') adicionarMensagemNaConversa(resposta, 'assistant');
   } catch (error) {
     if (error.name !== 'AbortError') {
-      updateMessageContent(bolha, 'Erro: ' + error.message);
+      updateMessageContent(bolha, 'Erro: ' + error.message, true);
     }
   }
   setLoading(false);
@@ -272,9 +279,80 @@ function toggleExportMenu() {
   document.getElementById('exportMenu').classList.toggle('open');
 }
 
+// ── Indicador de conexão ───────────────────────────────────────
+let conexaoChecada = false;
+
+async function verificarConexao() {
+  const el = document.getElementById('conexaoStatus');
+  if (!el) return;
+  try {
+    const res = await fetch('/api/health');
+    const data = await res.json();
+    if (res.ok && data.status === 'ok') {
+      el.textContent = '🟢 online';
+      el.classList.remove('offline');
+      el.classList.add('online');
+    } else {
+      el.textContent = '🔴 offline';
+      el.classList.add('offline');
+      el.classList.remove('online');
+    }
+  } catch (e) {
+    el.textContent = '🔴 offline';
+    el.classList.add('offline');
+    el.classList.remove('online');
+  }
+  conexaoChecada = true;
+}
+
+// ── Auto-refresh do dashboard (30s) ────────────────────────────
+let refreshTimer = null;
+
+function agendarAutoRefresh() {
+  if (refreshTimer) clearInterval(refreshTimer);
+  refreshTimer = setInterval(function () {
+    const dashboardVisivel = !document.getElementById('view-dashboard').classList.contains('hidden');
+    if (dashboardVisivel) {
+      carregarDashboard();
+    }
+  }, 30000);
+}
+
+// ── Instalação do PWA ──────────────────────────────────────────
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', function (e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'inline-block';
+});
+
+window.addEventListener('appinstalled', function () {
+  deferredPrompt = null;
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'none';
+});
+
+function instalarPWA() {
+  if (!deferredPrompt) {
+    alert('Use o menu do navegador: "Adicionar à tela inicial" (Android) ou "Adicionar ao ecrã inicial" (iPhone/Safari).');
+    return;
+  }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(function (choice) {
+    deferredPrompt = null;
+    const btn = document.getElementById('installBtn');
+    if (btn) btn.style.display = 'none';
+  });
+}
+
 // ── Inicialização ──────────────────────────────────────────────
 (function init() {
   var theme = localStorage.getItem('chatWebTheme') || '';
   setTheme(theme);
   irPara('dashboard');
+  verificarConexao();
+  agendarAutoRefresh();
+  setInterval(verificarConexao, 60000); // re-checa conexão a cada minuto
 })();
