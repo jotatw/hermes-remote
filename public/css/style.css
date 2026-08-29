@@ -1,55 +1,31 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #f0f2f5;
-  --surface: #ffffff;
-  --user-msg: #0084ff;
+  /* Mapeado para os tokens do design system (Linear dark-first) */
+  --bg: var(--hr-bg);
+  --surface: var(--hr-panel);
+  --user-msg: var(--hr-accent);
   --user-text: #ffffff;
-  --bot-msg: #e4e6eb;
-  --bot-text: #050505;
+  --bot-msg: var(--hr-surface);
+  --bot-text: var(--hr-text);
+  --text: var(--hr-text);
+  --text-secondary: var(--hr-text-3);
+  --border: var(--hr-border);
+  --accent: var(--hr-accent-bright);
+}
+
+[data-theme="light"] {
+  /* Tema claro (alternativo) — mantém o layout, troca as cores */
+  --bg: #f7f8f8;
+  --surface: #ffffff;
+  --user-msg: #5e6ad2;
+  --user-text: #ffffff;
+  --bot-msg: #f0f1f3;
+  --bot-text: #1c1e21;
   --text: #1c1e21;
   --text-secondary: #65676b;
-  --border: #ddd;
-  --accent: #0084ff;
-}
-
-[data-theme="dark-blue"] {
-  --bg: #1a1a2e;
-  --surface: #16213e;
-  --user-msg: #0f3460;
-  --user-text: #ffffff;
-  --bot-msg: #1a1a2e;
-  --bot-text: #e0e0e0;
-  --text: #e0e0e0;
-  --text-secondary: #a0a0a0;
-  --border: #2a2a4a;
-  --accent: #e94560;
-}
-
-[data-theme="dark-black"] {
-  --bg: #000000;
-  --surface: #0d0d0d;
-  --user-msg: #1a1a1a;
-  --user-text: #ffffff;
-  --bot-msg: #1a1a1a;
-  --bot-text: #e8e8e8;
-  --text: #e8e8e8;
-  --text-secondary: #888888;
-  --border: #2a2a2a;
-  --accent: #bb86fc;
-}
-
-[data-theme="dark-gray"] {
-  --bg: #2a2a2a;
-  --surface: #3a3a3a;
-  --user-msg: #4a4a4a;
-  --user-text: #ffffff;
-  --bot-msg: #353535;
-  --bot-text: #f0f0f0;
-  --text: #f0f0f0;
-  --text-secondary: #b0b0b0;
-  --border: #4a4a4a;
-  --accent: #4a90e2;
+  --border: #e0e2e5;
+  --accent: #5e6ad2;
 }
 
 body {
@@ -227,7 +203,7 @@ body {
   height: 30px;
   border: none;
   border-radius: 6px;
-  background: var(--accent);
+  background: var(--accent, var(--hr-accent));
   color: white;
   font-size: 14px;
   cursor: pointer;
@@ -309,8 +285,8 @@ body {
 }
 
 .todo-item .todo-excluir:hover {
-  color: #e94560;
-  background: rgba(233,69,96,0.1);
+  color: var(--hr-danger, #e94560);
+  background: rgba(231, 76, 60, 0.1);
 }
 
 .contexto-textarea {
@@ -619,7 +595,7 @@ body {
   height: 44px;
   border: none;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent, var(--hr-accent));
   color: white;
   font-size: 18px;
   cursor: pointer;
@@ -631,7 +607,7 @@ body {
 }
 
 .input-area button:hover {
-  background: #006bb3;
+  background: var(--hr-accent-hover, #006bb3);
 }
 
 .input-area button:disabled {
@@ -676,6 +652,8 @@ body {
   }
 }
 /* ── Hermes Remote — Dashboard & PWA ─────────────────────── */
+/* Estilo baseado em Linear: superfícies translúcidas, bordas
+   semi-transparentes, accent índigo reservado para interação. */
 
 /* Navegação topo (mobile) */
 .topnav {
@@ -688,11 +666,13 @@ body {
   border: none;
   font-size: 1.3em;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 8px;
-  opacity: 0.6;
+  padding: 6px 10px;
+  border-radius: var(--hr-radius);
+  opacity: 0.55;
+  color: var(--hr-text);
+  transition: opacity var(--hr-transition), background var(--hr-transition);
 }
-.nav-btn.active { opacity: 1; background: rgba(128,128,255,0.15); }
+.nav-btn.active { opacity: 1; background: var(--hr-surface-trans-2); }
 .nav-btn:hover { opacity: 0.9; }
 
 /* Views */
@@ -701,21 +681,23 @@ body {
 
 /* Dashboard */
 .dashboard { max-width: 720px; margin: 0 auto; }
-.view-title { margin: 4px 0 14px; font-size: 1.2em; }
-.view-subtitle { margin: 18px 0 10px; font-size: 1.05em; }
+.view-title { margin: 4px 0 14px; font-size: var(--hr-text-xl); font-weight: 600; letter-spacing: -0.24px; }
+.view-subtitle { margin: 18px 0 10px; font-size: var(--hr-text-lg); font-weight: 500; color: var(--hr-text-2); }
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
 }
 .card {
-  background: rgba(128,128,255,0.06);
-  border: 1px solid rgba(128,128,255,0.15);
-  border-radius: 12px;
-  padding: 12px;
+  background: var(--hr-surface-trans);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius-md);
+  padding: 14px;
+  transition: background var(--hr-transition), border-color var(--hr-transition);
 }
-.card-header { margin-bottom: 8px; font-size: 0.95em; }
-.card-body { font-size: 0.9em; line-height: 1.5; color: #888; }
+.card:hover { background: var(--hr-surface-trans-2); border-color: var(--hr-border-solid); }
+.card-header { margin-bottom: 8px; font-size: 0.95em; font-weight: 500; }
+.card-body { font-size: 0.9em; line-height: 1.5; color: var(--hr-text-3); }
 
 /* Ações rápidas */
 .quick-actions {
@@ -725,35 +707,40 @@ body {
   margin-top: 6px;
 }
 .action-btn {
-  background: rgba(128,128,255,0.12);
-  border: 1px solid rgba(128,128,255,0.25);
-  color: inherit;
-  border-radius: 10px;
+  background: var(--hr-surface-trans);
+  border: 1px solid var(--hr-border);
+  color: var(--hr-text);
+  border-radius: var(--hr-radius);
   padding: 8px 14px;
   cursor: pointer;
   font-size: 0.9em;
-  transition: background 0.2s;
+  font-family: var(--hr-font);
+  transition: background var(--hr-transition), border-color var(--hr-transition), color var(--hr-transition);
 }
-.action-btn:hover { background: rgba(128,128,255,0.25); }
+.action-btn:hover { background: var(--hr-surface-trans-2); border-color: var(--hr-accent); color: var(--hr-text); }
+.action-btn:active { background: var(--hr-surface); }
 .acao-resultado {
   margin-top: 14px;
   padding: 10px;
-  border-radius: 8px;
-  background: rgba(128,128,255,0.08);
+  border-radius: var(--hr-radius);
+  background: var(--hr-surface-trans);
+  border: 1px solid var(--hr-border);
   font-size: 0.9em;
 }
 
 /* Config */
-.cfg-label { display: block; margin: 8px 0 4px; font-size: 0.85em; color: #888; }
+.cfg-label { display: block; margin: 8px 0 4px; font-size: 0.85em; color: var(--hr-text-3); }
 .cfg-input {
   width: 100%;
   padding: 8px;
-  border-radius: 8px;
-  border: 1px solid rgba(128,128,255,0.2);
-  background: rgba(0,0,0,0.2);
-  color: inherit;
+  border-radius: var(--hr-radius);
+  border: 1px solid var(--hr-border);
+  background: var(--hr-surface-trans);
+  color: var(--hr-text);
   box-sizing: border-box;
+  font-family: var(--hr-font);
 }
+.cfg-input:focus { outline: none; border-color: var(--hr-accent); }
 
 /* ── Hermes Remote — melhorias v2 ─────────────────────────── */
 

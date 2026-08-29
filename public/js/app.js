@@ -148,17 +148,24 @@ function salvarModeloSelecionado() {
 }
 
 function setTheme(name) {
+  // Migra temas antigos (dark-blue/black/gray) para o novo padrão escuro
+  const antigos = ['dark-blue', 'dark-black', 'dark-gray'];
+  if (antigos.includes(name)) name = '';
   document.documentElement.setAttribute('data-theme', name || '');
   localStorage.setItem('chatWebTheme', name);
   document.querySelectorAll('.theme-menu button').forEach(function (btn) {
     btn.classList.toggle('active', btn.dataset.theme === (name || ''));
   });
-  var icons = { '': '☀️', 'dark-blue': '🌙', 'dark-black': '🖤', 'dark-gray': '🌫️' };
-  themeBtn.textContent = icons[name] || '☀️';
+  var icons = { '': '🌙', light: '☀️' };
+  themeBtn.textContent = icons[name] || '🌙';
 }
 
-function toggleThemeMenu() { themeMenu.classList.toggle('open'); }
-function selectTheme(name) { setTheme(name); themeMenu.classList.remove('open'); }
+function toggleThemeMenu() {
+  const menu = document.getElementById('themeMenu');
+  const aberto = menu.classList.toggle('open');
+  themeBtn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+}
+function selectTheme(name) { setTheme(name); toggleThemeMenu(); }
 
 function copiarTexto(btn) {
   var content = btn.closest('.message').querySelector('.content').textContent;

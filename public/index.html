@@ -8,8 +8,10 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icons/icon-192.png" type="image/png">
   <title>Hermes Remote</title>
+  <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="app">
@@ -71,12 +73,10 @@
 
         <div class="theme-picker">
           <button id="installBtn" class="btn-new" onclick="instalarPWA()" title="Instalar app" style="display:none">📲</button>
-          <button id="themeBtn" class="btn-new theme-btn" onclick="toggleThemeMenu()" title="Tema">☀️</button>
+          <button id="themeBtn" class="btn-new theme-btn" onclick="toggleThemeMenu()" title="Tema" aria-label="Alternar tema" aria-expanded="false" aria-controls="themeMenu">🌙</button>
           <div id="themeMenu" class="theme-menu">
-            <button data-theme="" onclick="selectTheme('')">☀️ Claro</button>
-            <button data-theme="dark-blue" onclick="selectTheme('dark-blue')">🌙 Azul</button>
-            <button data-theme="dark-black" onclick="selectTheme('dark-black')">🖤 Preto</button>
-            <button data-theme="dark-gray" onclick="selectTheme('dark-gray')">🌫️ Cinza</button>
+            <button data-theme="" onclick="selectTheme('')">🌙 Escuro</button>
+            <button data-theme="light" onclick="selectTheme('light')">☀️ Claro</button>
           </div>
         </div>
       </div>
