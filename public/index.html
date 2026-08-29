@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1b2e">
+  <meta name="description" content="Controle remoto do Hermes Agent — dashboard, chat, servidor e configurações">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon-192.png" type="image/png">
+  <title>Hermes Remote</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- ── Sidebar ── -->
+    <aside id="sidebar" class="sidebar collapsed">
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">💬 Conversas</h3>
+        <button id="novaConversaBtn" class="sidebar-btn" onclick="criarConversa()">+ Nova conversa</button>
+        <ul id="listaConversas" class="sidebar-list"></ul>
+
+        <div class="export-group">
+          <button class="sidebar-btn" onclick="toggleExportMenu()">⬇ Exportar conversa</button>
+          <div id="exportMenu" class="export-menu">
+            <button onclick="exportarConversa('txt')">📄 TXT</button>
+            <button onclick="exportarConversa('md')">📝 Markdown</button>
+            <button onclick="exportarConversa('json')">🧾 JSON</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">📝 Tarefas</h3>
+        <div class="todo-add">
+          <input id="todoInput" type="text" placeholder="Adicionar tarefa..." maxlength="80">
+          <button onclick="adicionarTodo()" title="Adicionar tarefa">➕</button>
+        </div>
+        <div class="todo-contador" id="todoContador"></div>
+        <ul id="listaTodos" class="todo-list"></ul>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">⚙️ Contexto</h3>
+        <textarea id="contextoInput" class="contexto-textarea" placeholder="Instruções para o assistente (ex: 'Sempre responda em português')" rows="4"></textarea>
+        <button class="sidebar-btn contexto-btn" onclick="salvarContexto()">Salvar contexto</button>
+      </div>
+    </aside>
+
+    <!-- ── Main ── -->
+    <div class="main">
+      <div class="header">
+        <button id="sidebarToggle" class="btn-new" onclick="toggleSidebar()" title="Abrir/fechar painel lateral">☰</button>
+        <h1 id="pageTitle">Hermes Remote</h1>
+
+        <!-- Nav (mobile-friendly) -->
+        <nav class="topnav" id="topnav">
+          <button class="nav-btn active" data-view="dashboard" onclick="irPara('dashboard')">🏠</button>
+          <button class="nav-btn" data-view="chat" onclick="irPara('chat')">💬</button>
+          <button class="nav-btn" data-view="servidor" onclick="irPara('servidor')">🖥️</button>
+          <button class="nav-btn" data-view="config" onclick="irPara('config')">⚙️</button>
+        </nav>
+
+        <button id="stopBtn" class="btn-new" onclick="pararResposta()" style="display:none">⏹</button>
+
+        <div class="theme-picker">
+          <button id="themeBtn" class="btn-new theme-btn" onclick="toggleThemeMenu()" title="Tema">☀️</button>
+          <div id="themeMenu" class="theme-menu">
+            <button data-theme="" onclick="selectTheme('')">☀️ Claro</button>
+            <button data-theme="dark-blue" onclick="selectTheme('dark-blue')">🌙 Azul</button>
+            <button data-theme="dark-black" onclick="selectTheme('dark-black')">🖤 Preto</button>
+            <button data-theme="dark-gray" onclick="selectTheme('dark-gray')">🌫️ Cinza</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── View: Dashboard ── -->
+      <section id="view-dashboard" class="view">
+        <div class="dashboard">
+          <h2 class="view-title">📊 Visão Geral</h2>
+
+          <div class="cards-grid">
+            <div class="card" id="card-notebook">
+              <div class="card-header">💻 <b>Notebook</b></div>
+              <div class="card-body" id="card-notebook-body">Carregando...</div>
+            </div>
+
+            <div class="card" id="card-servidor">
+              <div class="card-header">🖥️ <b>Servidor</b></div>
+              <div class="card-body" id="card-servidor-body">Carregando...</div>
+            </div>
+
+            <div class="card" id="card-cota">
+              <div class="card-header">🎯 <b>Cota IA</b></div>
+              <div class="card-body" id="card-cota-body">Carregando...</div>
+            </div>
+          </div>
+
+          <h3 class="view-subtitle">⚡ Ações Rápidas</h3>
+          <div class="quick-actions">
+            <button class="action-btn" onclick="acaoDiario()">📋 Diário de Saúde</button>
+            <button class="action-btn" onclick="acaoRevisar()">🔄 Code Review</button>
+            <button class="action-btn" onclick="acaoDormir()">😴 Dormir Servidor</button>
+            <button class="action-btn" onclick="irPara('chat')">💬 Conversar</button>
+          </div>
+
+          <div id="acao-resultado" class="acao-resultado"></div>
+        </div>
+      </section>
+
+      <!-- ── View: Chat ── -->
+      <section id="view-chat" class="view hidden">
+        <div class="chat-toolbar">
+          <select id="modelSelect" onchange="salvarModeloSelecionado()">
+            <option value="">Carregando modelos...</option>
+          </select>
+        </div>
+        <div class="messages" id="messages">
+          <div class="empty">Selecione um modelo e comece a conversar!</div>
+        </div>
+        <div class="input-area">
+          <textarea id="input" rows="1" placeholder="Digite sua mensagem..." onkeydown="handleKey(event)"></textarea>
+          <button id="sendBtn" onclick="enviarMensagem()" disabled>➤</button>
+        </div>
+      </section>
+
+      <!-- ── View: Servidor ── -->
+      <section id="view-servidor" class="view hidden">
+        <div class="dashboard">
+          <h2 class="view-title">🖥️ Servidor</h2>
+          <div class="card">
+            <div class="card-body" id="servidor-detalhe">Carregando...</div>
+          </div>
+          <h3 class="view-subtitle">⚡ Energia</h3>
+          <div class="quick-actions">
+            <button class="action-btn" onclick="acaoDormir()">😴 Dormir</button>
+            <button class="action-btn" onclick="acaoStatus()">📊 Atualizar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── View: Configurações ── -->
+      <section id="view-config" class="view hidden">
+        <div class="dashboard">
+          <h2 class="view-title">⚙️ Configurações</h2>
+
+          <div class="card">
+            <div class="card-header">🔗 Conexão</div>
+            <div class="card-body">
+              <label class="cfg-label">URL do Hermes API server</label>
+              <input id="cfgUrl" class="cfg-input" type="text" placeholder="http://localhost:8642">
+              <label class="cfg-label">Chave API</label>
+              <input id="cfgKey" class="cfg-input" type="password" placeholder="API_SERVER_KEY">
+              <button class="action-btn" onclick="testarConexao()">Testar Conexão</button>
+              <div id="cfg-resultado" class="acao-resultado"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">🖥️ Servidor</div>
+            <div class="card-body">
+              <label class="cfg-label">Host SSH</label>
+              <input id="cfgSshHost" class="cfg-input" type="text" placeholder="usuario@homeserver">
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">📱 Sobre</div>
+            <div class="card-body" id="sobre-info">Hermes Remote v1.0.0</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="js/sidebar.js"></script>
+  <script src="js/todos.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // PWA: registra service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function (e) {
+        console.warn('Service worker não registrado:', e);
+      });
+    }
+  </script>
+</body>
+</html>

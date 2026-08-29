@@ -1,73 +1,59 @@
-# Chat Web - 9Router
+# Hermes Remote
 
-Chat web para conversar com modelos de IA via 9Router.
+PWA para controle remoto do **Hermes Agent** — dashboard, chat, servidor e configurações, direto do celular.
+
+> ⚠️ **Repositório privado** — contém caminhos e configurações pessoais do ambiente.
+
+## Funcionalidades
+
+- 📊 **Dashboard** — visão geral do notebook, servidor e cota de IA
+- 💬 **Chat** — converse com o assistente (streaming em tempo real, temas, sidebar com conversas)
+- 🖥️ **Servidor** — saúde detalhada + ações de energia (dormir, diário)
+- ⚙️ **Configurações** — URL do Hermes API server, chave e conexão
 
 ## Como rodar
 
 ```bash
 npm install
+cp .env.example .env   # preencha HERMES_URL e HERMES_API_KEY
 npm start
 ```
 
-Abra http://localhost:3000
+Abra http://localhost:3000 (ou use o PWA no celular).
 
-## Documentação
+## Backend
 
-A pasta `docs/` explica cada parte do projeto em detalhes.
+O app conecta ao **Hermes API server** (`http://127.0.0.1:8642`), o listener
+OpenAI-compatível do gateway Hermes. O `server.js` é um proxy fino que:
 
-| Arquivo | O que explica |
-|---|---|
-| [01-visao-geral.md](docs/01-visao-geral.md) | O que é o projeto |
-| [02-como-funciona.md](docs/02-como-funciona.md) | Fluxo da aplicação |
-| [03-estrutura-arquivos.md](docs/03-estrutura-arquivos.md) | O que cada arquivo faz |
-| [04-server-js.md](docs/04-server-js.md) | Server.js explicado linha a linha |
-| [05-frontend.md](docs/05-frontend.md) | index.html, css/style.css e js/app.js explicados |
-| [06-como-rodar.md](docs/06-como-rodar.md) | Passo a passo para rodar |
-| [07-como-melhorar.md](docs/07-como-melhorar.md) | Ideias de próximos passos |
-| [08-glossario.md](docs/08-glossario.md) | Termos técnicos explicados |
-| [09-melhorias-futuras.md](docs/09-melhorias-futuras.md) | Histórico de melhorias |
-| [10-sidebar.md](docs/10-sidebar.md) | Sidebar, conversas, tarefas e contexto |
-| [11-deploy.md](docs/11-deploy.md) | Como rodar com PM2 em produção |
+- Repassa `/v1/chat/completions` (chat + streaming) e `/v1/models` ao Hermes
+- Expõe `/api/status` (notebook, servidor, cota) e `/api/acao/*` (diário, revisar, dormir)
 
-## Arquivos principais
+Para acesso remoto do celular, exponha o servidor com **Tailscale**, **Cloudflare Tunnel**
+ou **Caddy** com HTTPS + autenticação.
+
+## Estrutura
 
 ```
 chat-web/
-├── server.js         # servidor proxy (conecta frontend com 9Router)
-├── index.html        # estrutura da página
-├── css/style.css     # estilo visual (cores, temas, layout)
-├── js/app.js         # lógica do chat (envio, streaming, temas)
-├── js/sidebar.js     # CRUD de conversas + persistência
-├── js/todos.js       # lista TODO (3 estados)
-└── .env              # configuração (URL e chave da 9Router)
+├── server.js            # Proxy Express → Hermes API server
+├── public/
+│   ├── index.html       # SPA: dashboard, chat, servidor, config
+│   ├── css/style.css    # Estilos (4 temas)
+│   ├── js/              # app.js, dashboard.js, sidebar.js, todos.js
+│   ├── manifest.json    # PWA manifest
+│   ├── sw.js            # Service worker (cache offline)
+│   └── icons/           # Ícones do PWA
+├── .env.example         # Configuração (sem segredos)
+└── docs/                # Documentação
 ```
 
-## Deploy
+## Documentação
 
-Para rodar em produção com reinício automático, use o PM2:
+- `docs/plano-reformulacao.md` — plano de transformação do chat-web para o PWA
+- `docs/README.md` — índice de documentação
 
-```bash
-npm install -g pm2
-pm2 start server.js --name chat-web
-pm2 save
-pm2 startup
-```
+## Notas
 
-Veja [docs/11-deploy.md](docs/11-deploy.md) para instruções completas.
-
-## Funcionalidades
-
-- Chat com streaming em tempo real
-- Seletor de modelos (carregado automaticamente da 9Router)
-- **4 temas visuais**: ☀️ Claro, 🌙 Azul, 🖤 Preto, 🌫️ Cinza
-- **Sidebar com múltiplas conversas** (criar, renomear, trocar, excluir)
-- **Lista TODO** com 3 estados (○ pendente / ◐ em progresso / ☑ concluída)
-- **Contexto global editável** — instruções enviadas como system message
-- **Memória da IA** — o modelo lembra do contexto da conversa
-- **Exportar conversa** em TXT, Markdown ou JSON
-- **Contador de tokens** discreto (quando a 9Router retorna `usage`)
-- Botão **⏹ Parar** para cancelar requisição em andamento
-- Timestamp com data nas mensagens
-- Botão de copiar resposta (📋)
-- Auto-scroll suave
-- Placeholder rotativo com dicas
+- **Servidor dorme às 22h** (night-off) — o gateway no homeserver fica offline nesse período
+- **Chat depende do Hermes API server** — habilite com `API_SERVER_KEY` no .env do Hermes

@@ -1,13 +1,13 @@
 {
-  "name": "chat-web",
+  "name": "hermes-remote",
   "version": "1.0.0",
-  "description": "Chat web para conversar com IA via 9Router",
+  "description": "PWA para controle remoto do Hermes Agent — dashboard, chat, servidor e configurações",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js"
   },
-  "keywords": ["chat", "9router", "ia"],
+  "keywords": ["hermes", "pwa", "chat", "assistente"],
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
