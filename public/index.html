@@ -9,12 +9,16 @@
   <link rel="icon" href="/icons/icon-192.png" type="image/png">
   <title>Hermes Remote</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
   <div class="app">
 
+    <!-- ── Overlay (mobile: fecha o drawer ao tocar fora) ── -->
+    <div id="sidebarOverlay" class="sidebar-overlay hidden" onclick="fecharSidebar()" aria-hidden="true"></div>
+
     <!-- ── Sidebar ── -->
-    <aside id="sidebar" class="sidebar collapsed">
+    <aside id="sidebar" class="sidebar collapsed" aria-label="Menu lateral">
       <div class="sidebar-section">
         <h3 class="sidebar-title">💬 Conversas</h3>
         <button id="novaConversaBtn" class="sidebar-btn" onclick="criarConversa()">+ Nova conversa</button>
@@ -50,7 +54,7 @@
     <!-- ── Main ── -->
     <div class="main">
       <div class="header">
-        <button id="sidebarToggle" class="btn-new" onclick="toggleSidebar()" title="Abrir/fechar painel lateral">☰</button>
+        <button id="sidebarToggle" class="btn-new" onclick="toggleSidebar()" title="Abrir/fechar painel lateral" aria-label="Abrir ou fechar menu lateral" aria-expanded="false" aria-controls="sidebar">☰</button>
         <h1 id="pageTitle">Hermes Remote</h1>
 
         <span id="conexaoStatus" class="conexao-status online" title="Status do servidor">🟢 online</span>

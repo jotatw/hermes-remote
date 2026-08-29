@@ -28,10 +28,6 @@ function getConversaPorId(id) {
   return dados.conversas.find(function (c) { return c.id === id; });
 }
 
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('collapsed');
-}
-
 function renderizarListaConversas() {
   const lista = document.getElementById('listaConversas');
   lista.innerHTML = '';
