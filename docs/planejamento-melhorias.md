@@ -7,8 +7,8 @@
 | # | Melhoria | Onde | Por que | Esforço |
 |---|----------|------|---------|---------|
 | 1 | **Atalhos dos serviços na Homepage** | Homepage (config/services.yaml) | Links rápidos para Gitea, Files, Hermes Remote, API | ⭐ 30min |
-| 2 | **Botão "Acordar servidor"** | App (dashboard) | Quando notebook estiver dormindo, poder acordar via WOL | ⭐ 1h |
-| 3 | **Comando /ligar no Telegram** | Telegram (quick_commands) | Ligar o servidor remotamente pelo bot | ⭐ 1h |
+| 2 | **Botão "Acordar servidor"** | App (dashboard) | Quando notebook estiver dormindo, poder acordar via WOL — **WOL testado ✅** | ⭐ 1h |
+| 3 | **Comando /ligar no Telegram** | Telegram (quick_commands) | Ligar o servidor remotamente pelo bot — **WOL testado ✅** | ⭐ 1h |
 | 4 | **Próximo wake schedule** | App (dashboard/servidor) | Mostrar quando o servidor vai acordar (RTC) | ⭐ 30min |
 | 5 | **Histórico de ações** | App (dashboard) | Últimas ações executadas (diário, dormir, revisar) com timestamp | ⭐ 1h |
 | 6 | **Versão do app + Hermes** | App (config) | Mostrar versão do Hermes e do app no rodapé | ⭐ 15min |
