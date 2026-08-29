@@ -165,6 +165,24 @@ function acaoDormir() {
   });
 }
 
+function acaoAcordar() {
+  desabilitarBotoes(true);
+  mostrarResultado('🌅 Enviando magic packet WOL...', 'loading');
+  fetch('/api/acao/acordar').then(function (r) { return r.json(); }).then(function (d) {
+    desabilitarBotoes(false);
+    if (d.ok && d.ja_acordado) {
+      mostrarResultado('🟢 Servidor já está acordado!', 'ok');
+    } else if (d.ok) {
+      mostrarResultado('🌅 Magic packet enviado! Aguardando o servidor acordar (~1min)...', 'ok');
+    } else {
+      mostrarResultado('❌ ' + (d.error || 'falha'), 'erro');
+    }
+  }).catch(function (e) {
+    desabilitarBotoes(false);
+    mostrarResultado('❌ ' + e.message, 'erro');
+  });
+}
+
 function acaoStatus() {
   carregarServidor();
   carregarDashboard();

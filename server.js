@@ -230,3 +230,13 @@ app.post('/api/acao/dormir', (req, res) => {
     res.json({ ok: true, message: 'Servidor vai dormir (acorda 08:00)' });
   });
 });
+
+// Acordar servidor — envia magic packet WOL (funciona do notebook ou de qualquer máquina com server-wol.sh)
+app.post('/api/acao/acordar', (req, res) => {
+  const script = `${HOME}/.hermes/scripts/server-wol.sh`;
+  runScript(`bash ${script} 2>&1`, (err, out) => {
+    if (err) return res.status(500).json({ ok: false, error: 'WOL falhou: ' + err });
+    const jaAcordado = out.includes('já está acordado');
+    res.json({ ok: true, ja_acordado: jaAcordado, output: out });
+  });
+});
