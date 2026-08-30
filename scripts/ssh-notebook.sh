@@ -15,7 +15,7 @@ if [ -z "$HOST" ]; then
   exit 1
 fi
 
-REMOTE_CMD='uptime -p; echo ---; free -h | grep Mem | awk "{print \$3\"/\"\$2}"; df -h / | tail -1 | awk "{print \$3\"/\"\$2 \" (\" \$5 \")\"}"'
+REMOTE_CMD='uptime -p; echo ---; free -h | grep Mem | awk "{print \$3\"/\"\$2}"; echo ---; df -h / | tail -1 | awk "{print \$3\"/\"\$2 \" (\" \$5 \")\"}"'
 
 # ssh com BatchMode=yes: não pede senha — se a chave não estiver configurada, falha rápido
 ssh -o ConnectTimeout=6 -o BatchMode=yes "usuario@${HOST}" "$REMOTE_CMD" 2>/dev/null
