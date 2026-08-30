@@ -25,7 +25,7 @@ function hermesHeaders(extra = {}) {
 
 // ── Health do próprio backend ───────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', backend: 'chat-web', hermes: HERMES_URL });
+  res.json({ status: 'ok', backend: 'hermes-remote', hermes: HERMES_URL });
 });
 
 // ── Proxy para o Hermes API server ──────────────────────────────

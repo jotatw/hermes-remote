@@ -1,6 +1,6 @@
-# 📋 Plano: Tornar chat-web Público
+# 📋 Plano: Tornar hermes-remote Público
 
-> **Objetivo:** tornar o [repositório chat-web](https://github.com/usuario/hermes-remote) público
+> **Objetivo:** tornar o [repositório hermes-remote](https://github.com/usuario/hermes-remote) público
 > com segurança, sem expor dados pessoais/infraestrutura, e com melhorias contínuas.
 > **Estado atual:** privado, 13 commits, 1 branch (master)
 
