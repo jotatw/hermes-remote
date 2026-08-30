@@ -86,6 +86,17 @@ const NOTEBOOK_IP = process.env.NOTEBOOK_IP || '100.xx.xx.xx'; // tailnet (gené
 const HOMESERVER_IP = process.env.HOMESERVER_IP || '100.xx.xx.xx'; // tailnet (genérico)
 const SSH_USER = process.env.HOMESERVER_SSH_USER || 'usuario'; // usuário SSH (genérico)
 const HOMESERVER_PATH = process.env.HOMESERVER_PATH || '/opt/homeserver'; // path dos scripts (configurável)
+const HOME = process.env.HOME;
+
+// ── Comandos do servidor (contrato — configuráveis via .env) ─────
+// Cada comando pode ser sobrescrito. O default assume o setup
+// homeserver (HOMESERVER_PATH) + scripts auxiliares do Hermes.
+const HS_HEALTH_CMD = process.env.HS_HEALTH_CMD || `bash ${HOMESERVER_PATH}/scripts/health-check.sh 2>/dev/null`;
+const HS_POWER_CMD  = process.env.HS_POWER_CMD  || `sudo -n ${HOMESERVER_PATH}/core/hs.sh power status 2>/dev/null`;
+const HS_DIARIO_CMD = process.env.HS_DIARIO_CMD || `bash ${HOMESERVER_PATH}/scripts/health-check.sh 2>/dev/null`;
+const HS_REVIEW_CMD = process.env.HS_REVIEW_CMD || `nohup bash ${HOME}/.hermes/scripts/code-review.sh > /dev/null 2>&1 & echo "ok"`;
+const HS_SLEEP_CMD  = process.env.HS_SLEEP_CMD  || 'sudo /usr/sbin/rtcwake -m mem -t $(date -d "tomorrow 08:00" +%s) > /dev/null 2>&1 & echo ok';
+const HS_WAKE_CMD   = process.env.HS_WAKE_CMD   || `bash ${HOME}/.hermes/scripts/server-wol.sh 2>&1`;
 
 function localStatus() {
   const uptime = execSync('uptime -p', { timeout: 5000 }).toString().trim().replace(/^up\s+/, '');
@@ -176,7 +187,7 @@ app.get('/api/servidor', (req, res) => {
     // Temperatura (se health-check existir)
     try {
       const health = execSync(
-        `bash ${HOMESERVER_PATH}/scripts/health-check.sh 2>/dev/null | grep -i 'temperatura' || true`,
+        `${HS_HEALTH_CMD} | grep -i 'temperatura' || true`,
         { timeout: 15000, shell: '/bin/bash' }
       ).toString().trim();
       const temp = (health.match(/(\d+)C/) || [])[1];
@@ -194,8 +205,8 @@ app.get('/api/servidor', (req, res) => {
 // Lê o agendamento de energia configurado (via hs.sh power status)
 app.get('/api/power', (req, res) => {
   const cmd = IS_HOMESERVER
-    ? `sudo -n ${HOMESERVER_PATH}/core/hs.sh power status 2>/dev/null`
-    : `ssh -o ConnectTimeout=6 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} 'sudo -n ${HOMESERVER_PATH}/core/hs.sh power status 2>/dev/null'`;
+    ? `${HS_POWER_CMD}`
+    : `ssh -o ConnectTimeout=6 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} '${HS_POWER_CMD}'`;
 
   exec(cmd, { timeout: 10000, shell: '/bin/bash' }, (err, stdout) => {
     if (err || !stdout) return res.json({ ok: false, error: 'power status indisponível' });
@@ -230,7 +241,6 @@ app.get('/api/acoes', (req, res) => {
 // ── Ações rápidas (diário, revisar, dormir) ────────────────────
 // Executam os scripts existentes. Rodam em background para não
 // bloquear a resposta (alguns demoram ~30s).
-const HOME = process.env.HOME;
 
 function runScript(cmd, callback) {
   exec(cmd, { timeout: 30000, shell: '/bin/bash' }, (error, stdout, stderr) => {
@@ -241,7 +251,7 @@ function runScript(cmd, callback) {
 
 // Diário de saúde — local se no homeserver, senão via SSH
 app.post('/api/acao/diario', (req, res) => {
-  const local = `bash ${HOMESERVER_PATH}/scripts/health-check.sh 2>/dev/null`;
+  const local = `${HS_DIARIO_CMD}`;
   const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} '${local}'`;
   runScript(IS_HOMESERVER ? local : viaSsh, (err, out) => {
     if (err) { registrarAcao('diario', false, err); return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err }); }
@@ -252,9 +262,7 @@ app.post('/api/acao/diario', (req, res) => {
 
 // Code review (script local do Hermes — no homeserver também existe cópia)
 app.post('/api/acao/revisar', (req, res) => {
-  const script = `${HOME}/.hermes/scripts/code-review.sh`;
-  const cmd = `nohup bash ${script} > /dev/null 2>&1 & echo "ok"`;
-  runScript(cmd, (err) => {
+  runScript(HS_REVIEW_CMD, (err) => {
     if (err) { registrarAcao('revisar', false, err); return res.status(500).json({ ok: false, error: err }); }
     registrarAcao('revisar', true, 'code review disparado');
     res.json({ ok: true, message: 'Code review disparado' });
@@ -263,7 +271,7 @@ app.post('/api/acao/revisar', (req, res) => {
 
 // Dormir servidor — local se no homeserver, senão via SSH
 app.post('/api/acao/dormir', (req, res) => {
-  const local = 'sudo /usr/sbin/rtcwake -m mem -t $(date -d "tomorrow 08:00" +%s) > /dev/null 2>&1 & echo ok';
+  const local = `${HS_SLEEP_CMD}`;
   const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} '${local}'`;
   runScript(IS_HOMESERVER ? local : viaSsh, (err) => {
     if (err) { registrarAcao('dormir', false, err); return res.status(500).json({ ok: false, error: 'Não conseguiu dormir: ' + err }); }
@@ -274,8 +282,7 @@ app.post('/api/acao/dormir', (req, res) => {
 
 // Acordar servidor — envia magic packet WOL (funciona do notebook ou de qualquer máquina com server-wol.sh)
 app.post('/api/acao/acordar', (req, res) => {
-  const script = `${HOME}/.hermes/scripts/server-wol.sh`;
-  runScript(`bash ${script} 2>&1`, (err, out) => {
+  runScript(HS_WAKE_CMD, (err, out) => {
     if (err) { registrarAcao('acordar', false, err); return res.status(500).json({ ok: false, error: 'WOL falhou: ' + err }); }
     const jaAcordado = out.includes('já está acordado');
     registrarAcao('acordar', true, jaAcordado ? 'já acordado' : 'WOL enviado');

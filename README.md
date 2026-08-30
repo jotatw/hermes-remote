@@ -90,6 +90,7 @@ Abra http://localhost:3000 — ou instale como PWA no celular (requer HTTPS).
 ## Documentação
 
 - [`docs/guia-geral.md`](docs/guia-geral.md) — **comece aqui**: o que é, para quem, dependências, arquitetura
+- [`docs/contrato-homeserver.md`](docs/contrato-homeserver.md) — 🔌 **contrato de backend**: plugue QUALQUER servidor
 - [`docs/README.md`](docs/README.md) — índice completo de documentação
 - [`docs/design/tokens.md`](docs/design/tokens.md) — design tokens (camadas A1/A2/B-slot)
 - [`SECURITY.md`](SECURITY.md) — política de segurança

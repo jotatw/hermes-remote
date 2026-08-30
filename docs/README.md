@@ -10,6 +10,7 @@
 | Documento | O que é |
 |---|---|
 | [`guia-geral.md`](guia-geral.md) | 🧭 **Comece aqui** — ecossistema, dependências, modos de uso |
+| [`contrato-homeserver.md`](contrato-homeserver.md) | 🔌 **Contrato de backend** — como plugar QUALQUER servidor |
 | [`design/tokens.md`](design/tokens.md) | Design tokens (camadas A1/A2/B-slot, tema light) |
 | [`plano-publicacao.md`](plano-publicacao.md) | Plano de publicação + auditoria de segurança |
 | [`checklist-publicacao.md`](checklist-publicacao.md) | Checklist final antes de tornar público |

@@ -70,10 +70,16 @@ O dashboard lê saúde do servidor e executa ações. Se o Hermes Remote roda **
 próprio homeserver**, ele detecta (`IS_HOMESERVER`) e usa comandos locais.
 Se roda em outra máquina, usa **SSH** (`HOMESERVER_IP` + `HOMESERVER_SSH_USER`).
 
-**Scripts esperados no homeserver** (configuráveis via `HOMESERVER_PATH`):
-- `scripts/health-check.sh` — saúde (incl. temperatura)
-- `core/hs.sh power status` — agendamento de energia
-- Scripts de ação: diário de saúde, code review, WOL (`server-wol.sh`)
+**O Hermes Remote não impõe scripts específicos** — ele define um *contrato* de
+comandos configuráveis (`HS_*_CMD` no `.env`). Você pluga o **seu** servidor:
+
+- `HS_HEALTH_CMD` / `HS_DIARIO_CMD` — saúde (incl. temperatura)
+- `HS_POWER_CMD` — agendamento de energia (JSON)
+- `HS_SLEEP_CMD` / `HS_WAKE_CMD` — energia
+- `HS_REVIEW_CMD` — code review
+
+> 📖 **Detalhes completos no [`contrato-homeserver.md`](contrato-homeserver.md)** —
+> formato de saída, exemplo de JSON, e como plugar um servidor diferente.
 
 > Sem homeserver: chat funciona; dashboard mostra "servidor offline".
 
