@@ -264,18 +264,23 @@ function runScript(cmd, callback) {
 }
 
 // Diário de saúde — local se no homeserver, senão via SSH
-// O health-check retorna exit 1 com warnings (ex.: temperatura alta).
-// Isso NÃO é erro — o relatório completo deve ser mostrado.
+// 1) Envia o diário ao Telegram (HS_DIARIO_CMD — digest script)
+// 2) Captura o relatório de saúde (HS_HEALTH_CMD) p/ exibir no app
 app.post('/api/acao/diario', (req, res) => {
   const local = `${HS_DIARIO_CMD}`;
   const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} '${local}'`;
   runScript(IS_HOMESERVER ? local : viaSsh, (err, out) => {
-    // Erro real = falha de execução (script não existe, SSH falhou).
-    // Exit 1 do health-check = warnings — mostra o relatório mesmo assim.
-    if (err && !out) { registrarAcao('diario', false, err, err); return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err }); }
-    const temWarnings = /FAIL\s*:\s*[1-9]/.test(out);
-    registrarAcao('diario', true, temWarnings ? 'diário com alertas' : 'diário ok', out);
-    res.json({ ok: true, output: out, warnings: temWarnings });
+    // Captura o relatório de saúde (PASS/FAIL) para exibir no app
+    const healthLocal = `${HS_HEALTH_CMD}`;
+    const healthViaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} '${healthLocal}'`;
+    runScript(IS_HOMESERVER ? healthLocal : healthViaSsh, (healthErr, healthOut) => {
+      const relatorio = healthOut || '';
+      const temWarnings = /FAIL\s*:\s*[1-9]/.test(relatorio);
+      const okFinal = !(err && !out); // erro real = falha no digest (SSH/script)
+      if (!okFinal) { registrarAcao('diario', false, err, relatorio || err); return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err }); }
+      registrarAcao('diario', true, temWarnings ? 'diário com alertas' : 'diário ok', relatorio);
+      res.json({ ok: true, output: relatorio, warnings: temWarnings });
+    });
   });
 });
 
