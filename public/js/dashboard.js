@@ -108,11 +108,26 @@ async function carregarHistoricoAcoes() {
     el.innerHTML = d.acoes.map(function (a) {
       const icone = a.ok ? '✅' : '❌';
       const quando = new Date(a.quando).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-      return icone + ' <b>' + a.acao + '</b> · ' + quando + (a.detalhe ? ' <span class="dim">— ' + a.detalhe + '</span>' : '');
+      var linha = icone + ' <b>' + a.acao + '</b> · ' + quando + (a.detalhe ? ' <span class="dim">— ' + a.detalhe + '</span>' : '');
+      if (a.output) {
+        var id = 'out-' + a.quando.replace(/[^0-9]/g, '').slice(0, 12);
+        linha += ' <button class="hist-btn" onclick="toggleHistDetalhes(\'' + id + '\')">📋</button>';
+        linha += '<div id="' + id + '" class="hist-det"><pre>' + escapeHtml(a.output) + '</pre></div>';
+      }
+      return linha;
     }).join('<br>');
   } catch (e) {
     el.textContent = '❌ ' + e.message;
   }
+}
+
+function toggleHistDetalhes(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function escapeHtml(text) {
+  return (text || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 async function carregarServidor() {

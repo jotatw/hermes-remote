@@ -700,6 +700,33 @@ body {
 .container-chip.down { border-color: rgba(231,76,60,0.4); background: rgba(231,76,60,0.08); opacity: 0.7; }
 .server-footnote { margin-top: 12px; font-size: 0.8em; color: var(--hr-text-3); }
 
+/* ── Histórico: detalhes expansíveis ─────────────────────────── */
+.hist-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85em;
+  padding: 0 4px;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+.hist-btn:hover { opacity: 1; }
+.hist-det { display: none; }
+.hist-det.open { display: block; }
+.hist-det pre {
+  margin: 4px 0 0 16px;
+  padding: 6px 8px;
+  background: var(--hr-surface-trans-2);
+  border-radius: var(--hr-radius-sm);
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  color: var(--hr-text-2);
+}
+
 /* Config — informativo (a config vive no .env do servidor) */
 .cfg-hint { font-size: 0.85em; color: var(--hr-text-3); line-height: 1.5; margin: 0 0 8px; }
 .cfg-hint code { background: var(--hr-surface-trans-2); padding: 1px 5px; border-radius: var(--hr-radius-sm); font-size: 0.9em; }

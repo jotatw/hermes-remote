@@ -233,11 +233,13 @@ app.get('/api/power', (req, res) => {
 const fs = require('fs');
 const ACOES_LOG = path.join(__dirname, 'acoes.log.json');
 
-function registrarAcao(nome, ok, detalhe) {
+function registrarAcao(nome, ok, detalhe, output) {
   const agora = new Date().toISOString();
   let lista = [];
   try { lista = JSON.parse(fs.readFileSync(ACOES_LOG, 'utf8')); } catch (e) { lista = []; }
-  lista.unshift({ acao: nome, ok: !!ok, detalhe: detalhe || '', quando: agora });
+  // Guarda só os primeiros 600 chars do output (mantém o log leve)
+  const out = output ? String(output).slice(0, 600) : '';
+  lista.unshift({ acao: nome, ok: !!ok, detalhe: detalhe || '', output: out, quando: agora });
   lista = lista.slice(0, 30); // mantém só as 30 últimas
   try { fs.writeFileSync(ACOES_LOG, JSON.stringify(lista, null, 2)); } catch (e) { /* best effort */ }
 }
@@ -270,18 +272,18 @@ app.post('/api/acao/diario', (req, res) => {
   runScript(IS_HOMESERVER ? local : viaSsh, (err, out) => {
     // Erro real = falha de execução (script não existe, SSH falhou).
     // Exit 1 do health-check = warnings — mostra o relatório mesmo assim.
-    if (err && !out) { registrarAcao('diario', false, err); return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err }); }
+    if (err && !out) { registrarAcao('diario', false, err, err); return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err }); }
     const temWarnings = /FAIL\s*:\s*[1-9]/.test(out);
-    registrarAcao('diario', true, temWarnings ? 'diário com alertas' : 'diário ok');
+    registrarAcao('diario', true, temWarnings ? 'diário com alertas' : 'diário ok', out);
     res.json({ ok: true, output: out, warnings: temWarnings });
   });
 });
 
 // Code review (script local do Hermes — no homeserver também existe cópia)
 app.post('/api/acao/revisar', (req, res) => {
-  runScript(HS_REVIEW_CMD, (err) => {
-    if (err) { registrarAcao('revisar', false, err); return res.status(500).json({ ok: false, error: err }); }
-    registrarAcao('revisar', true, 'code review disparado');
+  runScript(HS_REVIEW_CMD, (err, out) => {
+    if (err) { registrarAcao('revisar', false, err, err); return res.status(500).json({ ok: false, error: err }); }
+    registrarAcao('revisar', true, 'code review disparado', out);
     res.json({ ok: true, message: 'Code review disparado' });
   });
 });
@@ -300,9 +302,9 @@ app.post('/api/acao/dormir', (req, res) => {
 // Acordar servidor — envia magic packet WOL (funciona do notebook ou de qualquer máquina com server-wol.sh)
 app.post('/api/acao/acordar', (req, res) => {
   runScript(HS_WAKE_CMD, (err, out) => {
-    if (err) { registrarAcao('acordar', false, err); return res.status(500).json({ ok: false, error: 'WOL falhou: ' + err }); }
+    if (err) { registrarAcao('acordar', false, err, err); return res.status(500).json({ ok: false, error: 'WOL falhou: ' + err }); }
     const jaAcordado = out.includes('já está acordado');
-    registrarAcao('acordar', true, jaAcordado ? 'já acordado' : 'WOL enviado');
+    registrarAcao('acordar', true, jaAcordado ? 'já acordado' : 'WOL enviado', out);
     res.json({ ok: true, ja_acordado: jaAcordado, output: out });
   });
 });
