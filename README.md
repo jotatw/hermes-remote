@@ -58,7 +58,7 @@ Tailscale/HTTPS ───────────────────► Ins
 | 📊 **Dashboard** | Notebook/servidor/cota, ações rápidas, agenda de energia | Homeserver + API |
 | 💬 **Chat** | Conversa com o assistente (streaming, temas, conversas, tarefas) | Hermes API server |
 | 🖥️ **Servidor** | Containers, temperatura, energia, diário de saúde | Homeserver (SSH) |
-| ⚙️ **Configurações** | URL/chave do API server, host SSH, teste de conexão | — |
+| ⚙️ **Configurações** | Mostra conexão ativa (backend, URL, status) + como configurar | — |
 
 ---
 

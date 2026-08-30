@@ -125,19 +125,27 @@ Para **instalar o app no celular** e acessar de fora da LAN, você precisa de HT
 
 ## 6. Começando rápido
 
+**Com o instalador (recomendado):**
+
 ```bash
-# 1. Clone + instale
+# 1. Clone
 git clone https://github.com/usuario/hermes-remote.git
 cd hermes-remote
+
+# 2. Rode o instalador (detecta ambiente, pergunta o essencial,
+#    gera .env, instala deps, valida conexão e inicia)
+bash setup.sh
+
+# Sem prompts:
+bash setup.sh --auto
+```
+
+**Manual:**
+
+```bash
 npm install
-
-# 2. Configure
-cp .env.example .env
-#   edite .env: HERMES_URL, HERMES_API_KEY (+ HOMESERVER_* se for monitorar)
-
-# 3. Rode
+cp .env.example .env   # edite: HERMES_URL, HERMES_API_KEY (+ HOMESERVER_* se for monitorar)
 npm start
-# → http://localhost:3000
 ```
 
 Depois, para o celular: HTTPS + instalação do PWA (ver seção 3.3).
