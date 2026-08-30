@@ -1,47 +1,34 @@
 /* ═══════════════════════════════════════════════════════════════
    Hermes Remote — Design Tokens
    Base: Linear (dark-first, tool preciso) + chat estilo Intercom
+   Contrato: open-design (nexu-io) — camadas A1/A2/B-slot/C-ext
    Fonte da verdade: docs/design/tokens.md
    Todos os componentes usam var(--hr-*). Zero valores hardcoded.
+
+   CAMADAS (ver skill open-design → references/open-design-contract.md):
+     A1-identity   → marca: bg, fg, accent, font (omitir = quebra)
+     A1-structure  → escala: type, container-max (omitir = quebra)
+     A2            → padrão com fallback (motion, space, status)
+     B-slot        → alias de nível 2 (text-2, surface-2, etc.)
+     C-extensions  → específico deste app (bubbles, surface-trans)
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Superfícies (luminância stepping, como Linear) ───────── */
+  /* ── A1-IDENTITY ── identidade visual da marca ─────────────── */
   --hr-bg: #08090a;            /* canvas mais profundo */
-  --hr-panel: #0f1011;         /* sidebar, painéis */
-  --hr-surface: #191a1b;       /* cards, dropdowns */
-  --hr-surface-2: #28282c;     /* hover, elementos elevados */
-  --hr-surface-trans: rgba(255,255,255,0.02); /* card translúcido */
-  --hr-surface-trans-2: rgba(255,255,255,0.05);
-
-  /* ── Texto ────────────────────────────────────────────────── */
-  --hr-text: #f7f8f8;          /* primário (não branco puro) */
-  --hr-text-2: #d0d6e0;        /* secundário */
-  --hr-text-3: #8a8f98;        /* terciário / placeholder */
-  --hr-text-4: #62666d;        /* quaternário / timestamps */
-
-  /* ── Accent (índigo-violeta, único cromático) ─────────────── */
+  --hr-fg: #f7f8f8;            /* texto primário (não branco puro) */
   --hr-accent: #5e6ad2;        /* CTA, superfícies de marca */
-  --hr-accent-bright: #7170ff; /* links, ativo */
-  --hr-accent-hover: #828fff;  /* hover em accent */
-
-  /* ── Status semânticos ────────────────────────────────────── */
-  --hr-success: #27a644;       /* online, ok */
-  --hr-success-2: #10b981;     /* badges de conclusão */
-  --hr-warn: #e6b800;          /* atenção */
-  --hr-danger: #e74c3c;        /* erro, offline */
-
-  /* ── Bordas (semi-transparentes brancas) ──────────────────── */
-  --hr-border-subtle: rgba(255,255,255,0.05);
-  --hr-border: rgba(255,255,255,0.08);
-  --hr-border-solid: #23252a;
-
-  /* ── Tipografia ───────────────────────────────────────────── */
   --hr-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --hr-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --hr-feature: 'cv01', 'ss03';  /* assinatura Linear */
+  --hr-feature: 'cv01', 'ss03';  /* assinatura Linear (OpenType) */
 
-  /* ── Escala de texto (semântica) ──────────────────────────── */
+  /* ── A1-STRUCTURE ── fundação estrutural ───────────────────── */
+  --hr-panel: #0f1011;         /* sidebar, painéis */
+  --hr-surface: #191a1b;       /* cards, dropdowns */
+  --hr-border: rgba(255,255,255,0.08);   /* borda padrão */
+  --hr-text: var(--hr-fg);     /* alias de identidade p/ uso semântico */
+
+  /* Escala de tipo (semântica) */
   --hr-text-xs: 11px;
   --hr-text-sm: 13px;
   --hr-text-base: 15px;
@@ -49,7 +36,14 @@
   --hr-text-xl: 20px;
   --hr-text-2xl: 24px;
 
-  /* ── Espaçamento (base 8px) ───────────────────────────────── */
+  /* ── A2 — padrão com fallback ──────────────────────────────── */
+  /* Status semânticos */
+  --hr-success: #27a644;       /* online, ok */
+  --hr-success-2: #10b981;     /* badges de conclusão */
+  --hr-warn: #e6b800;          /* atenção */
+  --hr-danger: #e74c3c;        /* erro, offline */
+
+  /* Espaçamento (base 8px) */
   --hr-space-1: 4px;
   --hr-space-2: 8px;
   --hr-space-3: 12px;
@@ -58,23 +52,64 @@
   --hr-space-6: 24px;
   --hr-space-8: 32px;
 
-  /* ── Raio ─────────────────────────────────────────────────── */
+  /* Raio */
   --hr-radius-sm: 4px;
   --hr-radius: 6px;
   --hr-radius-md: 8px;
   --hr-radius-lg: 12px;
   --hr-radius-pill: 9999px;
 
-  /* ── Elevação (luminância, não sombra) ────────────────────── */
+  /* Elevação (luminância, não sombra) */
   --hr-elevation-1: rgba(0,0,0,0.03) 0px 1.2px 0px;
   --hr-elevation-2: rgba(0,0,0,0.2) 0px 0px 12px 0px inset;
   --hr-elevation-dialog: rgba(0,0,0,0) 0px 8px 2px, rgba(0,0,0,0.01) 0px 5px 2px,
                          rgba(0,0,0,0.04) 0px 3px 2px, rgba(0,0,0,0.07) 0px 1px 1px,
                          rgba(0,0,0,0.08) 0px 0px 1px;
 
-  /* ── Transições ───────────────────────────────────────────── */
+  /* Transições */
   --hr-transition: 0.15s ease;
   --hr-transition-slow: 0.25s ease;
+
+  /* ── B-SLOT ── níveis 2+ (alias p/ o nível 1 da mesma família) */
+  --hr-accent-bright: #7170ff;        /* B: alias, versão brilhante */
+  --hr-accent-hover: #828fff;         /* B: alias, hover */
+  --hr-border-subtle: rgba(255,255,255,0.05); /* B: alias mais sutil */
+  --hr-border-solid: #23252a;         /* B: alias sólido p/ hover */
+  --hr-surface-2: #28282c;            /* B: surface elevada (hover) */
+  --hr-text-2: #d0d6e0;               /* B: texto secundário */
+  --hr-text-3: #8a8f98;               /* B: terciário / placeholder */
+  --hr-text-4: #62666d;               /* B: quaternário / timestamps */
+
+  /* ── C-EXTENSIONS ── específico do Hermes Remote ───────────── */
+  --hr-surface-trans: rgba(255,255,255,0.02); /* card translúcido */
+  --hr-surface-trans-2: rgba(255,255,255,0.05);
+  --hr-bubble: var(--hr-accent);      /* bolha de chat (default user) */
+  --hr-bubble-text: #ffffff;
+}
+
+/* ── TEMA LIGHT (alternativo) ── sobrescreve A1 + A2, mantém estrutura ── */
+[data-theme="light"] {
+  --hr-bg: #f7f8f8;
+  --hr-fg: #1c1e21;
+  --hr-text: #1c1e21;
+  --hr-panel: #ffffff;
+  --hr-surface: #ffffff;
+  --hr-border: #e0e2e5;
+  --hr-border-subtle: #f0f1f3;
+  --hr-border-solid: #c8ccd4;
+  --hr-surface-2: #f0f1f3;
+  --hr-surface-trans: rgba(0,0,0,0.02);
+  --hr-surface-trans-2: rgba(0,0,0,0.05);
+  --hr-text-2: #65676b;
+  --hr-text-3: #8a8f98;
+  --hr-text-4: #adb1b8;
+  --hr-accent: #5e6ad2;
+  --hr-accent-bright: #4f5bd1;
+  --hr-accent-hover: #414cb8;
+  --hr-success: #16a34a;
+  --hr-warn: #ca8a04;
+  --hr-danger: #dc2626;
+  --hr-bubble-text: #ffffff;
 }
 
 /* ── Chat: bolhas estilo Intercom (cantos assimétricos) ────── */
