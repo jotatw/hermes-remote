@@ -1,9 +1,9 @@
-# ✅ Checklist final — antes de tornar hermes-remote público
+# ✅ Checklist de publicação — hermes-remote (CONCLUÍDO)
 
-> Rodar TODOS os itens e marcar antes de `gh repo edit --visibility public`.
-> Escopo de risco: repositório pessoal de controle do Hermes Agent.
+> O repositório já está **público**. Este documento registra o que foi feito
+> e o que manter daqui para frente.
 
-## 1. Segredos e dados pessoais
+## 1. Segredos e dados pessoais (feito)
 
 - [x] Nenhum `.env` no git (só `.env.example` com placeholders)
 - [x] Nenhum token/chave real no histórico (scan-secrets.sh retorna vazio)
@@ -14,45 +14,28 @@
 - [x] Autor dos commits → genérico "Hermes Remote"
 - [x] Emails pessoais ausentes
 
-## 2. CI / segurança automatizada
+## 2. CI / segurança automatizada (feito)
 
-- [ ] `.github/workflows/ci.yml` pushed (bloqueado: falta escopo `workflow`)
-- [ ] Scan-secrets.sh versionado
-- [ ] SECURITY.md versionado
-- [ ] CI passando (lint + scan) após push
+- [x] `.github/workflows/ci.yml` pushed e passando (lint + scan)
+- [x] `scripts/scan-secrets.sh` versionado
+- [x] `SECURITY.md` versionado
 
-## 3. Documentação
+## 3. Documentação (feita)
 
 - [x] README.md alinhado ao nome hermes-remote
-- [x] docs/design/tokens.md URL genérica
-- [x] docs/plano-publicacao.md atualizado
-- [ ] Verificar que docs não citam infra real
+- [x] docs/guia-geral.md (ecossistema + dependências)
+- [x] docs/contrato-homeserver.md (contrato de backend)
+- [x] docs/funcoes.md (mapa de funções)
+- [x] Docs sem dados de infra real
 
-## 4. App funcionando
+## 4. Publicação (feita)
 
-- [x] Deploy funciona (HOMESERVER_HOST via .env)
-- [x] /api/health, /api/status, /api/servidor OK
-- [x] PWA instalável (manifest, sw v4)
+- [x] Repo renomeado de `chat-web` → `hermes-remote`
+- [x] `gh repo edit --visibility public`
 
-## 5. Decisão final (usuário)
+## 5. Manutenção contínua
 
-- [ ] Revisar este checklist com o usuário
-- [ ] Tornar público: `gh repo edit --visibility public`
-
----
-
-## Comandos úteis
-
-```bash
-# Rodar o scan local
-bash scripts/scan-secrets.sh
-
-# Ver escopos do token
-gh auth status
-
-# Tornar público (depois de tudo OK)
-gh repo edit --visibility public
-
-# Se precisar re-sincronizar após force push
-git fetch origin && git reset --hard origin/master
-```
+- Rodar `bash scripts/scan-secrets.sh` antes de qualquer push
+- Não adicionar dados pessoais em issues/PRs (usar `usuario`, `100.x.x.x`)
+- Bump do cache do service worker (`sw.js`) ao mudar HTML/CSS/JS
+- Manter `SECURITY.md` atualizado se o modelo de ameaça mudar

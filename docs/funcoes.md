@@ -89,14 +89,18 @@
 
 ---
 
-## 💡 Simplificações identificadas
+## 💡 Simplificações aplicadas
 
-| # | O que | Por quê |
+| # | O que | Status |
 |---|---|---|
-| 1 | ✅ Docker opcional (HS_CONTAINERS_CMD) | Servidor sem Docker não quebra |
-| 2 | 🔲 Chat lembrar último modelo | `localStorage` já salva, mas não seleciona ao entrar no chat |
-| 3 | 🔲 Estado vazio do chat com sugestões | Em vez de texto genérico, mostrar sugestões de perguntas |
-| 4 | 🔲 "Host SSH" na Config não é usado | Remover ou tornar funcional (salvar e usar no server.js) |
-| 5 | 🔲 Card "Últimas Ações" vazio | Mostrar "Nenhuma ação ainda. Use as Ações Rápidas!" com link |
+| 1 | Docker opcional (`HS_CONTAINERS_CMD`) | ✅ Implementado (server.js + contrato) |
+| 2 | Chat lembrar último modelo | ✅ Já existia (`localStorage` seleciona ao abrir o chat) |
+| 3 | Estado vazio do chat com sugestões | ✅ Implementado ("Como está o servidor?", "Me ajude com...") |
+| 4 | Tela Config informativa (remover campos falsos) | ✅ Implementado (mostra conexão ativa do backend) |
+| 5 | Card "Últimas Ações" vazio com link | ✅ Implementado (link para Ações Rápidas) |
 
-Quer que eu implemente as simplificações 2-5? 🚀
+## Ideias futuras (não implementadas)
+
+- Renomear/excluir conversa dentro do dropdown do chat (hoje é preciso via menu)
+- Sincronizar conversas entre dispositivos (hoje ficam no localStorage do navegador)
+- Autenticação nas rotas `/api/*` para uso público além do PWA
