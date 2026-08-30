@@ -254,19 +254,26 @@ app.get('/api/acoes', (req, res) => {
 
 function runScript(cmd, callback) {
   exec(cmd, { timeout: 30000, shell: '/bin/bash' }, (error, stdout, stderr) => {
-    if (error) return callback(error.message + (stderr || ''));
-    callback(null, stdout);
+    // Preserva o output mesmo com exit != 0 — muitos scripts de saúde
+    // retornam 1 quando há warnings (ex.: temperatura alta), mas o
+    // relatório completo é útil. O callback decide o que é erro real.
+    callback(error ? error.message : null, stdout || '', stderr || '');
   });
 }
 
 // Diário de saúde — local se no homeserver, senão via SSH
+// O health-check retorna exit 1 com warnings (ex.: temperatura alta).
+// Isso NÃO é erro — o relatório completo deve ser mostrado.
 app.post('/api/acao/diario', (req, res) => {
   const local = `${HS_DIARIO_CMD}`;
   const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} '${local}'`;
   runScript(IS_HOMESERVER ? local : viaSsh, (err, out) => {
-    if (err) { registrarAcao('diario', false, err); return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err }); }
-    registrarAcao('diario', true, 'diário enviado');
-    res.json({ ok: true, output: out });
+    // Erro real = falha de execução (script não existe, SSH falhou).
+    // Exit 1 do health-check = warnings — mostra o relatório mesmo assim.
+    if (err && !out) { registrarAcao('diario', false, err); return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err }); }
+    const temWarnings = /FAIL\s*:\s*[1-9]/.test(out);
+    registrarAcao('diario', true, temWarnings ? 'diário com alertas' : 'diário ok');
+    res.json({ ok: true, output: out, warnings: temWarnings });
   });
 });
 

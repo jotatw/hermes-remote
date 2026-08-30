@@ -175,7 +175,15 @@ function acaoDiario() {
   fetch('/api/acao/diario').then(function (r) { return r.json(); }).then(function (d) {
     desabilitarBotoes(false);
     if (d.ok) {
-      mostrarResultado('✅ Diário enviado ao Telegram!', 'ok');
+      var msg = '✅ Diário enviado ao Telegram!';
+      if (d.warnings) msg += ' ⚠️ Com alertas';
+      if (d.output) {
+        // Extrair resumo do relatório
+        var pass = d.output.match(/PASS\s*:\s*(\d+)/);
+        var fail = d.output.match(/FAIL\s*:\s*(\d+)/);
+        if (pass || fail) msg += '<br><span class="dim">' + (pass ? 'PASS: ' + pass[1] : '') + (fail && fail[1] > 0 ? ' · FAIL: ' + fail[1] : '') + '</span>';
+      }
+      mostrarResultado(msg, 'ok');
     } else {
       mostrarResultado('❌ ' + (d.error || 'falha'), 'erro');
     }
