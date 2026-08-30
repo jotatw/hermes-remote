@@ -114,8 +114,10 @@ function localStatus() {
 
 function sshStatus(host) {
   try {
+    // Usa o script dedicado (scripts/ssh-notebook.sh) — quoting simples e robusto
+    const script = path.join(__dirname, 'scripts', 'ssh-notebook.sh');
     return execSync(
-      `ssh -o ConnectTimeout=6 -o BatchMode=yes ${SSH_USER}@${host} 'uptime -p 2>/dev/null; echo ---; free -h | grep Mem | awk "{print \\$3\"/\\\"\\$2}"; df -h / | tail -1 | awk "{print \\$3\"/\\\"\\$2 \\\"(\\\" \\$5 \\\")\\\"}"'`,
+      `bash ${script} ${host}`,
       { timeout: 15000 }
     ).toString().trim();
   } catch (e) {
