@@ -129,7 +129,11 @@ async function carregarServidor() {
     // Temperatura
     if (resDetalhes.temperatura) {
       const temp = resDetalhes.temperatura;
-      html += '🌡️ Temperatura: <b>' + temp + '°C</b> ' + (temp >= 80 ? '⚠️' : '✅') + '<br>';
+      if (temp >= 80) {
+        html += '🌡️ Temperatura: <b>' + temp + '°C</b> ⚠️ <button class="action-btn inline" onclick="acaoDiario()">📋 Ver Diário de Saúde</button><br>';
+      } else {
+        html += '🌡️ Temperatura: <b>' + temp + '°C</b> ✅<br>';
+      }
     }
 
     // Containers Docker
@@ -239,6 +243,7 @@ function testarConexao() {
   el.textContent = 'Testando ' + url + '...';
 
   fetch('/api/health').then(r => r.json()).then(d => {
-    el.textContent = '✅ Backend OK. Conectado a: ' + d.hermes;
-  }).catch(e => { el.textContent = '❌ ' + e.message; });
+     el.innerHTML = '✅ Backend OK. Conectado a: ' + d.hermes +
+       '<br><button class="action-btn" onclick="irPara(\'chat\')" style="margin-top:8px">💬 Ir para o Chat</button>';
+   }).catch(e => { el.textContent = '❌ ' + e.message; });
 }

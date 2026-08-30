@@ -671,8 +671,14 @@ body {
   opacity: 0.55;
   color: var(--hr-text);
   transition: opacity var(--hr-transition), background var(--hr-transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
-.nav-btn.active { opacity: 1; background: var(--hr-surface-trans-2); }
+.nav-btn .nav-icon { line-height: 1; }
+.nav-btn .nav-label { display: none; }         /* label só no mobile */
+.nav-btn.active { opacity: 1; background: var(--hr-accent); color: #fff; }
 .nav-btn:hover { opacity: 0.9; }
 
 /* Views */
@@ -719,6 +725,7 @@ body {
 }
 .action-btn:hover { background: var(--hr-surface-trans-2); border-color: var(--hr-accent); color: var(--hr-text); }
 .action-btn:active { background: var(--hr-surface); }
+.action-btn.inline { margin: 6px 0 10px; padding: 6px 12px; }
 .acao-resultado {
   margin-top: 14px;
   padding: 10px;

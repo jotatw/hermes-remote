@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#08090a">
   <meta name="description" content="Controle remoto do Hermes Agent — dashboard, chat, servidor e configurações">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -65,11 +65,11 @@
         <span id="conexaoStatus" class="conexao-status online" title="Status do servidor">🟢 online</span>
 
         <!-- Nav (mobile-friendly) -->
-        <nav class="topnav" id="topnav">
-          <button class="nav-btn active" data-view="dashboard" onclick="irPara('dashboard')">🏠</button>
-          <button class="nav-btn" data-view="chat" onclick="irPara('chat')">💬</button>
-          <button class="nav-btn" data-view="servidor" onclick="irPara('servidor')">🖥️</button>
-          <button class="nav-btn" data-view="config" onclick="irPara('config')">⚙️</button>
+        <nav class="topnav" id="topnav" aria-label="Navegação principal">
+          <button class="nav-btn active" data-view="dashboard" onclick="irPara('dashboard')" aria-label="Visão Geral" title="Visão Geral"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></button>
+          <button class="nav-btn" data-view="chat" onclick="irPara('chat')" aria-label="Chat" title="Chat"><span class="nav-icon">💬</span><span class="nav-label">Chat</span></button>
+          <button class="nav-btn" data-view="servidor" onclick="irPara('servidor')" aria-label="Servidor" title="Servidor"><span class="nav-icon">🖥️</span><span class="nav-label">Servidor</span></button>
+          <button class="nav-btn" data-view="config" onclick="irPara('config')" aria-label="Configurações" title="Configurações"><span class="nav-icon">⚙️</span><span class="nav-label">Config</span></button>
         </nav>
 
         <button id="stopBtn" class="btn-new" onclick="pararResposta()" style="display:none">⏹</button>
