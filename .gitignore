@@ -1,3 +1,4 @@
 node_modules/
 .env
 public/icons/
+acoes.log.json

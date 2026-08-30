@@ -1,0 +1,48 @@
+name: CI — lint & segurança
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  lint:
+    name: Node lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci --no-audit --no-fund
+
+      - name: Sintaxe JS (server.js + public/js)
+        run: |
+          node --check server.js
+          for f in public/js/*.js; do node --check "$f"; done
+
+      - name: Deploy script válido
+        run: bash -n deploy.sh
+
+  security-scan:
+    name: Scan de segredos (histórico + conteúdo)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # histórico completo para o scan
+
+      - name: Rodar scan-secrets.sh
+        run: bash scripts/scan-secrets.sh
+
+      - name: Falhar se encontrar segredos (padrões críticos)
+        run: |
+          git log --all -p 2>/dev/null | grep -aE "(sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{20,}|AKIA[0-9A-Z]{16})" \
+            && { echo "❌ Token encontrado no histórico"; exit 1; } || echo "✅ Sem tokens no histórico"
