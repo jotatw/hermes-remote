@@ -653,6 +653,53 @@ body {
   font-size: 0.9em;
 }
 
+/* ── Servidor: cards visuais ────────────────────────────────── */
+.server-loading { padding: 20px; text-align: center; color: var(--hr-text-3); font-size: 0.9em; }
+.server-offline { padding: 16px; border-radius: var(--hr-radius-md); background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.25); color: var(--hr-text); }
+.server-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.stat-card {
+  background: var(--hr-surface-trans);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius-md);
+  padding: 12px;
+  text-align: center;
+}
+.stat-icon { font-size: 1.3em; margin-bottom: 4px; }
+.stat-label { font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.5px; color: var(--hr-text-3); margin-bottom: 2px; }
+.stat-value { font-size: 0.95em; font-weight: 600; color: var(--hr-text); word-break: break-word; }
+.server-temp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--hr-radius-md);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.server-temp.ok { background: rgba(46,204,113,0.08); border: 1px solid rgba(46,204,113,0.25); }
+.server-temp.alta { background: rgba(231,76,60,0.10); border: 1px solid rgba(231,76,60,0.35); }
+.server-section-title { font-size: 0.85em; font-weight: 600; color: var(--hr-text-2); margin: 12px 0 8px; }
+.server-containers { display: flex; flex-wrap: wrap; gap: 6px; }
+.container-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: var(--hr-radius-pill);
+  font-size: 0.8em;
+  border: 1px solid var(--hr-border);
+  background: var(--hr-surface-trans);
+}
+.container-chip.ok { border-color: rgba(46,204,113,0.4); background: rgba(46,204,113,0.08); }
+.container-chip.warn { border-color: rgba(241,196,15,0.4); background: rgba(241,196,15,0.08); }
+.container-chip.down { border-color: rgba(231,76,60,0.4); background: rgba(231,76,60,0.08); opacity: 0.7; }
+.server-footnote { margin-top: 12px; font-size: 0.8em; color: var(--hr-text-3); }
+
 /* Config — informativo (a config vive no .env do servidor) */
 .cfg-hint { font-size: 0.85em; color: var(--hr-text-3); line-height: 1.5; margin: 0 0 8px; }
 .cfg-hint code { background: var(--hr-surface-trans-2); padding: 1px 5px; border-radius: var(--hr-radius-sm); font-size: 0.9em; }

@@ -10,8 +10,11 @@ async function carregarDashboard() {
   Object.values(corpo).forEach(el => { if (el) el.textContent = 'Carregando...'; });
 
   try {
-    const res = await fetch('/api/status');
-    const data = await res.json();
+    const [res, resDetalhes] = await Promise.all([
+      fetch('/api/status').then(function (r) { return r.json(); }),
+      fetch('/api/servidor').then(function (r) { return r.json(); })
+    ]);
+    const data = res;
 
     // Notebook
     if (data.notebook && data.notebook.erro) {
@@ -29,18 +32,33 @@ async function carregarDashboard() {
       corpo.notebook.textContent = 'Sem dados';
     }
 
-    // Servidor
+    // Servidor (com temperatura + containers)
     if (data.servidor && data.servidor.erro) {
       corpo.servidor.textContent = '🔴 ' + data.servidor.erro;
     } else if (data.servidor && data.servidor.offline) {
       corpo.servidor.textContent = '😴 ' + data.servidor.offline;
     } else if (data.servidor) {
-      corpo.servidor.innerHTML =
+      var servidorHtml =
         '⏱️ Uptime: <b>' + (data.servidor.uptime || '?') + '</b><br>' +
         '💾 RAM: <b>' + (data.servidor.ram || '?') + '</b><br>' +
         '💽 Disco: <b>' + (data.servidor.disco || '?') + '</b><br>' +
         (data.servidor.load ? '📊 Load: ' + data.servidor.load : '') +
         (data.servidor.local ? '<br>📍 rodando neste host' : '');
+
+      // Temperatura
+      if (resDetalhes.temperatura) {
+        var temp = resDetalhes.temperatura;
+        servidorHtml += '<br>🌡️ <b>' + temp + '°C</b> ' + (temp >= 80 ? '⚠️' : '✅');
+      }
+
+      // Resumo de containers
+      if (resDetalhes.containers && resDetalhes.containers.length) {
+        var total = resDetalhes.containers.length;
+        var down = resDetalhes.containers.filter(function (c) { return !c.rodando; }).length;
+        servidorHtml += '<br>🐳 ' + total + ' containers' + (down ? ' <span class="dim">(' + down + ' parado)</span>' : '');
+      }
+
+      corpo.servidor.innerHTML = servidorHtml;
     } else {
       corpo.servidor.textContent = 'Sem dados';
     }
@@ -100,7 +118,7 @@ async function carregarHistoricoAcoes() {
 async function carregarServidor() {
   const el = document.getElementById('servidor-detalhe');
   if (!el) return;
-  el.textContent = 'Carregando...';
+  el.innerHTML = '<div class="server-loading">Carregando...</div>';
 
   try {
     // Status básico + detalhes (containers, temperatura)
@@ -111,44 +129,55 @@ async function carregarServidor() {
 
     const s = resStatus.servidor || {};
     if (s.erro) {
-      el.innerHTML = '🔴 <b>Servidor offline</b><br>' + s.erro;
+      el.innerHTML = '<div class="server-offline">🔴 <b>Servidor offline</b><br>' + s.erro + '</div>';
       return;
     }
     if (s.offline) {
-      el.innerHTML = '😴 <b>Servidor dormindo</b><br>' + s.offline;
+      el.innerHTML = '<div class="server-offline">😴 <b>Servidor dormindo</b><br>' + s.offline + '</div>';
       return;
     }
 
-    let html =
-      '⏱️ Uptime: <b>' + (s.uptime || '?') + '</b><br>' +
-      '💾 RAM: <b>' + (s.ram || '?') + '</b><br>' +
-      '💽 Disco: <b>' + (s.disco || '?') + '</b><br>' +
-      (s.load ? '📊 Load: ' + s.load + '<br>' : '') +
-      (s.local ? '📍 Servidor é este host<br>' : '');
+    let html = '<div class="server-stats">';
+
+    // Métricas principais
+    const metrica = function (icone, rotulo, valor) {
+      return '<div class="stat-card"><div class="stat-icon">' + icone + '</div><div class="stat-label">' + rotulo + '</div><div class="stat-value">' + (valor || '?') + '</div></div>';
+    };
+    html += metrica('⏱️', 'Uptime', s.uptime);
+    html += metrica('💾', 'RAM', s.ram);
+    html += metrica('💽', 'Disco', s.disco);
+    if (s.load) html += metrica('📊', 'Load', s.load);
+    html += '</div>';
 
     // Temperatura
     if (resDetalhes.temperatura) {
       const temp = resDetalhes.temperatura;
-      if (temp >= 80) {
-        html += '🌡️ Temperatura: <b>' + temp + '°C</b> ⚠️ <button class="action-btn inline" onclick="acaoDiario()">📋 Ver Diário de Saúde</button><br>';
-      } else {
-        html += '🌡️ Temperatura: <b>' + temp + '°C</b> ✅<br>';
+      const alta = temp >= 80;
+      html += '<div class="server-temp ' + (alta ? 'alta' : 'ok') + '">' +
+        '🌡️ <b>Temperatura: ' + temp + '°C</b> ' + (alta ? '⚠️ alta' : '✅ ok');
+      if (alta) {
+        html += ' <button class="action-btn inline" onclick="acaoDiario()">📋 Ver Diário</button>';
       }
+      html += '</div>';
     }
 
-    // Containers Docker
+    // Containers Docker — badges com status
     if (resDetalhes.containers && resDetalhes.containers.length) {
-      html += '<br><b>🐳 Containers (' + resDetalhes.containers.length + ')</b><br>';
+      html += '<div class="server-section-title">🐳 Containers (' + resDetalhes.containers.length + ')</div>';
+      html += '<div class="server-containers">';
       resDetalhes.containers.forEach(function (c) {
+        const cls = c.rodando ? (c.healthy ? 'ok' : 'warn') : 'down';
         const icone = c.rodando ? (c.healthy ? '🟢' : '🟡') : '⚪';
-        html += icone + ' ' + c.nome + (c.rodando ? ' <span class="dim">' + c.status + '</span>' : ' <span class="dim">parado</span>') + '<br>';
+        const label = c.rodando ? (c.status || 'rodando') : 'parado';
+        html += '<div class="container-chip ' + cls + '">' + icone + ' <b>' + c.nome + '</b> <span class="dim">' + label + '</span></div>';
       });
+      html += '</div>';
     }
 
-    html += '<br>ℹ️ Detalhes completos no Diário de Saúde.';
+    html += '<div class="server-footnote">ℹ️ Detalhes completos no Diário de Saúde.</div>';
     el.innerHTML = html;
   } catch (error) {
-    el.textContent = '❌ Erro: ' + error.message;
+    el.innerHTML = '<div class="server-offline">❌ Erro: ' + error.message + '</div>';
   }
 }
 
