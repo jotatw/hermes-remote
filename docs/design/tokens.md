@@ -91,4 +91,4 @@ Gatilho: `[data-theme="light"]` no `<html>`.
 ## Deploy
 
 - `deploy.sh` → rsync (exclui `.env`) + `systemctl --user restart chat-web.service`
-- URL: `https://homeserver.tailnet.ts.net`
+- URL: `https://homeserver.tailnet.ts.net` (exemplo — substitua pelo seu)

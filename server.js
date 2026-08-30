@@ -82,8 +82,10 @@ app.post('/api/chat', async (req, res) => {
 const os = require('os');
 const HOSTNAME = os.hostname().toLowerCase();
 const IS_HOMESERVER = HOSTNAME.includes('homeserver');
-const NOTEBOOK_IP = process.env.NOTEBOOK_IP || '100.78.xx.xx'; // tailnet
-const HOMESERVER_IP = process.env.HOMESERVER_IP || '100.118.xx.xx'; // tailnet
+const NOTEBOOK_IP = process.env.NOTEBOOK_IP || '100.xx.xx.xx'; // tailnet (genérico)
+const HOMESERVER_IP = process.env.HOMESERVER_IP || '100.xx.xx.xx'; // tailnet (genérico)
+const SSH_USER = process.env.HOMESERVER_SSH_USER || 'usuario'; // usuário SSH (genérico)
+const HOMESERVER_PATH = process.env.HOMESERVER_PATH || '/opt/homeserver'; // path dos scripts (configurável)
 
 function localStatus() {
   const uptime = execSync('uptime -p', { timeout: 5000 }).toString().trim().replace(/^up\s+/, '');
@@ -96,7 +98,7 @@ function localStatus() {
 function sshStatus(host) {
   try {
     return execSync(
-      `ssh -o ConnectTimeout=6 -o BatchMode=yes usuario@${host} 'uptime -p 2>/dev/null; echo ---; free -h | grep Mem | awk "{print \\$3\\"/\\"\\$2}"; df -h / | tail -1 | awk "{print \\$3\\"/\\"\\$2 \\"(\\" \\$5 \\")\\"}"'`,
+      `ssh -o ConnectTimeout=6 -o BatchMode=yes ${SSH_USER}@${host} 'uptime -p 2>/dev/null; echo ---; free -h | grep Mem | awk "{print \\$3\"/\\\"\\$2}"; df -h / | tail -1 | awk "{print \\$3\"/\\\"\\$2 \\\"(\\\" \\$5 \\\")\\\"}"'`,
       { timeout: 15000 }
     ).toString().trim();
   } catch (e) {
@@ -174,7 +176,7 @@ app.get('/api/servidor', (req, res) => {
     // Temperatura (se health-check existir)
     try {
       const health = execSync(
-        "bash /opt/homeserver/scripts/health-check.sh 2>/dev/null | grep -i 'temperatura' || true",
+        `bash ${HOMESERVER_PATH}/scripts/health-check.sh 2>/dev/null | grep -i 'temperatura' || true`,
         { timeout: 15000, shell: '/bin/bash' }
       ).toString().trim();
       const temp = (health.match(/(\d+)C/) || [])[1];
@@ -192,8 +194,8 @@ app.get('/api/servidor', (req, res) => {
 // Lê o agendamento de energia configurado (via hs.sh power status)
 app.get('/api/power', (req, res) => {
   const cmd = IS_HOMESERVER
-    ? 'sudo -n /opt/homeserver/core/hs.sh power status 2>/dev/null'
-    : `ssh -o ConnectTimeout=6 -o BatchMode=yes usuario@${HOMESERVER_IP} 'sudo -n /opt/homeserver/core/hs.sh power status 2>/dev/null'`;
+    ? `sudo -n ${HOMESERVER_PATH}/core/hs.sh power status 2>/dev/null`
+    : `ssh -o ConnectTimeout=6 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} 'sudo -n ${HOMESERVER_PATH}/core/hs.sh power status 2>/dev/null'`;
 
   exec(cmd, { timeout: 10000, shell: '/bin/bash' }, (err, stdout) => {
     if (err || !stdout) return res.json({ ok: false, error: 'power status indisponível' });
@@ -239,8 +241,8 @@ function runScript(cmd, callback) {
 
 // Diário de saúde — local se no homeserver, senão via SSH
 app.post('/api/acao/diario', (req, res) => {
-  const local = 'bash /opt/homeserver/scripts/health-check.sh 2>/dev/null';
-  const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes usuario@${HOMESERVER_IP} '${local}'`;
+  const local = `bash ${HOMESERVER_PATH}/scripts/health-check.sh 2>/dev/null`;
+  const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} '${local}'`;
   runScript(IS_HOMESERVER ? local : viaSsh, (err, out) => {
     if (err) { registrarAcao('diario', false, err); return res.status(500).json({ ok: false, error: 'Servidor offline: ' + err }); }
     registrarAcao('diario', true, 'diário enviado');
@@ -262,7 +264,7 @@ app.post('/api/acao/revisar', (req, res) => {
 // Dormir servidor — local se no homeserver, senão via SSH
 app.post('/api/acao/dormir', (req, res) => {
   const local = 'sudo /usr/sbin/rtcwake -m mem -t $(date -d "tomorrow 08:00" +%s) > /dev/null 2>&1 & echo ok';
-  const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes usuario@${HOMESERVER_IP} '${local}'`;
+  const viaSsh = `ssh -o ConnectTimeout=8 -o BatchMode=yes ${SSH_USER}@${HOMESERVER_IP} '${local}'`;
   runScript(IS_HOMESERVER ? local : viaSsh, (err) => {
     if (err) { registrarAcao('dormir', false, err); return res.status(500).json({ ok: false, error: 'Não conseguiu dormir: ' + err }); }
     registrarAcao('dormir', true, 'servidor suspenso');
