@@ -137,7 +137,7 @@
           </select>
         </div>
         <div class="messages" id="messages">
-          <div class="empty">Selecione um modelo e comece a conversar!</div>
+          <div class="empty">💬 Selecione um modelo acima e comece a conversar!<br><span class="dim">Ex: "Como está o servidor?" ou "Me ajude com..."</span></div>
         </div>
         <div class="input-area">
           <textarea id="input" rows="1" placeholder="Digite sua mensagem..." onkeydown="handleKey(event)"></textarea>
@@ -167,28 +167,26 @@
           <h2 class="view-title">⚙️ Configurações</h2>
 
           <div class="card">
-            <div class="card-header">🔗 Conexão</div>
-            <div class="card-body">
-              <label class="cfg-label">URL do Hermes API server</label>
-              <input id="cfgUrl" class="cfg-input" type="text" placeholder="http://localhost:8642">
-              <label class="cfg-label">Chave API</label>
-              <input id="cfgKey" class="cfg-input" type="password" placeholder="API_SERVER_KEY">
-              <button class="action-btn" onclick="testarConexao()">Testar Conexão</button>
-              <div id="cfg-resultado" class="acao-resultado"></div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">🖥️ Servidor</div>
-            <div class="card-body">
-              <label class="cfg-label">Host SSH</label>
-              <input id="cfgSshHost" class="cfg-input" type="text" placeholder="usuario@homeserver">
+            <div class="card-header">🔗 Conexão com o Hermes</div>
+            <div class="card-body" id="cfg-info">
+              <span class="dim">Carregando...</span>
             </div>
           </div>
 
           <div class="card">
             <div class="card-header">📱 Sobre</div>
             <div class="card-body" id="sobre-info">Hermes Remote v1.0.0</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">⚙️ Como configurar</div>
+            <div class="card-body">
+              <p class="cfg-hint">A configuração do servidor é feita no arquivo
+              <code>.env</code> na máquina que roda o Hermes Remote
+              (<code>HERMES_URL</code>, <code>HERMES_API_KEY</code>,
+              <code>HOMESERVER_*</code>, <code>HS_*_CMD</code>).</p>
+              <p class="cfg-hint">Depois de alterar, reinicie o serviço.</p>
+            </div>
           </div>
         </div>
       </section>

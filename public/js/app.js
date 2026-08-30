@@ -31,6 +31,7 @@ function irPara(view) {
   if (view === 'dashboard') { carregarDashboard(); carregarPowerSchedule(); carregarHistoricoAcoes(); }
   if (view === 'servidor') carregarServidor();
   if (view === 'chat') carregarModelos();
+  if (view === 'config') carregarConfig();
 }
 
 // ── Chat ───────────────────────────────────────────────────────

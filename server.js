@@ -97,6 +97,12 @@ const HS_DIARIO_CMD = process.env.HS_DIARIO_CMD || `bash ${HOMESERVER_PATH}/scri
 const HS_REVIEW_CMD = process.env.HS_REVIEW_CMD || `nohup bash ${HOME}/.hermes/scripts/code-review.sh > /dev/null 2>&1 & echo "ok"`;
 const HS_SLEEP_CMD  = process.env.HS_SLEEP_CMD  || 'sudo /usr/sbin/rtcwake -m mem -t $(date -d "tomorrow 08:00" +%s) > /dev/null 2>&1 & echo ok';
 const HS_WAKE_CMD   = process.env.HS_WAKE_CMD   || `bash ${HOME}/.hermes/scripts/server-wol.sh 2>&1`;
+// Containers: defina como vazio para desativar (servidor sem Docker).
+// Formato esperado da saída: nome|status por linha.
+const HS_CONTAINERS_CMD = process.env.HS_CONTAINERS_CMD !== undefined && process.env.HS_CONTAINERS_CMD !== ''
+  ? process.env.HS_CONTAINERS_CMD
+  : "docker ps -a --format '{{.Names}}|{{.Status}}' 2>/dev/null";
+const HS_CONTAINERS_ENABLED = !(process.env.HS_CONTAINERS_CMD === '');
 
 function localStatus() {
   const uptime = execSync('uptime -p', { timeout: 5000 }).toString().trim().replace(/^up\s+/, '');
@@ -169,19 +175,23 @@ app.get('/api/servidor', (req, res) => {
   const resultado = { host: HOSTNAME, containers: [], temperatura: null, erro: null };
 
   try {
-    // Containers Docker (status + nome)
-    const docker = execSync(
-      "docker ps -a --format '{{.Names}}|{{.Status}}' 2>/dev/null",
-      { timeout: 10000, shell: '/bin/bash' }
-    ).toString().trim();
+    // Containers (opcional — desativável com HS_CONTAINERS_CMD= vazio)
+    if (HS_CONTAINERS_ENABLED) {
+      try {
+        const docker = execSync(
+          HS_CONTAINERS_CMD,
+          { timeout: 10000, shell: '/bin/bash' }
+        ).toString().trim();
 
-    if (docker) {
-      resultado.containers = docker.split('\n').filter(Boolean).map(function (linha) {
-        const [nome, status] = linha.split('|');
-        const rodando = status.startsWith('Up');
-        const healthy = status.includes('healthy');
-        return { nome, status, rodando, healthy };
-      });
+        if (docker) {
+          resultado.containers = docker.split('\n').filter(Boolean).map(function (linha) {
+            const [nome, status] = linha.split('|');
+            const rodando = status.startsWith('Up');
+            const healthy = status.includes('healthy');
+            return { nome, status, rodando, healthy };
+          });
+        }
+      } catch (e) { /* containers indisponíveis */ }
     }
 
     // Temperatura (se health-check existir)

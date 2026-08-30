@@ -84,7 +84,7 @@ async function carregarHistoricoAcoes() {
     const res = await fetch('/api/acoes');
     const d = await res.json();
     if (!d.ok || !d.acoes || d.acoes.length === 0) {
-      el.innerHTML = '<span class="dim">Nenhuma ação registrada ainda.</span>';
+      el.innerHTML = '<span class="dim">Nenhuma ação registrada ainda. Use as <a href="#" onclick="irPara(\'dashboard\'); return false">Ações Rápidas</a> no Dashboard!</span>';
       return;
     }
     el.innerHTML = d.acoes.map(function (a) {
@@ -234,16 +234,29 @@ function acaoStatus() {
 }
 
 // ── Configurações ──────────────────────────────────────────────
-function testarConexao() {
-  const el = document.getElementById('cfg-resultado');
-  const url = document.getElementById('cfgUrl').value || 'http://localhost:8642';
-  const key = document.getElementById('cfgKey').value || '';
-  localStorage.setItem('hermesUrl', url);
-  localStorage.setItem('hermesKey', key);
-  el.textContent = 'Testando ' + url + '...';
+// Mostra a configuração ATIVA do servidor (vinda do backend .env),
+// não campos editáveis — a config vive no .env, não no navegador.
+async function carregarConfig() {
+  const el = document.getElementById('cfg-info');
+  if (!el) return;
+  try {
+    const [resHealth, resStatus] = await Promise.all([
+      fetch('/api/health').then(function (r) { return r.json(); }),
+      fetch('/api/status').then(function (r) { return r.json(); })
+    ]);
 
-  fetch('/api/health').then(r => r.json()).then(d => {
-     el.innerHTML = '✅ Backend OK. Conectado a: ' + d.hermes +
-       '<br><button class="action-btn" onclick="irPara(\'chat\')" style="margin-top:8px">💬 Ir para o Chat</button>';
-   }).catch(e => { el.textContent = '❌ ' + e.message; });
+    const statusHermes = (resStatus.cota && resStatus.cota.modelos)
+      ? '🟢 API server conectado (' + resStatus.cota.modelos + ' modelos)'
+      : '🔴 API server indisponível';
+    const host = resStatus.app || '?';
+
+    el.innerHTML =
+      '<div><b>Backend:</b> ' + (resHealth.backend || '?') + ' <span class="dim">(roda em: ' + host + ')</span></div>' +
+      '<div><b>Hermes API server:</b> ' + (resHealth.hermes || '?') + '</div>' +
+      '<div><b>Status:</b> ' + statusHermes + '</div>' +
+      '<div class="cfg-hint" style="margin-top:8px">👆 Valores vêm do <code>.env</code> do servidor. ' +
+      'Para mudar, edite o <code>.env</code> e reinicie o serviço.</div>';
+  } catch (e) {
+    el.innerHTML = '❌ ' + e.message;
+  }
 }

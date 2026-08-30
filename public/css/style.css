@@ -735,19 +735,9 @@ body {
   font-size: 0.9em;
 }
 
-/* Config */
-.cfg-label { display: block; margin: 8px 0 4px; font-size: 0.85em; color: var(--hr-text-3); }
-.cfg-input {
-  width: 100%;
-  padding: 8px;
-  border-radius: var(--hr-radius);
-  border: 1px solid var(--hr-border);
-  background: var(--hr-surface-trans);
-  color: var(--hr-text);
-  box-sizing: border-box;
-  font-family: var(--hr-font);
-}
-.cfg-input:focus { outline: none; border-color: var(--hr-accent); }
+/* Config — informativo (a config vive no .env do servidor) */
+.cfg-hint { font-size: 0.85em; color: var(--hr-text-3); line-height: 1.5; margin: 0 0 8px; }
+.cfg-hint code { background: var(--hr-surface-trans-2); padding: 1px 5px; border-radius: var(--hr-radius-sm); font-size: 0.9em; }
 
 /* ── Hermes Remote — melhorias v2 ─────────────────────────── */
 
