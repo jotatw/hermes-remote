@@ -25,8 +25,11 @@ function irPara(view) {
   const titles = { dashboard: '📊 Visão Geral', chat: '💬 Chat', servidor: '🖥️ Servidor', config: '⚙️ Config' };
   document.getElementById('pageTitle').textContent = titles[view] || 'Hermes Remote';
 
-  // Fecha o drawer no mobile ao navegar
-  if (isMobile()) fecharSidebar();
+  // Fecha menus abertos ao navegar
+  const chatMenu = document.getElementById('chatMenu');
+  if (chatMenu && chatMenu.classList.contains('open')) chatMenu.classList.remove('open');
+  const themeMenu = document.getElementById('themeMenu');
+  if (themeMenu && themeMenu.classList.contains('open')) themeMenu.classList.remove('open');
 
   if (view === 'dashboard') { carregarDashboard(); carregarPowerSchedule(); carregarHistoricoAcoes(); }
   if (view === 'servidor') carregarServidor();
@@ -281,80 +284,6 @@ function pararResposta() {
   setLoading(false);
 }
 
-// ── Sidebar toggle ─────────────────────────────────────────────
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  const aberto = !sidebar.classList.contains('collapsed');
-  if (aberto) {
-    fecharSidebar();
-  } else {
-    abrirSidebar();
-  }
-}
-
-function abrirSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  const toggle = document.getElementById('sidebarToggle');
-  if (!sidebar) return;
-  sidebar.classList.remove('collapsed');
-  if (overlay) {
-    overlay.classList.remove('hidden');
-  }
-  if (toggle) toggle.setAttribute('aria-expanded', 'true');
-  // Foco no primeiro item para acessibilidade
-  const primeiro = sidebar.querySelector('button, input, textarea');
-  if (primeiro) primeiro.focus();
-}
-
-function fecharSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  const toggle = document.getElementById('sidebarToggle');
-  if (!sidebar) return;
-  sidebar.classList.add('collapsed');
-  if (overlay) {
-    overlay.classList.add('hidden');
-  }
-  if (toggle) toggle.setAttribute('aria-expanded', 'false');
-}
-
-// Mobile? (usado para fechar drawer apenas em telas pequenas)
-function isMobile() {
-  return window.matchMedia('(max-width: 767px)').matches;
-}
-
-// Fechar drawer ao clicar em item do sidebar (mobile)
-document.addEventListener('click', function (e) {
-  if (!isMobile()) return;
-  const sidebar = document.getElementById('sidebar');
-  if (!sidebar || sidebar.classList.contains('collapsed')) return;
-  // Se clicou dentro do sidebar, em algo que não seja input/textarea, fecha
-  if (sidebar.contains(e.target)) {
-    const tag = e.target.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-    // Não fecha se clicou no export menu (precisa escolher formato)
-    if (e.target.closest('.export-menu')) return;
-    fecharSidebar();
-  }
-});
-
-// Fechar com tecla ESC
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape') {
-    fecharSidebar();
-    const themeMenu = document.getElementById('themeMenu');
-    if (themeMenu && themeMenu.classList.contains('open')) themeMenu.classList.remove('open');
-    const exportMenu = document.getElementById('exportMenu');
-    if (exportMenu && exportMenu.classList.contains('open')) exportMenu.classList.remove('open');
-  }
-});
-
-function toggleExportMenu() {
-  document.getElementById('exportMenu').classList.toggle('open');
-}
-
 // ── Indicador de conexão ───────────────────────────────────────
 let conexaoChecada = false;
 
@@ -424,6 +353,17 @@ function instalarPWA() {
 }
 
 // ── Inicialização ──────────────────────────────────────────────
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    const chatMenu = document.getElementById('chatMenu');
+    if (chatMenu && chatMenu.classList.contains('open')) chatMenu.classList.remove('open');
+    const exportMenu = document.getElementById('exportMenu');
+    if (exportMenu && exportMenu.classList.contains('open')) exportMenu.classList.remove('open');
+    const themeMenu = document.getElementById('themeMenu');
+    if (themeMenu && themeMenu.classList.contains('open')) themeMenu.classList.remove('open');
+  }
+});
+
 (function init() {
   var theme = localStorage.getItem('chatWebTheme') || '';
   setTheme(theme);
@@ -431,4 +371,5 @@ function instalarPWA() {
   verificarConexao();
   agendarAutoRefresh();
   setInterval(verificarConexao, 60000); // re-checa conexão a cada minuto
+  if (typeof initSidebar === 'function') initSidebar();
 })();

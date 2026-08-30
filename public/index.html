@@ -19,47 +19,9 @@
 <body>
   <div class="app">
 
-    <!-- ── Overlay (mobile: fecha o drawer ao tocar fora) ── -->
-    <div id="sidebarOverlay" class="sidebar-overlay hidden" onclick="fecharSidebar()" aria-hidden="true"></div>
-
-    <!-- ── Sidebar ── -->
-    <aside id="sidebar" class="sidebar collapsed" aria-label="Menu lateral">
-      <div class="sidebar-section">
-        <h3 class="sidebar-title">💬 Conversas</h3>
-        <button id="novaConversaBtn" class="sidebar-btn" onclick="criarConversa()">+ Nova conversa</button>
-        <ul id="listaConversas" class="sidebar-list"></ul>
-
-        <div class="export-group">
-          <button class="sidebar-btn" onclick="toggleExportMenu()">⬇ Exportar conversa</button>
-          <div id="exportMenu" class="export-menu">
-            <button onclick="exportarConversa('txt')">📄 TXT</button>
-            <button onclick="exportarConversa('md')">📝 Markdown</button>
-            <button onclick="exportarConversa('json')">🧾 JSON</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <h3 class="sidebar-title">📝 Tarefas</h3>
-        <div class="todo-add">
-          <input id="todoInput" type="text" placeholder="Adicionar tarefa..." maxlength="80">
-          <button onclick="adicionarTodo()" title="Adicionar tarefa">➕</button>
-        </div>
-        <div class="todo-contador" id="todoContador"></div>
-        <ul id="listaTodos" class="todo-list"></ul>
-      </div>
-
-      <div class="sidebar-section">
-        <h3 class="sidebar-title">⚙️ Contexto</h3>
-        <textarea id="contextoInput" class="contexto-textarea" placeholder="Instruções para o assistente (ex: 'Sempre responda em português')" rows="4"></textarea>
-        <button class="sidebar-btn contexto-btn" onclick="salvarContexto()">Salvar contexto</button>
-      </div>
-    </aside>
-
     <!-- ── Main ── -->
     <div class="main">
       <div class="header">
-        <button id="sidebarToggle" class="btn-new" onclick="toggleSidebar()" title="Abrir/fechar painel lateral" aria-label="Abrir ou fechar menu lateral" aria-expanded="false" aria-controls="sidebar">☰</button>
         <h1 id="pageTitle">Hermes Remote</h1>
 
         <span id="conexaoStatus" class="conexao-status online" title="Status do servidor">🟢 online</span>
@@ -129,16 +91,51 @@
                   </div>
       </section>
 
-      <!-- ── View: Chat ── -->
+      <!-- ── View: Chat (estilo Intercom/Linear) ── -->
       <section id="view-chat" class="view hidden">
         <div class="chat-toolbar">
-          <select id="modelSelect" onchange="salvarModeloSelecionado()">
+          <div class="chat-conv-group">
+            <select id="conversaSelect" class="chat-conv-select" title="Conversa atual" aria-label="Conversa atual"></select>
+            <button id="novaConversaBtn" class="chat-icon-btn" onclick="criarConversa()" title="Nova conversa" aria-label="Nova conversa">＋</button>
+            <div class="chat-menu-wrap">
+              <button id="chatMenuBtn" class="chat-icon-btn" onclick="toggleChatMenu()" title="Opções" aria-label="Opções" aria-expanded="false" aria-controls="chatMenu">⋯</button>
+              <div id="chatMenu" class="chat-menu">
+                <button onclick="toggleContextoPanel()">⚙️ Contexto</button>
+                <button onclick="toggleTodosPanel()">📝 Tarefas</button>
+                <button onclick="toggleExportMenu()">⬇ Exportar conversa</button>
+                <div id="exportMenu" class="export-menu">
+                  <button onclick="exportarConversa('txt')">📄 TXT</button>
+                  <button onclick="exportarConversa('md')">📝 Markdown</button>
+                  <button onclick="exportarConversa('json')">🧾 JSON</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <select id="modelSelect" class="chat-model-select" onchange="salvarModeloSelecionado()" title="Modelo" aria-label="Modelo">
             <option value="">Carregando modelos...</option>
           </select>
         </div>
+
+        <div id="contextoPanel" class="chat-panel hidden">
+          <label class="chat-panel-label" for="contextoInput">⚙️ Contexto (instruções do assistente)</label>
+          <textarea id="contextoInput" class="chat-panel-textarea" placeholder="Ex: 'Sempre responda em português'" rows="2"></textarea>
+          <button class="action-btn" onclick="salvarContexto()">Salvar contexto</button>
+        </div>
+
+        <div id="todosPanel" class="chat-panel hidden">
+          <label class="chat-panel-label">📝 Tarefas da conversa</label>
+          <div class="todo-add">
+            <input id="todoInput" type="text" placeholder="Adicionar tarefa..." maxlength="80">
+            <button onclick="adicionarTodo()" title="Adicionar tarefa">➕</button>
+          </div>
+          <div class="todo-contador" id="todoContador"></div>
+          <ul id="listaTodos" class="todo-list"></ul>
+        </div>
+
         <div class="messages" id="messages">
           <div class="empty">💬 Selecione um modelo acima e comece a conversar!<br><span class="dim">Ex: "Como está o servidor?" ou "Me ajude com..."</span></div>
         </div>
+
         <div class="input-area">
           <textarea id="input" rows="1" placeholder="Digite sua mensagem..." onkeydown="handleKey(event)"></textarea>
           <button id="sendBtn" onclick="enviarMensagem()" disabled>➤</button>

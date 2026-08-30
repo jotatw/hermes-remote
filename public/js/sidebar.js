@@ -29,47 +29,20 @@ function getConversaPorId(id) {
 }
 
 function renderizarListaConversas() {
-  const lista = document.getElementById('listaConversas');
-  lista.innerHTML = '';
+  const select = document.getElementById('conversaSelect');
+  if (!select) return;
+  select.innerHTML = '';
 
   dados.conversas.forEach(function (conv) {
-    const li = document.createElement('li');
-    li.className = 'conversa-item' + (conv.id === dados.conversaAtivaId ? ' active' : '');
-    if (typeof conversando !== 'undefined' && conversando) li.classList.add('bloqueado');
-    li.title = conv.titulo;
-
-    const span = document.createElement('span');
-    span.className = 'conversa-nome';
-    span.textContent = conv.titulo;
-    span.onclick = function () { trocarConversa(conv.id); };
-
-    const acoes = document.createElement('div');
-    acoes.className = 'conversa-acoes';
-
-    const btnRenomear = document.createElement('button');
-    btnRenomear.className = 'icon-btn';
-    btnRenomear.textContent = '✏️';
-    btnRenomear.title = 'Renomear conversa';
-    btnRenomear.onclick = function (event) {
-      event.stopPropagation();
-      renomearConversa(conv.id);
-    };
-
-    const btnExcluir = document.createElement('button');
-    btnExcluir.className = 'icon-btn';
-    btnExcluir.textContent = '🗑️';
-    btnExcluir.title = 'Excluir conversa';
-    btnExcluir.onclick = function (event) {
-      event.stopPropagation();
-      excluirConversa(conv.id);
-    };
-
-    acoes.appendChild(btnRenomear);
-    acoes.appendChild(btnExcluir);
-    li.appendChild(span);
-    li.appendChild(acoes);
-    lista.appendChild(li);
+    const opt = document.createElement('option');
+    opt.value = conv.id;
+    opt.textContent = conv.titulo;
+    if (conv.id === dados.conversaAtivaId) opt.selected = true;
+    select.appendChild(opt);
   });
+
+  // Trocar conversa ao mudar o dropdown
+  select.onchange = function () { trocarConversa(select.value); };
 }
 
 function criarConversa() {
@@ -148,6 +121,33 @@ function initSidebar() {
 function toggleExportMenu() {
   var menu = document.getElementById('exportMenu');
   if (menu) menu.classList.toggle('open');
+}
+
+// ── Chat menu (⋯) ─────────────────────────────────────────────
+function toggleChatMenu() {
+  var menu = document.getElementById('chatMenu');
+  var btn = document.getElementById('chatMenuBtn');
+  if (!menu) return;
+  var aberto = menu.classList.toggle('open');
+  if (btn) btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+}
+
+function toggleContextoPanel() {
+  var panel = document.getElementById('contextoPanel');
+  var menu = document.getElementById('chatMenu');
+  if (panel) panel.classList.toggle('hidden');
+  if (menu) menu.classList.remove('open');
+  var btn = document.getElementById('chatMenuBtn');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+function toggleTodosPanel() {
+  var panel = document.getElementById('todosPanel');
+  var menu = document.getElementById('chatMenu');
+  if (panel) panel.classList.toggle('hidden');
+  if (menu) menu.classList.remove('open');
+  var btn = document.getElementById('chatMenuBtn');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
 }
 
 function exportarConversa(formato) {
