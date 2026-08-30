@@ -5,9 +5,16 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "setup": "bash setup.sh",
+    "deploy": "bash deploy.sh"
   },
-  "keywords": ["hermes", "pwa", "chat", "assistente"],
+  "keywords": [
+    "hermes",
+    "pwa",
+    "chat",
+    "assistente"
+  ],
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",

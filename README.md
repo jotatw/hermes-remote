@@ -64,6 +64,21 @@ Tailscale/HTTPS ───────────────────► Ins
 
 ## Instalação
 
+**Modo mais rápido — instalador interativo:**
+
+```bash
+npm install   # ou: rode direto (o setup também instala)
+bash setup.sh # guiado passo a passo (detecta ambiente, auto-preenche, valida)
+```
+
+Ou, sem prompts (usa defaults + mantém o `.env` existente):
+
+```bash
+bash setup.sh --auto
+```
+
+**Manualmente:**
+
 ```bash
 npm install
 cp .env.example .env   # preencha (ver tabela abaixo)
