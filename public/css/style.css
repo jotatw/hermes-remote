@@ -753,14 +753,14 @@ body {
 .home-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  gap: 20px;
   margin-bottom: 24px;
 }
 .home-card {
   background: var(--hr-surface-trans);
   border: 1px solid var(--hr-border);
   border-radius: var(--hr-radius-md);
-  padding: 16px;
+  padding: 20px;
   opacity: 0;
   transform: translateY(12px);
   animation: cardEnter 0.4s ease-out forwards;
@@ -798,7 +798,11 @@ body {
 }
 
 /* ── Dashboard (visão detalhada) ──────────────────────────────── */
-.dashboard { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+.dashboard {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
 .view-title { margin: 4px 0 14px; font-size: var(--hr-text-xl); font-weight: 600; letter-spacing: -0.24px; text-wrap: balance; }
 .view-subtitle { margin: 18px 0 10px; font-size: var(--hr-text-lg); font-weight: 500; color: var(--hr-text-2); text-wrap: balance; }
 .cards-grid {
