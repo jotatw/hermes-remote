@@ -8,7 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="/manifest.json">
-  <link rel="icon" href="/icons/icon-192.png" type="image/png">
+  <link rel="icon" href="/icons/icon-512.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="/icons/icon-512.png">
   <title>Hermes Remote</title>
   <link rel="stylesheet" href="css/tokens.css">
@@ -17,6 +18,95 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
+<!-- ══════════════════════════════════════════════════════════
+     SVG Icon Sprite (Hermes Remote — Node/Signal style)
+     ══════════════════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- Navegação -->
+  <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+  </symbol>
+  <symbol id="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </symbol>
+  <symbol id="icon-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+  </symbol>
+  <symbol id="icon-config" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+  </symbol>
+
+  <!-- Ações -->
+  <symbol id="icon-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+  </symbol>
+  <symbol id="icon-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+  </symbol>
+  <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </symbol>
+  <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </symbol>
+  <symbol id="icon-sleep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><polyline points="14 3 14 8 19 8"/>
+  </symbol>
+  <symbol id="icon-wake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+  </symbol>
+  <symbol id="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+  </symbol>
+  <symbol id="icon-stop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="6" width="12" height="12" rx="2" ry="2"/>
+  </symbol>
+  <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+  </symbol>
+  <symbol id="icon-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+  </symbol>
+  <symbol id="icon-export" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+  </symbol>
+  <symbol id="icon-context" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/>
+  </symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </symbol>
+  <symbol id="icon-cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </symbol>
+  <symbol id="icon-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+  </symbol>
+  <symbol id="icon-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+  </symbol>
+  <symbol id="icon-container" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16"/><path d="M4 9h16"/>
+  </symbol>
+  <symbol id="icon-temp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+  </symbol>
+  <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </symbol>
+  <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+  </symbol>
+  <symbol id="icon-node" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>
+  </symbol>
+  <symbol id="icon-ram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="2" width="6" height="4"/><path d="M9 14h6"/><path d="M9 18h6"/>
+  </symbol>
+  <symbol id="icon-disk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+  </symbol>
+</svg>
   <div class="app">
 
     <!-- ── Main ── -->
@@ -24,24 +114,24 @@
       <div class="header">
         <h1 id="pageTitle">Hermes Remote</h1>
 
-        <span id="conexaoStatus" class="conexao-status online" title="Status do servidor">🟢 online</span>
+        <span id="conexaoStatus" class="conexao-status online" title="Status do servidor"><svg class="icon-sm"><use href="#icon-check"/></use></svg> online</span>
 
         <!-- Nav (mobile-friendly) -->
         <nav class="topnav" id="topnav" aria-label="Navegação principal">
-          <button class="nav-btn active" data-view="dashboard" data-action="navegar" data-view-alvo="dashboard" aria-label="Visão Geral" title="Visão Geral"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></button>
-          <button class="nav-btn" data-view="chat" data-action="navegar" data-view-alvo="chat" aria-label="Chat" title="Chat"><span class="nav-icon">💬</span><span class="nav-label">Chat</span></button>
-          <button class="nav-btn" data-view="servidor" data-action="navegar" data-view-alvo="servidor" aria-label="Servidor" title="Servidor"><span class="nav-icon">🖥️</span><span class="nav-label">Servidor</span></button>
-          <button class="nav-btn" data-view="config" data-action="navegar" data-view-alvo="config" aria-label="Configurações" title="Configurações"><span class="nav-icon">⚙️</span><span class="nav-label">Config</span></button>
+          <button class="nav-btn active" data-view="dashboard" data-action="navegar" data-view-alvo="dashboard" aria-label="Visão Geral" title="Visão Geral"><svg class="nav-icon"><use href="#icon-home"/></use></svg><span class="nav-label">Início</span></button>
+          <button class="nav-btn" data-view="chat" data-action="navegar" data-view-alvo="chat" aria-label="Chat" title="Chat"><svg class="nav-icon"><use href="#icon-chat"/></use></svg><span class="nav-label">Chat</span></button>
+          <button class="nav-btn" data-view="servidor" data-action="navegar" data-view-alvo="servidor" aria-label="Servidor" title="Servidor"><svg class="nav-icon"><use href="#icon-server"/></use></svg><span class="nav-label">Servidor</span></button>
+          <button class="nav-btn" data-view="config" data-action="navegar" data-view-alvo="config" aria-label="Configurações" title="Configurações"><svg class="nav-icon"><use href="#icon-config"/></use></svg><span class="nav-label">Config</span></button>
         </nav>
 
-        <button id="stopBtn" class="btn-new" data-action="parar" style="display:none">⏹</button>
+        <button id="stopBtn" class="btn-new" data-action="parar" style="display:none"><svg class="icon"><use href="#icon-stop"/></use></svg></button>
 
         <div class="theme-picker">
-          <button id="installBtn" class="btn-new" data-action="instalar" title="Instalar app" style="display:none">📲</button>
-          <button id="themeBtn" class="btn-new theme-btn" data-action="tema-menu" title="Tema" aria-label="Alternar tema" aria-expanded="false" aria-controls="themeMenu">🌙</button>
+          <button id="installBtn" class="btn-new" data-action="instalar" title="Instalar app" style="display:none"><svg class="icon"><use href="#icon-export"/></use></svg></button>
+          <button id="themeBtn" class="btn-new theme-btn" data-action="tema-menu" title="Tema" aria-label="Alternar tema" aria-expanded="false" aria-controls="themeMenu"><svg class="icon"><use href="#icon-moon"/></use></svg></button>
           <div id="themeMenu" class="theme-menu">
-            <button data-theme="dark" data-action="tema">🌙 Escuro</button>
-            <button data-theme="light" data-action="tema">☀️ Claro</button>
+            <button data-theme="dark" data-action="tema"><svg class="icon-sm"><use href="#icon-moon"/></use></svg> Escuro</button>
+            <button data-theme="light" data-action="tema"><svg class="icon-sm"><use href="#icon-sun"/></use></svg> Claro</button>
           </div>
         </div>
       </div>
@@ -49,43 +139,43 @@
       <!-- ── View: Dashboard ── -->
       <section id="view-dashboard" class="view">
         <div class="dashboard">
-          <h2 class="view-title">📊 Visão Geral</h2>
+          <h2 class="view-title">Visão Geral</h2>
 
           <div class="cards-grid">
             <div class="card" id="card-notebook">
-              <div class="card-header">💻 <b>Notebook</b></div>
+              <div class="card-header"><svg class="icon"><use href="#icon-node"/></use></svg> <b>Notebook</b></div>
               <div class="card-body" id="card-notebook-body">Carregando...</div>
             </div>
 
             <div class="card" id="card-servidor">
-              <div class="card-header">🖥️ <b>Servidor</b></div>
+              <div class="card-header"><svg class="icon"><use href="#icon-server"/></use></svg> <b>Servidor</b></div>
               <div class="card-body" id="card-servidor-body">Carregando...</div>
             </div>
 
             <div class="card" id="card-cota">
-              <div class="card-header">🎯 <b>Cota IA</b></div>
+              <div class="card-header"><svg class="icon"><use href="#icon-target"/></use></svg> <b>Cota IA</b></div>
               <div class="card-body" id="card-cota-body">Carregando...</div>
             </div>
           </div>
 
-          <h3 class="view-subtitle">⚡ Ações Rápidas</h3>
+          <h3 class="view-subtitle"><svg class="icon"><use href="#icon-activity"/></use></svg> Ações Rápidas</h3>
                     <div class="quick-actions">
-                      <button class="action-btn" data-action="diario">📋 Diário de Saúde</button>
-                      <button class="action-btn" data-action="revisar">🔄 Code Review</button>
-                      <button class="action-btn" data-action="dormir">😴 Dormir Servidor</button>
-                      <button class="action-btn" data-action="acordar">🌅 Acordar Servidor</button>
-                      <button class="action-btn" data-action="navegar" data-view-alvo="chat">💬 Conversar</button>
+                      <button class="action-btn" data-action="diario"><svg class="icon-sm"><use href="#icon-activity"/></use></svg> Diário de Saúde</button>
+                      <button class="action-btn" data-action="revisar"><svg class="icon-sm"><use href="#icon-refresh"/></use></svg> Code Review</button>
+                      <button class="action-btn" data-action="dormir"><svg class="icon-sm"><use href="#icon-sleep"/></use></svg> Dormir Servidor</button>
+                      <button class="action-btn" data-action="acordar"><svg class="icon-sm"><use href="#icon-wake"/></use></svg> Acordar Servidor</button>
+                      <button class="action-btn" data-action="navegar" data-view-alvo="chat"><svg class="icon-sm"><use href="#icon-chat"/></use></svg> Conversar</button>
                     </div>
 
                     <div id="acao-resultado" class="acao-resultado hidden"></div>
 
                     <div class="card" style="margin-top:14px">
-                      <div class="card-header">🛌 <b>Agenda</b></div>
+                      <div class="card-header"><svg class="icon"><use href="#icon-clock"/></use></svg> <b>Agenda</b></div>
                       <div class="card-body" id="power-schedule-info">Carregando...</div>
                     </div>
 
                     <div class="card" style="margin-top:10px">
-                      <div class="card-header">🕐 <b>Últimas Ações</b></div>
+                      <div class="card-header"><svg class="icon"><use href="#icon-activity"/></use></svg> <b>Últimas Ações</b></div>
                       <div class="card-body" id="historico-acoes">Carregando...</div>
                     </div>
                   </div>
@@ -96,17 +186,17 @@
         <div class="chat-toolbar">
           <div class="chat-conv-group">
             <select id="conversaSelect" class="chat-conv-select" title="Conversa atual" aria-label="Conversa atual"></select>
-            <button id="novaConversaBtn" class="chat-icon-btn" data-action="nova-conversa" title="Nova conversa" aria-label="Nova conversa">＋</button>
+            <button id="novaConversaBtn" class="chat-icon-btn" data-action="nova-conversa" title="Nova conversa" aria-label="Nova conversa"><svg class="icon"><use href="#icon-plus"/></use></svg></button>
             <div class="chat-menu-wrap">
-              <button id="chatMenuBtn" class="chat-icon-btn" data-action="chat-menu" title="Opções" aria-label="Opções" aria-expanded="false" aria-controls="chatMenu">⋯</button>
+              <button id="chatMenuBtn" class="chat-icon-btn" data-action="chat-menu" title="Opções" aria-label="Opções" aria-expanded="false" aria-controls="chatMenu"><svg class="icon"><use href="#icon-more"/></use></svg></button>
               <div id="chatMenu" class="chat-menu">
-                <button data-action="contexto-panel">⚙️ Contexto</button>
-                <button data-action="todos-panel">📝 Tarefas</button>
-                <button data-action="export-menu">⬇ Exportar conversa</button>
+                <button data-action="contexto-panel"><svg class="icon-sm"><use href="#icon-context"/></use></svg> Contexto</button>
+                <button data-action="todos-panel"><svg class="icon-sm"><use href="#icon-check"/></use></svg> Tarefas</button>
+                <button data-action="export-menu"><svg class="icon-sm"><use href="#icon-export"/></use></svg> Exportar conversa</button>
                 <div id="exportMenu" class="export-menu">
-                  <button data-action="exportar" data-formato="txt">📄 TXT</button>
-                  <button data-action="exportar" data-formato="md">📝 Markdown</button>
-                  <button data-action="exportar" data-formato="json">🧾 JSON</button>
+                  <button data-action="exportar" data-formato="txt">TXT</button>
+                  <button data-action="exportar" data-formato="md">Markdown</button>
+                  <button data-action="exportar" data-formato="json">JSON</button>
                 </div>
               </div>
             </div>
@@ -117,45 +207,45 @@
         </div>
 
         <div id="contextoPanel" class="chat-panel hidden">
-          <label class="chat-panel-label" for="contextoInput">⚙️ Contexto (instruções do assistente)</label>
+          <label class="chat-panel-label" for="contextoInput"><svg class="icon-sm"><use href="#icon-context"/></use></svg> Contexto (instruções do assistente)</label>
           <textarea id="contextoInput" class="chat-panel-textarea" placeholder="Ex: 'Sempre responda em português'" rows="2"></textarea>
           <button class="action-btn" data-action="salvar-contexto">Salvar contexto</button>
         </div>
 
         <div id="todosPanel" class="chat-panel hidden">
-          <label class="chat-panel-label">📝 Tarefas da conversa</label>
+          <label class="chat-panel-label"><svg class="icon-sm"><use href="#icon-check"/></use></svg> Tarefas da conversa</label>
           <div class="todo-add">
             <input id="todoInput" type="text" placeholder="Adicionar tarefa..." maxlength="80">
-            <button data-action="adicionar-todo" title="Adicionar tarefa">➕</button>
+            <button data-action="adicionar-todo" title="Adicionar tarefa"><svg class="icon"><use href="#icon-plus"/></use></svg></button>
           </div>
           <div class="todo-contador" id="todoContador"></div>
           <ul id="listaTodos" class="todo-list"></ul>
         </div>
 
         <div class="messages" id="messages">
-          <div class="empty">💬 Selecione um modelo acima e comece a conversar!<br><span class="dim">Ex: "Como está o servidor?" ou "Me ajude com..."</span></div>
+          <div class="empty"><svg class="icon-lg"><use href="#icon-chat"/></use></svg> Selecione um modelo acima e comece a conversar!<br><span class="dim">Ex: "Como está o servidor?" ou "Me ajude com..."</span></div>
         </div>
 
         <div class="input-area">
           <textarea id="input" rows="1" placeholder="Digite sua mensagem..." data-key="enviar"></textarea>
-          <button id="sendBtn" data-action="enviar" disabled>➤</button>
+          <button id="sendBtn" data-action="enviar" disabled><svg class="icon"><use href="#icon-send"/></use></svg></button>
         </div>
       </section>
 
       <!-- ── View: Servidor ── -->
       <section id="view-servidor" class="view hidden">
         <div class="dashboard">
-          <h2 class="view-title">🖥️ Servidor</h2>
+          <h2 class="view-title">Servidor</h2>
 
           <div id="servidor-detalhe">
             <div class="server-loading">Carregando...</div>
           </div>
 
-          <h3 class="view-subtitle">⚡ Energia</h3>
+          <h3 class="view-subtitle"><svg class="icon"><use href="#icon-activity"/></use></svg> Energia</h3>
           <div class="quick-actions">
-            <button class="action-btn" data-action="dormir">😴 Dormir</button>
-            <button class="action-btn" data-action="acordar">🌅 Acordar</button>
-            <button class="action-btn" data-action="atualizar">📊 Atualizar</button>
+            <button class="action-btn" data-action="dormir"><svg class="icon-sm"><use href="#icon-sleep"/></use></svg> Dormir</button>
+            <button class="action-btn" data-action="acordar"><svg class="icon-sm"><use href="#icon-wake"/></use></svg> Acordar</button>
+            <button class="action-btn" data-action="atualizar"><svg class="icon-sm"><use href="#icon-refresh"/></use></svg> Atualizar</button>
           </div>
         </div>
       </section>
@@ -163,22 +253,22 @@
       <!-- ── View: Configurações ── -->
       <section id="view-config" class="view hidden">
         <div class="dashboard">
-          <h2 class="view-title">⚙️ Configurações</h2>
+          <h2 class="view-title">Configurações</h2>
 
           <div class="card">
-            <div class="card-header">🔗 Conexão com o Hermes</div>
+            <div class="card-header"><svg class="icon"><use href="#icon-node"/></use></svg> Conexão com o Hermes</div>
             <div class="card-body" id="cfg-info">
               <span class="dim">Carregando...</span>
             </div>
           </div>
 
           <div class="card">
-            <div class="card-header">📱 Sobre</div>
+            <div class="card-header"><svg class="icon"><use href="#icon-info"/></use></svg> Sobre</div>
             <div class="card-body" id="sobre-info">Hermes Remote v1.0.0</div>
           </div>
 
           <div class="card">
-            <div class="card-header">⚙️ Como configurar</div>
+            <div class="card-header"><svg class="icon"><use href="#icon-config"/></use></svg> Como configurar</div>
             <div class="card-body">
               <p class="cfg-hint">A configuração do servidor é feita no arquivo
               <code>.env</code> na máquina que roda o Hermes Remote

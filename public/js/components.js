@@ -11,6 +11,12 @@ const ui = (function () {
     return (text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
+  // ── Ícone SVG (sprite inline no index.html) ──────────────────
+  // Uso: ui.icono('home') ou ui.icono('home', 'icon-sm')
+  function icono(name, cls) {
+    return '<svg class="' + (cls || 'icon') + '"><use href="#icon-' + name + '"/></use></svg>';
+  }
+
   // ── Estados (loading / vazio / offline / erro) ────────────────
   function loading(msg) {
     return '<div class="server-loading">' + (msg || 'Carregando...') + '</div>';
@@ -26,7 +32,7 @@ const ui = (function () {
   }
 
   function erro(msg) {
-    return offline('❌ Erro', msg);
+    return offline(icono('cross') + ' Erro', msg);
   }
 
   // ── Cards e métricas ─────────────────────────────────────────
@@ -41,7 +47,7 @@ const ui = (function () {
   // ── Badges / chips ───────────────────────────────────────────
   function containerChip(container) {
     const cls = container.rodando ? (container.healthy ? 'ok' : 'warn') : 'down';
-    const icone = container.rodando ? (container.healthy ? '🟢' : '🟡') : '⚪';
+    const icone = container.rodando ? (container.healthy ? icono('check', 'icon-sm') : icono('warn', 'icon-sm')) : icono('cross', 'icon-sm');
     const label = container.rodando ? (container.status || 'rodando') : 'parado';
     return '<div class="container-chip ' + cls + '">' + icone +
       ' <b>' + escapeHtml(container.nome) + '</b> <span class="dim">' + label + '</span></div>';
@@ -51,7 +57,7 @@ const ui = (function () {
     if (!temp) return '';
     const alta = temp >= 80;
     let html = '<div class="server-temp ' + (alta ? 'alta' : 'ok') + '">' +
-      '🌡️ <b>Temperatura: ' + temp + '°C</b> ' + (alta ? '⚠️ alta' : '✅ ok');
+      icono('temp') + ' <b>Temperatura: ' + temp + '°C</b> ' + (alta ? icono('warn', 'icon-sm') + ' alta' : icono('check', 'icon-sm') + ' ok');
     if (alta && onVerDiario) html += ' ' + onVerDiario;
     html += '</div>';
     return html;
@@ -61,7 +67,7 @@ const ui = (function () {
   function resultado(tipo, texto) {
     const el = document.getElementById('acao-resultado');
     if (!el) return;
-    el.textContent = texto;
+    el.innerHTML = texto;
     el.classList.remove('hidden');
     el.classList.remove('ok', 'erro', 'loading');
     if (tipo) el.classList.add(tipo);
@@ -69,14 +75,14 @@ const ui = (function () {
 
   // ── Histórico ────────────────────────────────────────────────
   function historicoLinha(a) {
-    const icone = a.ok ? '✅' : '❌';
+    const icone = a.ok ? icono('check', 'icon-sm') : icono('cross', 'icon-sm');
     const quando = new Date(a.quando).toLocaleString('pt-BR',
       { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
     let linha = icone + ' <b>' + a.acao + '</b> · ' + quando +
       (a.detalhe ? ' <span class="dim">— ' + a.detalhe + '</span>' : '');
     if (a.output) {
       const id = 'out-' + a.quando.replace(/[^0-9]/g, '').slice(0, 12);
-      linha += ' <button class="hist-btn" data-toggle-det="' + id + '">📋</button>';
+      linha += ' <button class="hist-btn" data-toggle-det="' + id + '">' + icono('activity', 'icon-sm') + '</button>';
       linha += '<div id="' + id + '" class="hist-det"><pre>' + escapeHtml(a.output) + '</pre></div>';
     }
     return linha;
@@ -85,6 +91,7 @@ const ui = (function () {
   // ── Expor API pública ────────────────────────────────────────
   return {
     escapeHtml: escapeHtml,
+    icono: icono,
     loading: loading,
     vazio: vazio,
     offline: offline,

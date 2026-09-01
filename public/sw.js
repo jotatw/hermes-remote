@@ -1,11 +1,11 @@
 // Hermes Remote — Service Worker (cache estático)
-const CACHE = 'hermes-remote-v12';
+const CACHE = 'hermes-remote-v13';
 const FILES = [
   '/', '/index.html',
   '/css/tokens.css', '/css/style.css', '/css/responsive.css',
   '/js/components.js', '/js/state.js', '/js/app.js', '/js/dashboard.js', '/js/sidebar.js', '/js/todos.js', '/js/markdown.js',
   '/manifest.json',
-  '/icons/icon-192.png', '/icons/icon-512.png'
+  '/icons/icon-192.png', '/icons/icon-512.png', '/icons/icon-512.svg'
 ];
 
 self.addEventListener('install', function (e) {

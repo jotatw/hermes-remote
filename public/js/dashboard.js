@@ -18,44 +18,44 @@ async function carregarDashboard() {
 
     // Notebook
     if (data.notebook && data.notebook.erro) {
-      corpo.notebook.textContent = '❌ ' + data.notebook.erro;
+      corpo.notebook.innerHTML = ui.icono('cross', 'icon-sm') + ' ' + ui.escapeHtml(data.notebook.erro);
     } else if (data.notebook && data.notebook.offline) {
-      corpo.notebook.textContent = '😴 ' + data.notebook.offline;
+      corpo.notebook.innerHTML = ui.icono('sleep', 'icon-sm') + ' ' + ui.escapeHtml(data.notebook.offline);
     } else if (data.notebook) {
       corpo.notebook.innerHTML =
-        '⏱️ Uptime: <b>' + (data.notebook.uptime || '?') + '</b><br>' +
-        '💾 RAM: <b>' + (data.notebook.ram || '?') + '</b><br>' +
-        '💽 Disco: <b>' + (data.notebook.disco || '?') + '</b><br>' +
-        (data.notebook.load ? '📊 Load: ' + data.notebook.load : '') +
-        (data.notebook.local ? '<br>📍 rodando neste host' : '');
+        ui.icono('clock', 'icon-sm') + ' Uptime: <b>' + (data.notebook.uptime || '?') + '</b><br>' +
+        ui.icono('ram', 'icon-sm') + ' RAM: <b>' + (data.notebook.ram || '?') + '</b><br>' +
+        ui.icono('disk', 'icon-sm') + ' Disco: <b>' + (data.notebook.disco || '?') + '</b><br>' +
+        (data.notebook.load ? ui.icono('activity', 'icon-sm') + ' Load: ' + data.notebook.load : '') +
+        (data.notebook.local ? '<br>' + ui.icono('node', 'icon-sm') + ' rodando neste host' : '');
     } else {
       corpo.notebook.textContent = 'Sem dados';
     }
 
     // Servidor (com temperatura + containers)
     if (data.servidor && data.servidor.erro) {
-      corpo.servidor.textContent = '🔴 ' + data.servidor.erro;
+      corpo.servidor.innerHTML = ui.icono('cross', 'icon-sm') + ' ' + ui.escapeHtml(data.servidor.erro);
     } else if (data.servidor && data.servidor.offline) {
-      corpo.servidor.textContent = '😴 ' + data.servidor.offline;
+      corpo.servidor.innerHTML = ui.icono('sleep', 'icon-sm') + ' ' + ui.escapeHtml(data.servidor.offline);
     } else if (data.servidor) {
       var servidorHtml =
-        '⏱️ Uptime: <b>' + (data.servidor.uptime || '?') + '</b><br>' +
-        '💾 RAM: <b>' + (data.servidor.ram || '?') + '</b><br>' +
-        '💽 Disco: <b>' + (data.servidor.disco || '?') + '</b><br>' +
-        (data.servidor.load ? '📊 Load: ' + data.servidor.load : '') +
-        (data.servidor.local ? '<br>📍 rodando neste host' : '');
+        ui.icono('clock', 'icon-sm') + ' Uptime: <b>' + (data.servidor.uptime || '?') + '</b><br>' +
+        ui.icono('ram', 'icon-sm') + ' RAM: <b>' + (data.servidor.ram || '?') + '</b><br>' +
+        ui.icono('disk', 'icon-sm') + ' Disco: <b>' + (data.servidor.disco || '?') + '</b><br>' +
+        (data.servidor.load ? ui.icono('activity', 'icon-sm') + ' Load: ' + data.servidor.load : '') +
+        (data.servidor.local ? '<br>' + ui.icono('node', 'icon-sm') + ' rodando neste host' : '');
 
       // Temperatura
       if (resDetalhes.temperatura) {
         var temp = resDetalhes.temperatura;
-        servidorHtml += '<br>🌡️ <b>' + temp + '°C</b> ' + (temp >= 80 ? '⚠️' : '✅');
+        servidorHtml += '<br>' + ui.icono('temp', 'icon-sm') + ' <b>' + temp + '°C</b> ' + (temp >= 80 ? ui.icono('warn', 'icon-sm') : ui.icono('check', 'icon-sm'));
       }
 
       // Resumo de containers
       if (resDetalhes.containers && resDetalhes.containers.length) {
         var total = resDetalhes.containers.length;
         var down = resDetalhes.containers.filter(function (c) { return !c.rodando; }).length;
-        servidorHtml += '<br>🐳 ' + total + ' containers' + (down ? ' <span class="dim">(' + down + ' parado)</span>' : '');
+        servidorHtml += '<br>' + ui.icono('container', 'icon-sm') + ' ' + total + ' containers' + (down ? ' <span class="dim">(' + down + ' parado)</span>' : '');
       }
 
       corpo.servidor.innerHTML = servidorHtml;
@@ -65,12 +65,12 @@ async function carregarDashboard() {
 
     // Cota
     if (data.cota && data.cota.erro) {
-      corpo.cota.textContent = '❌ ' + data.cota.erro;
+      corpo.cota.innerHTML = ui.icono('cross', 'icon-sm') + ' ' + ui.escapeHtml(data.cota.erro);
     } else if (data.cota) {
-      corpo.cota.innerHTML = '🎯 Modelos: <b>' + data.cota.modelos + '</b><br>Pool: ' + (data.cota.pool || '?');
+      corpo.cota.innerHTML = ui.icono('target', 'icon-sm') + ' Modelos: <b>' + data.cota.modelos + '</b><br>Pool: ' + (data.cota.pool || '?');
     }
   } catch (error) {
-    Object.values(corpo).forEach(el => { if (el) el.textContent = '❌ Erro: ' + error.message; });
+    Object.values(corpo).forEach(el => { if (el) el.innerHTML = ui.icono('cross', 'icon-sm') + ' Erro: ' + ui.escapeHtml(error.message); });
   }
 }
 
@@ -82,15 +82,15 @@ async function carregarPowerSchedule() {
     const res = await fetch('/api/power');
     const d = await res.json();
     if (d.ok && d.enabled) {
-      el.innerHTML = '🛌 Dorme às <b>' + d.shutdown + '</b> · Acorda às <b>' + d.wake + '</b>' +
+      el.innerHTML = ui.icono('sleep') + ' Dorme às <b>' + d.shutdown + '</b> · Acorda às <b>' + d.wake + '</b>' +
         '<br><span class="dim">Night-off automático</span>';
     } else if (d.ok && !d.enabled) {
-      el.textContent = '⏸️ Night-off desativado';
+      el.innerHTML = ui.icono('sleep') + ' Night-off desativado';
     } else {
-      el.textContent = '❌ ' + (d.error || 'indisponível');
+      el.innerHTML = ui.icono('cross', 'icon-sm') + ' ' + ui.escapeHtml(d.error || 'indisponível');
     }
   } catch (e) {
-    el.textContent = '❌ ' + e.message;
+    el.innerHTML = ui.icono('cross', 'icon-sm') + ' ' + ui.escapeHtml(e.message);
   }
 }
 
@@ -109,7 +109,7 @@ async function carregarHistoricoAcoes() {
       return ui.historicoLinha(a);
     }).join('<br>');
   } catch (e) {
-    el.textContent = '❌ ' + e.message;
+    el.innerHTML = ui.icono('cross', 'icon-sm') + ' ' + ui.escapeHtml(e.message);
   }
 }
 
@@ -130,31 +130,31 @@ async function carregarServidor() {
     ]);
 
     const s = resStatus.servidor || {};
-    if (s.erro) { el.innerHTML = ui.offline('🔴 Servidor offline', s.erro); return; }
-    if (s.offline) { el.innerHTML = ui.offline('😴 Servidor dormindo', s.offline); return; }
+    if (s.erro) { el.innerHTML = ui.offline(ui.icono('cross') + ' Servidor offline', s.erro); return; }
+    if (s.offline) { el.innerHTML = ui.offline(ui.icono('sleep') + ' Servidor dormindo', s.offline); return; }
 
     let html = '<div class="server-stats">';
-    html += ui.statCard('⏱️', 'Uptime', s.uptime);
-    html += ui.statCard('💾', 'RAM', s.ram);
-    html += ui.statCard('💽', 'Disco', s.disco);
-    if (s.load) html += ui.statCard('📊', 'Load', s.load);
+    html += ui.statCard(ui.icono('clock'), 'Uptime', s.uptime);
+    html += ui.statCard(ui.icono('ram'), 'RAM', s.ram);
+    html += ui.statCard(ui.icono('disk'), 'Disco', s.disco);
+    if (s.load) html += ui.statCard(ui.icono('activity'), 'Load', s.load);
     html += '</div>';
 
     // Temperatura
     if (resDetalhes.temperatura) {
-      const btnDiario = '<button class="action-btn inline" data-action="diario">📋 Ver Diário</button>';
+      const btnDiario = '<button class="action-btn inline" data-action="diario">' + ui.icono('activity', 'icon-sm') + ' Ver Diário</button>';
       html += ui.temperatura(resDetalhes.temperatura, btnDiario);
     }
 
     // Containers
     if (resDetalhes.containers && resDetalhes.containers.length) {
-      html += '<div class="server-section-title">🐳 Containers (' + resDetalhes.containers.length + ')</div>';
+      html += '<div class="server-section-title">' + ui.icono('container') + ' Containers (' + resDetalhes.containers.length + ')</div>';
       html += '<div class="server-containers">';
       resDetalhes.containers.forEach(function (c) { html += ui.containerChip(c); });
       html += '</div>';
     }
 
-    html += '<div class="server-footnote">ℹ️ Detalhes completos no Diário de Saúde.</div>';
+    html += '<div class="server-footnote">' + ui.icono('info', 'icon-sm') + ' Detalhes completos no Diário de Saúde.</div>';
     el.innerHTML = html;
   } catch (error) {
     el.innerHTML = ui.erro(error.message);
@@ -174,12 +174,12 @@ function desabilitarBotoes(desabilitar) {
 
 function acaoDiario() {
   desabilitarBotoes(true);
-  mostrarResultado('📋 Enviando diário de saúde...', 'loading');
+  mostrarResultado(ui.icono('activity') + ' Enviando diário de saúde...', 'loading');
   fetch('/api/acao/diario').then(function (r) { return r.json(); }).then(function (d) {
     desabilitarBotoes(false);
     if (d.ok) {
-      var msg = '✅ Diário enviado ao Telegram!';
-      if (d.warnings) msg += ' ⚠️ Com alertas';
+      var msg = ui.icono('check') + ' Diário enviado ao Telegram!';
+      if (d.warnings) msg += ' ' + ui.icono('warn') + ' Com alertas';
       if (d.output) {
         // Extrair resumo do relatório
         var pass = d.output.match(/PASS\s*:\s*(\d+)/);
@@ -188,54 +188,54 @@ function acaoDiario() {
       }
       mostrarResultado(msg, 'ok');
     } else {
-      mostrarResultado('❌ ' + (d.error || 'falha'), 'erro');
+      mostrarResultado(ui.icono('cross') + ' ' + ui.escapeHtml(d.error || 'falha'), 'erro');
     }
   }).catch(function (e) {
     desabilitarBotoes(false);
-    mostrarResultado('❌ ' + e.message, 'erro');
+    mostrarResultado(ui.icono('cross') + ' ' + ui.escapeHtml(e.message), 'erro');
   });
 }
 
 function acaoRevisar() {
   desabilitarBotoes(true);
-  mostrarResultado('🔄 Disparando code review...', 'loading');
+  mostrarResultado(ui.icono('refresh') + ' Disparando code review...', 'loading');
   fetch('/api/acao/revisar').then(function (r) { return r.json(); }).then(function (d) {
     desabilitarBotoes(false);
-    mostrarResultado(d.ok ? '✅ Code review enviado ao Telegram!' : '❌ ' + (d.error || 'falha'), d.ok ? 'ok' : 'erro');
+    mostrarResultado(d.ok ? ui.icono('check') + ' Code review enviado ao Telegram!' : ui.icono('cross') + ' ' + ui.escapeHtml(d.error || 'falha'), d.ok ? 'ok' : 'erro');
   }).catch(function (e) {
     desabilitarBotoes(false);
-    mostrarResultado('❌ ' + e.message, 'erro');
+    mostrarResultado(ui.icono('cross') + ' ' + ui.escapeHtml(e.message), 'erro');
   });
 }
 
 function acaoDormir() {
   if (!confirm('Deseja suspender o homeserver? Ele acorda às 08:00.')) return;
   desabilitarBotoes(true);
-  mostrarResultado('😴 Suspending servidor...', 'loading');
+  mostrarResultado(ui.icono('sleep') + ' Suspending servidor...', 'loading');
   fetch('/api/acao/dormir').then(function (r) { return r.json(); }).then(function (d) {
     desabilitarBotoes(false);
-    mostrarResultado(d.ok ? '😴 Servidor suspenso! (acorda 08:00)' : '❌ ' + (d.error || 'falha'), d.ok ? 'ok' : 'erro');
+    mostrarResultado(d.ok ? ui.icono('sleep') + ' Servidor suspenso! (acorda 08:00)' : ui.icono('cross') + ' ' + ui.escapeHtml(d.error || 'falha'), d.ok ? 'ok' : 'erro');
   }).catch(function (e) {
     desabilitarBotoes(false);
-    mostrarResultado('❌ ' + e.message, 'erro');
+    mostrarResultado(ui.icono('cross') + ' ' + ui.escapeHtml(e.message), 'erro');
   });
 }
 
 function acaoAcordar() {
   desabilitarBotoes(true);
-  mostrarResultado('🌅 Enviando magic packet WOL...', 'loading');
+  mostrarResultado(ui.icono('wake') + ' Enviando magic packet WOL...', 'loading');
   fetch('/api/acao/acordar').then(function (r) { return r.json(); }).then(function (d) {
     desabilitarBotoes(false);
     if (d.ok && d.ja_acordado) {
-      mostrarResultado('🟢 Servidor já está acordado!', 'ok');
+      mostrarResultado(ui.icono('check') + ' Servidor já está acordado!', 'ok');
     } else if (d.ok) {
-      mostrarResultado('🌅 Magic packet enviado! Aguardando o servidor acordar (~1min)...', 'ok');
+      mostrarResultado(ui.icono('wake') + ' Magic packet enviado! Aguardando o servidor acordar (~1min)...', 'ok');
     } else {
-      mostrarResultado('❌ ' + (d.error || 'falha'), 'erro');
+      mostrarResultado(ui.icono('cross') + ' ' + ui.escapeHtml(d.error || 'falha'), 'erro');
     }
   }).catch(function (e) {
     desabilitarBotoes(false);
-    mostrarResultado('❌ ' + e.message, 'erro');
+    mostrarResultado(ui.icono('cross') + ' ' + ui.escapeHtml(e.message), 'erro');
   });
 }
 
@@ -257,17 +257,17 @@ async function carregarConfig() {
     ]);
 
     const statusHermes = (resStatus.cota && resStatus.cota.modelos)
-      ? '🟢 API server conectado (' + resStatus.cota.modelos + ' modelos)'
-      : '🔴 API server indisponível';
+      ? ui.icono('check', 'icon-sm') + ' API server conectado (' + resStatus.cota.modelos + ' modelos)'
+      : ui.icono('cross', 'icon-sm') + ' API server indisponível';
     const host = resStatus.app || '?';
 
     el.innerHTML =
       '<div><b>Backend:</b> ' + (resHealth.backend || '?') + ' <span class="dim">(roda em: ' + host + ')</span></div>' +
       '<div><b>Hermes API server:</b> ' + (resHealth.hermes || '?') + '</div>' +
       '<div><b>Status:</b> ' + statusHermes + '</div>' +
-      '<div class="cfg-hint" style="margin-top:8px">👆 Valores vêm do <code>.env</code> do servidor. ' +
+      '<div class="cfg-hint" style="margin-top:8px">' + ui.icono('info', 'icon-sm') + ' Valores vêm do <code>.env</code> do servidor. ' +
       'Para mudar, edite o <code>.env</code> e reinicie o serviço.</div>';
   } catch (e) {
-    el.innerHTML = '❌ ' + e.message;
+    el.innerHTML = ui.icono('cross', 'icon-sm') + ' ' + ui.escapeHtml(e.message);
   }
 }

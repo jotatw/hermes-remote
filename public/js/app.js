@@ -23,7 +23,7 @@ function irPara(view) {
   const btn = document.querySelector('.nav-btn[data-view="' + view + '"]');
   if (btn) btn.classList.add('active');
 
-  const titles = { dashboard: '📊 Visão Geral', chat: '💬 Chat', servidor: '🖥️ Servidor', config: '⚙️ Config' };
+  const titles = { dashboard: 'Visão Geral', chat: 'Chat', servidor: 'Servidor', config: 'Configurações' };
   document.getElementById('pageTitle').textContent = titles[view] || 'Hermes Remote';
 
   // Fecha menus abertos ao navegar
@@ -61,9 +61,9 @@ function criarBolha(role, content, timestamp, isStreaming) {
   if (role === 'assistant') {
     const copiarBtn = document.createElement('button');
     copiarBtn.className = 'copy-btn';
-    copiarBtn.textContent = '📋';
     copiarBtn.title = 'Copiar resposta';
     copiarBtn.dataset.action = 'copiar';
+    copiarBtn.innerHTML = '<svg class="icon-sm"><use href="#icon-activity"/></use></svg>';
     div.appendChild(copiarBtn);
   }
 
@@ -163,8 +163,8 @@ function setTheme(name) {
   document.querySelectorAll('.theme-menu button').forEach(function (btn) {
     btn.classList.toggle('active', btn.dataset.theme === (name || ''));
   });
-  var icons = { '': '🌙', light: '☀️' };
-  themeBtn.textContent = icons[name] || '🌙';
+  var icone = (name === 'light') ? '<svg class="icon"><use href="#icon-sun"/></use></svg>' : '<svg class="icon"><use href="#icon-moon"/></use></svg>';
+  themeBtn.innerHTML = icone;
 }
 
 function toggleThemeMenu() {
@@ -177,8 +177,9 @@ function selectTheme(name) { setTheme(name); toggleThemeMenu(); }
 function copiarTexto(btn) {
   var content = btn.closest('.message').querySelector('.content').textContent;
   navigator.clipboard.writeText(content);
-  btn.textContent = '✅'; btn.title = 'Copiado!';
-  setTimeout(function () { btn.textContent = '📋'; btn.title = 'Copiar resposta'; }, 2000);
+  btn.innerHTML = '<svg class="icon"><use href="#icon-check"/></use></svg>';
+  btn.title = 'Copiado!';
+  setTimeout(function () { btn.innerHTML = '<svg class="icon"><use href="#icon-activity"/></use></svg>'; btn.title = 'Copiar resposta'; }, 2000);
 }
 
 function novaConversa() {
@@ -299,16 +300,16 @@ async function verificarConexao() {
     const res = await fetch('/api/health');
     const data = await res.json();
     if (res.ok && data.status === 'ok') {
-      el.textContent = '🟢 online';
+      el.innerHTML = '<svg class="icon-sm"><use href="#icon-check"/></use></svg> online';
       el.classList.remove('offline');
       el.classList.add('online');
     } else {
-      el.textContent = '🔴 offline';
+      el.innerHTML = '<svg class="icon-sm"><use href="#icon-cross"/></use></svg> offline';
       el.classList.add('offline');
       el.classList.remove('online');
     }
   } catch (e) {
-    el.textContent = '🔴 offline';
+    el.innerHTML = '<svg class="icon-sm"><use href="#icon-cross"/></use></svg> offline';
     el.classList.add('offline');
     el.classList.remove('online');
   }
