@@ -28,20 +28,20 @@
 
         <!-- Nav (mobile-friendly) -->
         <nav class="topnav" id="topnav" aria-label="Navegação principal">
-          <button class="nav-btn active" data-view="dashboard" onclick="irPara('dashboard')" aria-label="Visão Geral" title="Visão Geral"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></button>
-          <button class="nav-btn" data-view="chat" onclick="irPara('chat')" aria-label="Chat" title="Chat"><span class="nav-icon">💬</span><span class="nav-label">Chat</span></button>
-          <button class="nav-btn" data-view="servidor" onclick="irPara('servidor')" aria-label="Servidor" title="Servidor"><span class="nav-icon">🖥️</span><span class="nav-label">Servidor</span></button>
-          <button class="nav-btn" data-view="config" onclick="irPara('config')" aria-label="Configurações" title="Configurações"><span class="nav-icon">⚙️</span><span class="nav-label">Config</span></button>
+          <button class="nav-btn active" data-view="dashboard" data-action="navegar" data-view-alvo="dashboard" aria-label="Visão Geral" title="Visão Geral"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></button>
+          <button class="nav-btn" data-view="chat" data-action="navegar" data-view-alvo="chat" aria-label="Chat" title="Chat"><span class="nav-icon">💬</span><span class="nav-label">Chat</span></button>
+          <button class="nav-btn" data-view="servidor" data-action="navegar" data-view-alvo="servidor" aria-label="Servidor" title="Servidor"><span class="nav-icon">🖥️</span><span class="nav-label">Servidor</span></button>
+          <button class="nav-btn" data-view="config" data-action="navegar" data-view-alvo="config" aria-label="Configurações" title="Configurações"><span class="nav-icon">⚙️</span><span class="nav-label">Config</span></button>
         </nav>
 
-        <button id="stopBtn" class="btn-new" onclick="pararResposta()" style="display:none">⏹</button>
+        <button id="stopBtn" class="btn-new" data-action="parar" style="display:none">⏹</button>
 
         <div class="theme-picker">
-          <button id="installBtn" class="btn-new" onclick="instalarPWA()" title="Instalar app" style="display:none">📲</button>
-          <button id="themeBtn" class="btn-new theme-btn" onclick="toggleThemeMenu()" title="Tema" aria-label="Alternar tema" aria-expanded="false" aria-controls="themeMenu">🌙</button>
+          <button id="installBtn" class="btn-new" data-action="instalar" title="Instalar app" style="display:none">📲</button>
+          <button id="themeBtn" class="btn-new theme-btn" data-action="tema-menu" title="Tema" aria-label="Alternar tema" aria-expanded="false" aria-controls="themeMenu">🌙</button>
           <div id="themeMenu" class="theme-menu">
-            <button data-theme="" onclick="selectTheme('')">🌙 Escuro</button>
-            <button data-theme="light" onclick="selectTheme('light')">☀️ Claro</button>
+            <button data-theme="dark" data-action="tema">🌙 Escuro</button>
+            <button data-theme="light" data-action="tema">☀️ Claro</button>
           </div>
         </div>
       </div>
@@ -70,11 +70,11 @@
 
           <h3 class="view-subtitle">⚡ Ações Rápidas</h3>
                     <div class="quick-actions">
-                      <button class="action-btn" onclick="acaoDiario()">📋 Diário de Saúde</button>
-                      <button class="action-btn" onclick="acaoRevisar()">🔄 Code Review</button>
-                      <button class="action-btn" onclick="acaoDormir()">😴 Dormir Servidor</button>
-                      <button class="action-btn" onclick="acaoAcordar()">🌅 Acordar Servidor</button>
-                      <button class="action-btn" onclick="irPara('chat')">💬 Conversar</button>
+                      <button class="action-btn" data-action="diario">📋 Diário de Saúde</button>
+                      <button class="action-btn" data-action="revisar">🔄 Code Review</button>
+                      <button class="action-btn" data-action="dormir">😴 Dormir Servidor</button>
+                      <button class="action-btn" data-action="acordar">🌅 Acordar Servidor</button>
+                      <button class="action-btn" data-action="navegar" data-view-alvo="chat">💬 Conversar</button>
                     </div>
 
                     <div id="acao-resultado" class="acao-resultado hidden"></div>
@@ -96,22 +96,22 @@
         <div class="chat-toolbar">
           <div class="chat-conv-group">
             <select id="conversaSelect" class="chat-conv-select" title="Conversa atual" aria-label="Conversa atual"></select>
-            <button id="novaConversaBtn" class="chat-icon-btn" onclick="criarConversa()" title="Nova conversa" aria-label="Nova conversa">＋</button>
+            <button id="novaConversaBtn" class="chat-icon-btn" data-action="nova-conversa" title="Nova conversa" aria-label="Nova conversa">＋</button>
             <div class="chat-menu-wrap">
-              <button id="chatMenuBtn" class="chat-icon-btn" onclick="toggleChatMenu()" title="Opções" aria-label="Opções" aria-expanded="false" aria-controls="chatMenu">⋯</button>
+              <button id="chatMenuBtn" class="chat-icon-btn" data-action="chat-menu" title="Opções" aria-label="Opções" aria-expanded="false" aria-controls="chatMenu">⋯</button>
               <div id="chatMenu" class="chat-menu">
-                <button onclick="toggleContextoPanel()">⚙️ Contexto</button>
-                <button onclick="toggleTodosPanel()">📝 Tarefas</button>
-                <button onclick="toggleExportMenu()">⬇ Exportar conversa</button>
+                <button data-action="contexto-panel">⚙️ Contexto</button>
+                <button data-action="todos-panel">📝 Tarefas</button>
+                <button data-action="export-menu">⬇ Exportar conversa</button>
                 <div id="exportMenu" class="export-menu">
-                  <button onclick="exportarConversa('txt')">📄 TXT</button>
-                  <button onclick="exportarConversa('md')">📝 Markdown</button>
-                  <button onclick="exportarConversa('json')">🧾 JSON</button>
+                  <button data-action="exportar" data-formato="txt">📄 TXT</button>
+                  <button data-action="exportar" data-formato="md">📝 Markdown</button>
+                  <button data-action="exportar" data-formato="json">🧾 JSON</button>
                 </div>
               </div>
             </div>
           </div>
-          <select id="modelSelect" class="chat-model-select" onchange="salvarModeloSelecionado()" title="Modelo" aria-label="Modelo">
+          <select id="modelSelect" class="chat-model-select" data-change="modelo" title="Modelo" aria-label="Modelo">
             <option value="">Carregando modelos...</option>
           </select>
         </div>
@@ -119,14 +119,14 @@
         <div id="contextoPanel" class="chat-panel hidden">
           <label class="chat-panel-label" for="contextoInput">⚙️ Contexto (instruções do assistente)</label>
           <textarea id="contextoInput" class="chat-panel-textarea" placeholder="Ex: 'Sempre responda em português'" rows="2"></textarea>
-          <button class="action-btn" onclick="salvarContexto()">Salvar contexto</button>
+          <button class="action-btn" data-action="salvar-contexto">Salvar contexto</button>
         </div>
 
         <div id="todosPanel" class="chat-panel hidden">
           <label class="chat-panel-label">📝 Tarefas da conversa</label>
           <div class="todo-add">
             <input id="todoInput" type="text" placeholder="Adicionar tarefa..." maxlength="80">
-            <button onclick="adicionarTodo()" title="Adicionar tarefa">➕</button>
+            <button data-action="adicionar-todo" title="Adicionar tarefa">➕</button>
           </div>
           <div class="todo-contador" id="todoContador"></div>
           <ul id="listaTodos" class="todo-list"></ul>
@@ -137,8 +137,8 @@
         </div>
 
         <div class="input-area">
-          <textarea id="input" rows="1" placeholder="Digite sua mensagem..." onkeydown="handleKey(event)"></textarea>
-          <button id="sendBtn" onclick="enviarMensagem()" disabled>➤</button>
+          <textarea id="input" rows="1" placeholder="Digite sua mensagem..." data-key="enviar"></textarea>
+          <button id="sendBtn" data-action="enviar" disabled>➤</button>
         </div>
       </section>
 
@@ -153,9 +153,9 @@
 
           <h3 class="view-subtitle">⚡ Energia</h3>
           <div class="quick-actions">
-            <button class="action-btn" onclick="acaoDormir()">😴 Dormir</button>
-            <button class="action-btn" onclick="acaoAcordar()">🌅 Acordar</button>
-            <button class="action-btn" onclick="acaoStatus()">📊 Atualizar</button>
+            <button class="action-btn" data-action="dormir">😴 Dormir</button>
+            <button class="action-btn" data-action="acordar">🌅 Acordar</button>
+            <button class="action-btn" data-action="atualizar">📊 Atualizar</button>
           </div>
         </div>
       </section>

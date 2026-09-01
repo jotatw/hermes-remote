@@ -102,7 +102,7 @@ async function carregarHistoricoAcoes() {
     const res = await fetch('/api/acoes');
     const d = await res.json();
     if (!d.ok || !d.acoes || d.acoes.length === 0) {
-      el.innerHTML = '<span class="dim">Nenhuma ação registrada ainda. Use as <a href="#" onclick="irPara(\'dashboard\'); return false">Ações Rápidas</a> no Dashboard!</span>';
+      el.innerHTML = '<span class="dim">Nenhuma ação registrada ainda. Use as <a href="#" data-action="navegar" data-view-alvo="dashboard">Ações Rápidas</a> no Dashboard!</span>';
       return;
     }
     el.innerHTML = d.acoes.map(function (a) {
@@ -142,7 +142,7 @@ async function carregarServidor() {
 
     // Temperatura
     if (resDetalhes.temperatura) {
-      const btnDiario = '<button class="action-btn inline" onclick="acaoDiario()">📋 Ver Diário</button>';
+      const btnDiario = '<button class="action-btn inline" data-action="diario">📋 Ver Diário</button>';
       html += ui.temperatura(resDetalhes.temperatura, btnDiario);
     }
 

@@ -63,7 +63,7 @@ function criarBolha(role, content, timestamp, isStreaming) {
     copiarBtn.className = 'copy-btn';
     copiarBtn.textContent = '📋';
     copiarBtn.title = 'Copiar resposta';
-    copiarBtn.onclick = function () { copiarTexto(this); };
+    copiarBtn.dataset.action = 'copiar';
     div.appendChild(copiarBtn);
   }
 
@@ -367,8 +367,96 @@ document.addEventListener('keydown', function (e) {
     const themeMenu = document.getElementById('themeMenu');
     if (themeMenu && themeMenu.classList.contains('open')) themeMenu.classList.remove('open');
   }
+  // Send message on Enter when focus is in the input textarea
+  if (e.key === 'Enter' && e.target && e.target.dataset && e.target.dataset.key === 'enviar') {
+    e.preventDefault();
+    if (typeof enviarMensagem === 'function') enviarMensagem();
+  }
 });
 
+// ── Event Delegation ────────────────────────────────────────
+// Central handler for clicks, changes and key actions using data-* attributes.
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const action = btn.dataset.action;
+  switch (action) {
+    case 'navegar':
+      if (btn.dataset && btn.dataset.viewAlvo) irPara(btn.dataset.viewAlvo);
+      break;
+    case 'parar':
+      if (typeof pararResposta === 'function') pararResposta();
+      break;
+    case 'instalar':
+      if (typeof instalarPWA === 'function') instalarPWA();
+      break;
+    case 'tema-menu':
+      if (typeof toggleThemeMenu === 'function') toggleThemeMenu();
+      break;
+    case 'tema':
+      if (typeof selectTheme === 'function') selectTheme(btn.dataset.theme);
+      break;
+    case 'diario':
+      if (typeof acaoDiario === 'function') acaoDiario();
+      break;
+    case 'revisar':
+      if (typeof acaoRevisar === 'function') acaoRevisar();
+      break;
+    case 'dormir':
+      if (typeof acaoDormir === 'function') acaoDormir();
+      break;
+    case 'acordar':
+      if (typeof acaoAcordar === 'function') acaoAcordar();
+      break;
+    case 'atualizar':
+      if (typeof acaoStatus === 'function') acaoStatus();
+      break;
+    case 'nova-conversa':
+      if (typeof criarConversa === 'function') criarConversa();
+      break;
+    case 'chat-menu':
+      if (typeof toggleChatMenu === 'function') toggleChatMenu();
+      break;
+    case 'contexto-panel':
+      if (typeof toggleContextoPanel === 'function') toggleContextoPanel();
+      break;
+    case 'todos-panel':
+      if (typeof toggleTodosPanel === 'function') toggleTodosPanel();
+      break;
+    case 'export-menu':
+      if (typeof toggleExportMenu === 'function') toggleExportMenu();
+      break;
+    case 'exportar':
+      if (typeof exportarConversa === 'function') exportarConversa(btn.dataset.formato);
+      break;
+    case 'salvar-contexto':
+      if (typeof salvarContexto === 'function') salvarContexto();
+      break;
+    case 'adicionar-todo':
+      if (typeof adicionarTodo === 'function') adicionarTodo();
+      break;
+    case 'enviar':
+      if (typeof enviarMensagem === 'function') enviarMensagem();
+      break;
+    case 'copiar':
+      if (typeof copiarTexto === 'function') copiarTexto(btn);
+      break;
+    default:
+      console.warn('Ação desconhecida:', action);
+  }
+});
+
+// Change listener for select elements (e.g., modelSelect)
+document.addEventListener('change', function (e) {
+  const el = e.target.closest('[data-change]');
+  if (!el) return;
+  const change = el.dataset.change;
+  if (change === 'modelo') {
+    if (typeof salvarModeloSelecionado === 'function') salvarModeloSelecionado();
+  }
+});
+
+// ── Inicialização ──────────────────────────────────────────────
 (function init() {
   var theme = localStorage.getItem('chatWebTheme') || '';
   setTheme(theme);
