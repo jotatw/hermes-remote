@@ -1,4 +1,4 @@
-# 🔒 Segurança — Hermes Remote
+# Segurança — Hermes Remote
 
 Políticas e práticas de segurança deste repositório público.
 

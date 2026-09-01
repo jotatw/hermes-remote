@@ -1,15 +1,8 @@
 # Hermes Remote
 
-<p align="center">
-  <img alt="License" src="https://img.shields.io/github/license/usuario/hermes-remote">
-  <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/usuario/hermes-remote/ci.yml?branch=main">
-  <img alt="Language" src="https://img.shields.io/github/languages/top/usuario/hermes-remote">
-  <img alt="Version" src="https://img.shields.io/github/v/release/usuario/hermes-remote?include_prereleases&label=latest">
-</p>
-
 **Painel de controle móvel (PWA) para o [Hermes Agent](https://hermes-agent.nousresearch.com)** — dashboard do seu servidor, chat com o assistente e ações de energia, direto do celular.
 
-📱 Mobile-first · 🌙 Dark-first (estilo Linear) · 💬 Chat estilo Intercom
+Mobile-first · Dark-first (estilo Linear) · Chat estilo Intercom
 
 ---
 
@@ -41,11 +34,11 @@ Este projeto **depende de infraestrutura externa** — não funciona sozinho:
 
 | Dependência | Obrigatória? | Para quê |
 |---|---|---|
-| **Hermes Agent** (gateway + API server) | ✅ Sim | Chat, modelos, cota de IA |
-| **Homeserver** (Linux com scripts) | 🟡 p/ dashboard | Saúde, containers, temperatura, ações de energia |
-| **Tailscale** (ou Caddy + HTTPS) | 🟡 p/ PWA remoto | Instalar como app no celular (HTTPS) |
+| **Hermes Agent** (gateway + API server) | Sim | Chat, modelos, cota de IA |
+| **Homeserver** (Linux com scripts) | p/ dashboard | Saúde, containers, temperatura, ações de energia |
+| **Tailscale** (ou Caddy + HTTPS) | p/ PWA remoto | Instalar como app no celular (HTTPS) |
 
-💡 **Mínimo viável:** só com o Hermes Agent você já usa o **chat**. Dashboard/servidor/ações precisam do homeserver acessível (local ou via SSH/Tailscale).
+**Mínimo viável:** só com o Hermes Agent você já usa o **chat**. Dashboard/servidor/ações precisam do homeserver acessível (local ou via SSH/Tailscale).
 
 ### Como o app se conecta a cada peça
 
@@ -64,10 +57,10 @@ Tailscale/HTTPS ───────────────────► Ins
 
 | Tela | O que faz | Depende de |
 |---|---|---|
-| 📊 **Dashboard** | Notebook/servidor/cota, ações rápidas, agenda de energia | Homeserver + API |
-| 💬 **Chat** | Conversa com o assistente (streaming, temas, conversas, tarefas) | Hermes API server |
-| 🖥️ **Servidor** | Containers, temperatura, energia, diário de saúde | Homeserver (SSH) |
-| ⚙️ **Configurações** | Mostra conexão ativa (backend, URL, status) + como configurar | — |
+| **Dashboard** | Notebook/servidor/cota, ações rápidas, agenda de energia | Homeserver + API |
+| **Chat** | Conversa com o assistente (streaming, temas, conversas, tarefas) | Hermes API server |
+| **Servidor** | Containers, temperatura, energia, diário de saúde | Homeserver (SSH) |
+| **Configurações** | Mostra conexão ativa (backend, URL, status) + como configurar | — |
 
 ---
 
@@ -97,14 +90,17 @@ hermes-remote/
 │   ├── icons/             # Ícones PWA
 │   ├── manifest.json      # Web App Manifest (instalação PWA)
 │   └── sw.js              # Service Worker
-├── server.js              # Backend Node.js + Express
+├── server.js              # Backend Node.js + Express (gateway)
 ├── setup.sh               # Instalador interativo guiado
 ├── deploy.sh              # Script de deploy
 ├── .env.example           # Template de configuração
 ├── docs/                  # Documentação detalhada
-│   ├── guia-geral.md      # Comece aqui
-│   ├── contrato-homeserver.md  # 🔌 contrato de backend
-│   ├── design/tokens.md   # Design tokens
+│   ├── architecture/      # ARCHITECTURE.md (topologia, camadas)
+│   ├── decisions/         # ADRs (decisões de arquitetura)
+│   ├── design/            # Identidade visual + tokens + UI guidelines
+│   ├── reference/         # API, AUTH, ENV_VARS, contrato de backend
+│   ├── how-to/            # Setup, deploy, desenvolvimento local, segurança
+│   ├── troubleshooting/   # FAQ + problemas conhecidos
 │   └── README.md          # Índice da documentação
 ├── scripts/               # Scripts utilitários
 ├── .github/               # Workflows de CI/CD
@@ -157,20 +153,17 @@ Abra http://localhost:3000 — ou instale como PWA no celular (requer HTTPS).
 
 ## Documentação
 
-- [`docs/guia-geral.md`](docs/guia-geral.md) — Comece aqui: o que é, para quem, dependências, arquitetura
-- [`docs/contrato-homeserver.md`](docs/contrato-homeserver.md) — Contrato de backend: plugue QUALQUER servidor
-- [`docs/README.md`](docs/README.md) — Índice completo de documentação
-- [`docs/design/tokens.md`](docs/design/tokens.md) — Design tokens (camadas A1/A2/B-slot)
-- [`docs/funcoes.md`](docs/funcoes.md) — Funções e fluxos
-- [`docs/planejamento-melhorias.md`](docs/planejamento-melhorias.md) — Planejamento de melhorias
-- [`docs/checklist-publicacao.md`](docs/checklist-publicacao.md) — Checklist de publicação
+- [`docs/README.md`](docs/README.md) — Índice completo da documentação
+- [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md) — Topologia, camadas e decisões do v2
+- [`docs/reference/backend-contract.md`](docs/reference/backend-contract.md) — Contrato de backend: plugue QUALQUER servidor
+- [`docs/design/tokens.md`](docs/design/tokens.md) — Design tokens
 - [`SECURITY.md`](SECURITY.md) — Política de segurança
 
 ---
 
 ## Status
 
-**Em desenvolvimento ativo** — PWA funcional com dashboard, chat e ações de energia. A arquitetura é API-first: o backend Express serve a interface estática e age como proxy para o Hermes Agent e o Homeserver (via SSH).
+**Em reestruturação (v2)** — base documental completa (arquitetura, ADRs, API, how-to); implementação do v2 em andamento conforme `docs/architecture/ARCHITECTURE.md`.
 
 ---
 
