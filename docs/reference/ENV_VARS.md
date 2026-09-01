@@ -12,6 +12,13 @@
 | `HERMES_API_KEY` | Sim | Chave de autenticação do Hermes API server (`API_SERVER_KEY`) | — |
 | `HERMES_TIMEOUT` | Não | Timeout para chamadas ao Hermes (segundos) | `120` |
 
+## Segurança do gateway
+
+| Variável | Obrigatória | Descrição |
+|----------|-------------|-----------|
+| `GATEWAY_TOKEN` | Não | Se preenchido, toda rota `/api/*` (exceto `health`) exige `Authorization: Bearer <token>`. Vazio = sem auth (compat v1) |
+| `ALLOWED_ORIGINS` | Não | Origens permitidas no CORS (vírgula). Vazio = defaults (`localhost:3002`, `localhost:3000`, `homeserver.tail*.ts.net`) |
+
 ## Infraestrutura (dashboard + ações)
 
 | Variável | Obrigatória | Descrição |

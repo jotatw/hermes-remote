@@ -12,9 +12,54 @@ const HERMES_URL = process.env.HERMES_URL || 'http://127.0.0.1:8642';
 const HERMES_KEY = process.env.HERMES_API_KEY || '';
 const HERMES_TIMEOUT = parseInt(process.env.HERMES_TIMEOUT || '120', 10);
 
-app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ── CORS restrito ───────────────────────────────────────────────
+// Origens permitidas para acesso à API. A primeira é a origem do PWA.
+// Pode ser estendida via ALLOWED_ORIGINS no .env (separada por vírgula).
+const ALLOWED_ORIGINS = [
+  'http://localhost:3002',
+  'http://localhost:3000',
+  'https://homeserver.tail2046e5.ts.net',
+];
+if (process.env.ALLOWED_ORIGINS) {
+  process.env.ALLOWED_ORIGINS.split(',').forEach(function (o) {
+    o = o.trim();
+    if (o && ALLOWED_ORIGINS.indexOf(o) === -1) ALLOWED_ORIGINS.push(o);
+  });
+}
+app.use(cors({
+  origin: function (origin, cb) {
+    // Requisições sem origin (curl, fetch server-side) são permitidas
+    if (!origin) return cb(null, true);
+    if (ALLOWED_ORIGINS.indexOf(origin) !== -1) return cb(null, true);
+    console.warn('CORS bloqueado:', origin);
+    cb(new Error('CORS: origin ' + origin + ' não permitida'));
+  },
+}));
+
+// ── Auth token (opcional) ────────────────────────────────────────
+// Se GATEWAY_TOKEN estiver no .env, toda rota /api/* (exceto health)
+// exige header "Authorization: Bearer <token>".
+// Sem token, o app funciona como antes (sem auth) — compatível com o v1.
+const GATEWAY_TOKEN = process.env.GATEWAY_TOKEN || '';
+
+function authMiddleware(req, res, next) {
+  if (!GATEWAY_TOKEN) return next();
+  var auth = req.headers.authorization;
+  if (!auth || auth.indexOf('Bearer ') !== 0 || auth.slice(7) !== GATEWAY_TOKEN) {
+    return res.status(401).json({ error: 'Não autorizado' });
+  }
+  next();
+}
+
+// Aplica auth em todas as rotas /api/* exceto /api/health (usado por
+// clients para checar conectividade sem credenciais).
+app.use('/api', function (req, res, next) {
+  if (req.path === '/health') return next();
+  authMiddleware(req, res, next);
+});
 
 // Helper: headers para chamar o Hermes API server
 function hermesHeaders(extra = {}) {
