@@ -715,12 +715,26 @@ body {
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s ease;
+  position: relative;
+}
+.home-ask-btn:active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.15);
+  border-radius: var(--hr-radius-md);
 }
 .home-ask-btn:hover { background: var(--hr-accent-hover); }
 .home-ask-btn .icon { color: #111111; }
 
 /* Seções da Home */
-.home-section { margin-bottom: 20px; }
+.home-section {
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeInUp 0.35s ease-out forwards;
+  animation-fill-mode: forwards;
+}
+
 .home-section-title {
   display: flex;
   align-items: center;
@@ -747,6 +761,10 @@ body {
   border: 1px solid var(--hr-border);
   border-radius: var(--hr-radius-md);
   padding: 16px;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: cardEnter 0.4s ease-out forwards;
+  animation-fill-mode: forwards;
 }
 .home-card-header {
   display: flex;
@@ -780,7 +798,7 @@ body {
 }
 
 /* ── Dashboard (visão detalhada) ──────────────────────────────── */
-.dashboard { max-width: 720px; margin: 0 auto; }
+.dashboard { max-width: 720px; margin: 0 auto; padding: 0 16px; }
 .view-title { margin: 4px 0 14px; font-size: var(--hr-text-xl); font-weight: 600; letter-spacing: -0.24px; text-wrap: balance; }
 .view-subtitle { margin: 18px 0 10px; font-size: var(--hr-text-lg); font-weight: 500; color: var(--hr-text-2); text-wrap: balance; }
 .cards-grid {
@@ -798,6 +816,8 @@ body {
 .card:hover { background: var(--hr-surface-trans-2); border-color: var(--hr-border-solid); }
 .card-header { margin-bottom: 8px; font-size: 0.95em; font-weight: 500; }
 .card-body { font-size: 0.9em; line-height: 1.5; color: var(--hr-text-3); }
+/* Prevent layout shift on nodes cards */
+#home-nodes-body .card-body { min-height: 110px; }
 
 /* Ações rápidas */
 .quick-actions {

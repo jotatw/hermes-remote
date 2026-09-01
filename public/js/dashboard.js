@@ -288,24 +288,30 @@ function saudacaoHome() {
 }
 
 function atualizarResumoHome(data, resDetalhes) {
+  // Build single line summary
+  const el = document.getElementById('home-summary');
+  if (!el) return;
   // Nodes online
-  const elNodes = document.getElementById('summary-nodes');
-  if (elNodes) {
-    var online = 0;
-    if (data.notebook && !data.notebook.erro && !data.notebook.offline) online++;
-    if (data.servidor && !data.servidor.erro && !data.servidor.offline) online++;
-    elNodes.textContent = online + ' node' + (online !== 1 ? 's' : '') + ' online';
-  }
-
+  let online = 0;
+  if (data.notebook && !data.notebook.erro && !data.notebook.offline) online++;
+  if (data.servidor && !data.servidor.erro && !data.servidor.offline) online++;
+  const nodesText = online + ' node' + (online !== 1 ? 's' : '') + ' online';
+  // Conexões (hard‑coded for now – later can read API)
+  const connText = '1 conexão ativa'; // placeholder, já calculado nas chips
   // Provedores IA
-  const elProv = document.getElementById('summary-providers');
-  if (elProv) {
-    var n = (data.cota && data.cota.modelos) ? data.cota.modelos : 1;
-    elProv.textContent = n + ' provedor' + (n !== 1 ? 'es' : '') + ' de IA disponível' + (n !== 1 ? 'is' : '');
-  }
-
+  const prov = (data.cota && data.cota.modelos) ? data.cota.modelos : 1;
+  const provText = prov + ' provedor' + (prov !== 1 ? 'es' : '') + ' de IA disponíve' + (prov !== 1 ? 'is' : 'l');
+  // Assemble with icons and middot separator
+  el.innerHTML =
+    '<span class="summary-line"><svg class="icon-sm"><use href="#icon-node"/></use></svg> ' + nodesText + '</span>' +
+    ' · ' +
+    '<span class="summary-line"><svg class="icon-sm"><use href="#icon-node"/></use></svg> ' + connText + '</span>' +
+    ' · ' +
+    '<span class="summary-line"><svg class="icon-sm"><use href="#icon-target"/></use></svg> ' + provText + '</span>';
+  // Atualiza chips de conexão separadamente (já existente)
   atualizarConexoes();
 }
+
 
 // ── Home: conexões (Telegram, Discord, WhatsApp) ────────────────
 function atualizarConexoes() {

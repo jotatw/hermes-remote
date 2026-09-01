@@ -1,5 +1,5 @@
 // Hermes Remote — Service Worker (cache estático)
-const CACHE = 'hermes-remote-v14';
+const CACHE = 'hermes-remote-v15';
 const FILES = [
   '/', '/index.html',
   '/css/tokens.css', '/css/style.css', '/css/responsive.css',

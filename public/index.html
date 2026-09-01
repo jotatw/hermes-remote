@@ -147,11 +147,9 @@
                 </div>
 
                 <!-- Summary -->
-                <div id="home-summary" class="home-summary">
-                  <span class="summary-line"><svg class="icon-sm"><use href="#icon-node"/></use></svg> <span id="summary-nodes">2 nodes online</span></span>
-                  <span class="summary-line"><svg class="icon-sm"><use href="#icon-node"/></use></svg> <span id="summary-connections">1 conexão ativa</span></span>
-                  <span class="summary-line"><svg class="icon-sm"><use href="#icon-target"/></use></svg> <span id="summary-providers">2 provedores de IA disponíveis</span></span>
-                </div>
+                <div id="home-summary" class="home-summary" aria-live="polite">
+                                  <!-- resumo será preenchido por JS -->
+                                </div>
 
                 <!-- CTA Ask Hermes -->
                 <div class="home-ask">
@@ -160,7 +158,7 @@
                 </div>
 
                 <!-- Activity -->
-                <div id="home-activity" class="home-section">
+                <div class="home-section" role="region" aria-label="Atividade recente">
                   <div class="home-section-title"><svg class="icon-sm"><use href="#icon-activity"/></use></svg> Atividade recente</div>
                   <div id="home-activity-list" class="home-activity-list"><span class="dim">Carregando...</span></div>
                 </div>
@@ -186,10 +184,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="home-card" id="card-connections">
-                    <div class="home-card-header"><svg class="icon"><use href="#icon-node"/></use></svg> Conexões</div>
-                    <div class="home-card-body" id="home-connections-body"><span class="dim">Telegram • Discord • WhatsApp</span></div>
-                  </div>
+                  <div class="home-section" role="region" aria-label="Conexões">
+                  <div class="home-section-title"><svg class="icon-sm"><use href="#icon-node"/></use></svg> Conexões</div>
+                  <div class="home-card-body" id="home-connections-body"><!-- chips serão inseridos por JS --></div>
+                </div>
                 </div>
 
                 <!-- Quick actions (colapsado) -->
