@@ -106,15 +106,7 @@ async function carregarHistoricoAcoes() {
       return;
     }
     el.innerHTML = d.acoes.map(function (a) {
-      const icone = a.ok ? '✅' : '❌';
-      const quando = new Date(a.quando).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-      var linha = icone + ' <b>' + a.acao + '</b> · ' + quando + (a.detalhe ? ' <span class="dim">— ' + a.detalhe + '</span>' : '');
-      if (a.output) {
-        var id = 'out-' + a.quando.replace(/[^0-9]/g, '').slice(0, 12);
-        linha += ' <button class="hist-btn" onclick="toggleHistDetalhes(\'' + id + '\')">📋</button>';
-        linha += '<div id="' + id + '" class="hist-det"><pre>' + escapeHtml(a.output) + '</pre></div>';
-      }
-      return linha;
+      return ui.historicoLinha(a);
     }).join('<br>');
   } catch (e) {
     el.textContent = '❌ ' + e.message;
@@ -126,85 +118,52 @@ function toggleHistDetalhes(id) {
   if (el) el.classList.toggle('open');
 }
 
-function escapeHtml(text) {
-  return (text || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
 async function carregarServidor() {
   const el = document.getElementById('servidor-detalhe');
   if (!el) return;
-  el.innerHTML = '<div class="server-loading">Carregando...</div>';
+  el.innerHTML = ui.loading('Carregando...');
 
   try {
-    // Status básico + detalhes (containers, temperatura)
     const [resStatus, resDetalhes] = await Promise.all([
       fetch('/api/status').then(function (r) { return r.json(); }),
       fetch('/api/servidor').then(function (r) { return r.json(); })
     ]);
 
     const s = resStatus.servidor || {};
-    if (s.erro) {
-      el.innerHTML = '<div class="server-offline">🔴 <b>Servidor offline</b><br>' + s.erro + '</div>';
-      return;
-    }
-    if (s.offline) {
-      el.innerHTML = '<div class="server-offline">😴 <b>Servidor dormindo</b><br>' + s.offline + '</div>';
-      return;
-    }
+    if (s.erro) { el.innerHTML = ui.offline('🔴 Servidor offline', s.erro); return; }
+    if (s.offline) { el.innerHTML = ui.offline('😴 Servidor dormindo', s.offline); return; }
 
     let html = '<div class="server-stats">';
-
-    // Métricas principais
-    const metrica = function (icone, rotulo, valor) {
-      return '<div class="stat-card"><div class="stat-icon">' + icone + '</div><div class="stat-label">' + rotulo + '</div><div class="stat-value">' + (valor || '?') + '</div></div>';
-    };
-    html += metrica('⏱️', 'Uptime', s.uptime);
-    html += metrica('💾', 'RAM', s.ram);
-    html += metrica('💽', 'Disco', s.disco);
-    if (s.load) html += metrica('📊', 'Load', s.load);
+    html += ui.statCard('⏱️', 'Uptime', s.uptime);
+    html += ui.statCard('💾', 'RAM', s.ram);
+    html += ui.statCard('💽', 'Disco', s.disco);
+    if (s.load) html += ui.statCard('📊', 'Load', s.load);
     html += '</div>';
 
     // Temperatura
     if (resDetalhes.temperatura) {
-      const temp = resDetalhes.temperatura;
-      const alta = temp >= 80;
-      html += '<div class="server-temp ' + (alta ? 'alta' : 'ok') + '">' +
-        '🌡️ <b>Temperatura: ' + temp + '°C</b> ' + (alta ? '⚠️ alta' : '✅ ok');
-      if (alta) {
-        html += ' <button class="action-btn inline" onclick="acaoDiario()">📋 Ver Diário</button>';
-      }
-      html += '</div>';
+      const btnDiario = '<button class="action-btn inline" onclick="acaoDiario()">📋 Ver Diário</button>';
+      html += ui.temperatura(resDetalhes.temperatura, btnDiario);
     }
 
-    // Containers Docker — badges com status
+    // Containers
     if (resDetalhes.containers && resDetalhes.containers.length) {
       html += '<div class="server-section-title">🐳 Containers (' + resDetalhes.containers.length + ')</div>';
       html += '<div class="server-containers">';
-      resDetalhes.containers.forEach(function (c) {
-        const cls = c.rodando ? (c.healthy ? 'ok' : 'warn') : 'down';
-        const icone = c.rodando ? (c.healthy ? '🟢' : '🟡') : '⚪';
-        const label = c.rodando ? (c.status || 'rodando') : 'parado';
-        html += '<div class="container-chip ' + cls + '">' + icone + ' <b>' + c.nome + '</b> <span class="dim">' + label + '</span></div>';
-      });
+      resDetalhes.containers.forEach(function (c) { html += ui.containerChip(c); });
       html += '</div>';
     }
 
     html += '<div class="server-footnote">ℹ️ Detalhes completos no Diário de Saúde.</div>';
     el.innerHTML = html;
   } catch (error) {
-    el.innerHTML = '<div class="server-offline">❌ Erro: ' + error.message + '</div>';
+    el.innerHTML = ui.erro(error.message);
   }
 }
 
 // ── Ações rápidas ──────────────────────────────────────────────
 function mostrarResultado(texto, tipo) {
-  const el = document.getElementById('acao-resultado');
-  if (el) {
-    el.textContent = texto;
-    el.classList.remove('hidden');
-    el.classList.remove('ok', 'erro', 'loading');
-    if (tipo) el.classList.add(tipo);
-  }
+  ui.resultado(tipo, texto);
 }
 
 function desabilitarBotoes(desabilitar) {
