@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    Hermes Remote — Design Tokens
-   Base: Linear (dark-first, tool preciso) + chat estilo Intercom
+   Base: Dark Editorial + Warm Accent (portfolio usuario-portfolio)
+   Estrutura: Linear (dark-first, tool preciso) + chat estilo Intercom
    Contrato: open-design (nexu-io) — camadas A1/A2/B-slot/C-ext
    Fonte da verdade: docs/design/tokens.md
    Todos os componentes usam var(--hr-*). Zero valores hardcoded.
@@ -15,16 +16,16 @@
 
 :root {
   /* ── A1-IDENTITY ── identidade visual da marca ─────────────── */
-  --hr-bg: #08090a;            /* canvas mais profundo */
-  --hr-fg: #f7f8f8;            /* texto primário (não branco puro) */
-  --hr-accent: #5e6ad2;        /* CTA, superfícies de marca */
+  --hr-bg: #111111;            /* canvas — Dark Editorial (portfolio) */
+  --hr-fg: #F5F1E8;            /* texto primário — off-white quente */
+  --hr-accent: #E6A65D;        /* CTA, links — âmbar quente (portfolio) */
   --hr-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --hr-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --hr-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --hr-feature: 'cv01', 'ss03';  /* assinatura Linear (OpenType) */
 
   /* ── A1-STRUCTURE ── fundação estrutural ───────────────────── */
-  --hr-panel: #0f1011;         /* sidebar, painéis */
-  --hr-surface: #191a1b;       /* cards, dropdowns */
+  --hr-panel: #1A1A1A;         /* sidebar, painéis */
+  --hr-surface: #242424;       /* cards, dropdowns */
   --hr-border: rgba(255,255,255,0.08);   /* borda padrão */
   --hr-text: var(--hr-fg);     /* alias de identidade p/ uso semântico */
 
@@ -71,14 +72,14 @@
   --hr-transition-slow: 0.25s ease;
 
   /* ── B-SLOT ── níveis 2+ (alias p/ o nível 1 da mesma família) */
-  --hr-accent-bright: #7170ff;        /* B: alias, versão brilhante */
-  --hr-accent-hover: #828fff;         /* B: alias, hover */
+  --hr-accent-bright: #F0B87A;        /* B: alias, versão brilhante (hover sobre accent) */
+  --hr-accent-hover: #C98235;         /* B: alias, hover do accent */
   --hr-border-subtle: rgba(255,255,255,0.05); /* B: alias mais sutil */
-  --hr-border-solid: #23252a;         /* B: alias sólido p/ hover */
-  --hr-surface-2: #28282c;            /* B: surface elevada (hover) */
-  --hr-text-2: #d0d6e0;               /* B: texto secundário */
-  --hr-text-3: #8a8f98;               /* B: terciário / placeholder */
-  --hr-text-4: #62666d;               /* B: quaternário / timestamps */
+  --hr-border-solid: #353535;         /* B: alias sólido p/ hover */
+  --hr-surface-2: #2A2A2A;            /* B: surface elevada (hover) */
+  --hr-text-2: #A8A39A;               /* B: texto secundário (quente) */
+  --hr-text-3: #8A847B;               /* B: terciário / placeholder */
+  --hr-text-4: #6B665E;               /* B: quaternário / timestamps */
 
   /* ── C-EXTENSIONS ── específico do Hermes Remote ───────────── */
   --hr-surface-trans: rgba(255,255,255,0.02); /* card translúcido */
@@ -89,25 +90,25 @@
 
 /* ── TEMA LIGHT (alternativo) ── sobrescreve A1 + A2, mantém estrutura ── */
 [data-theme="light"] {
-  --hr-bg: #f7f8f8;
-  --hr-fg: #1c1e21;
-  --hr-text: #1c1e21;
+  --hr-bg: #F5F1E8;
+  --hr-fg: #2A2620;
+  --hr-text: #2A2620;
   --hr-panel: #ffffff;
   --hr-surface: #ffffff;
-  --hr-border: #e0e2e5;
-  --hr-border-subtle: #f0f1f3;
-  --hr-border-solid: #c8ccd4;
-  --hr-surface-2: #f0f1f3;
+  --hr-border: #D8D2C8;
+  --hr-border-subtle: #EFEBE2;
+  --hr-border-solid: #C8C2B6;
+  --hr-surface-2: #F3EFE6;
   --hr-surface-trans: rgba(0,0,0,0.02);
   --hr-surface-trans-2: rgba(0,0,0,0.05);
-  --hr-text-2: #65676b;
-  --hr-text-3: #8a8f98;
-  --hr-text-4: #adb1b8;
-  --hr-accent: #5e6ad2;
-  --hr-accent-bright: #4f5bd1;
-  --hr-accent-hover: #414cb8;
+  --hr-text-2: #6B645C;
+  --hr-text-3: #8A847B;
+  --hr-text-4: #A89F92;
+  --hr-accent: #92400E;
+  --hr-accent-bright: #B45309;
+  --hr-accent-hover: #78350F;
   --hr-success: #16a34a;
-  --hr-warn: #ca8a04;
+  --hr-warn: #a16207;
   --hr-danger: #dc2626;
   --hr-bubble-text: #ffffff;
 }

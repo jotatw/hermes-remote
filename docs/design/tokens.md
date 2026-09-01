@@ -7,7 +7,7 @@
 ## Visão Geral
 
 App PWA de controle remoto do Hermes Agent: dashboard, chat, servidor e configurações.
-Estilo: **Linear dark-first** (tool preciso) + **chat estilo Intercom** (bolhas assimétricas).
+Estilo: **Dark Editorial + Warm Accent** (paleta do portfolio `usuario-portfolio`) + **chat estilo Intercom** (bolhas assimétricas).
 
 ## Tokens — Camadas
 
@@ -27,10 +27,10 @@ Luminância stepping (como Linear) — o escuro é o canvas nativo, não um tema
 
 | Token | Valor (dark) | Uso |
 |---|---|---|
-| `--hr-bg` | `#08090a` | canvas mais profundo |
-| `--hr-panel` | `#0f1011` | sidebar, painéis |
-| `--hr-surface` | `#191a1b` | cards, dropdowns |
-| `--hr-surface-2` | `#28282c` | hover, elementos elevados |
+| `--hr-bg` | `#111111` | canvas — Dark Editorial |
+| `--hr-panel` | `#1A1A1A` | sidebar, painéis |
+| `--hr-surface` | `#242424` | cards, dropdowns |
+| `--hr-surface-2` | `#2A2A2A` | hover, elementos elevados |
 | `--hr-surface-trans` | `rgba(255,255,255,0.02)` | card translúcido |
 | `--hr-surface-trans-2` | `rgba(255,255,255,0.05)` | hover translúcido |
 
@@ -38,10 +38,10 @@ Luminância stepping (como Linear) — o escuro é o canvas nativo, não um tema
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--hr-fg` | `#f7f8f8` | texto primário (não branco puro) |
-| `--hr-text-2` | `#d0d6e0` | secundário |
-| `--hr-text-3` | `#8a8f98` | terciário / placeholder |
-| `--hr-text-4` | `#62666d` | timestamps, metadados |
+| `--hr-fg` | `#F5F1E8` | texto primário (off-white quente) |
+| `--hr-text-2` | `#A8A39A` | secundário |
+| `--hr-text-3` | `#8A847B` | terciário / placeholder |
+| `--hr-text-4` | `#6B665E` | timestamps, metadados |
 
 ## Accent (A1-identity)
 
@@ -49,9 +49,9 @@ Luminância stepping (como Linear) — o escuro é o canvas nativo, não um tema
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--hr-accent` | `#5e6ad2` | CTA, superfícies de marca |
-| `--hr-accent-bright` | `#7170ff` | links, ativo |
-| `--hr-accent-hover` | `#828fff` | hover |
+| `--hr-accent` | `#E6A65D` | CTA, superfícies de marca — âmbar quente |
+| `--hr-accent-bright` | `#F0B87A` | links, ativo |
+| `--hr-accent-hover` | `#C98235` | hover |
 
 ## Status semânticos (A2)
 
@@ -86,6 +86,12 @@ Luminância stepping (como Linear) — o escuro é o canvas nativo, não um tema
 ## Tema Light (alternativo)
 
 Sobrescreve A1 (bg/fg/accent) e A2 (status), mantém estrutura de espaçamento/raio.
+- `--hr-bg`: `#F5F1E8` (off-white quente)
+- `--hr-fg`: `#2A2620` (quase preto)
+- `--hr-accent`: `#92400E` (âmbar escuro, WCAG 6.29:1)
+- `--hr-accent-hover`: `#78350F`
+- `--hr-border`: `#D8D2C8`
+
 Gatilho: `[data-theme="light"]` no `<html>`.
 
 ## Deploy

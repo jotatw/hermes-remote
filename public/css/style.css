@@ -15,21 +15,21 @@
 }
 
 [data-theme="light"] {
-  /* Tema claro (alternativo) — mantém o layout, troca as cores */
-  --bg: #f7f8f8;
-  --surface: #ffffff;
-  --user-msg: #5e6ad2;
+  /* Tema claro — mapeado para tokens Dark Editorial */
+  --bg: var(--hr-bg);
+  --surface: var(--hr-panel);
+  --user-msg: var(--hr-accent);
   --user-text: #ffffff;
-  --bot-msg: #f0f1f3;
-  --bot-text: #1c1e21;
-  --text: #1c1e21;
-  --text-secondary: #65676b;
-  --border: #e0e2e5;
-  --accent: #5e6ad2;
+  --bot-msg: var(--hr-panel);
+  --bot-text: var(--hr-text);
+  --text: var(--hr-text);
+  --text-secondary: var(--hr-text-2);
+  --border: var(--hr-border);
+  --accent: var(--hr-accent);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--hr-font);
   background: var(--bg);
   height: 100vh;
   display: flex;
@@ -248,7 +248,7 @@ body {
   transition: opacity 0.15s;
 }
 .todo-item:hover .todo-excluir { opacity: 1; }
-.todo-item .todo-excluir:hover { color: var(--hr-danger, #e94560); }
+.todo-item .todo-excluir:hover { color: var(--hr-danger, #E74C3C); }
 
 /* Export (dropdown dentro do chat menu) */
 .export-menu {
@@ -533,17 +533,17 @@ body {
 }
 
 .input-area button:hover {
-  background: var(--hr-accent-hover, #006bb3);
+  background: var(--hr-accent-hover, #C98235);
 }
 
 .input-area button:disabled {
-  background: #ccc;
+  background: var(--hr-text-4);
   cursor: not-allowed;
 }
 
 .error {
-  background: #ffe0e0;
-  color: #cc0000;
+  background: color-mix(in srgb, var(--hr-danger) 15%, transparent);
+  color: var(--hr-danger);
   align-self: center;
   text-align: center;
   padding: 10px 20px;
@@ -742,20 +742,20 @@ body {
   white-space: nowrap;
 }
 .conexao-status.online {
-  background: rgba(46, 204, 113, 0.15);
-  color: #2ecc71;
-  border: 1px solid rgba(46, 204, 113, 0.3);
+  background: color-mix(in srgb, var(--hr-success) 15%, transparent);
+  color: var(--hr-success);
+  border: 1px solid color-mix(in srgb, var(--hr-success) 30%, transparent);
 }
 .conexao-status.offline {
-  background: rgba(231, 76, 60, 0.15);
-  color: #e74c3c;
-  border: 1px solid rgba(231, 76, 60, 0.3);
+  background: color-mix(in srgb, var(--hr-danger) 15%, transparent);
+  color: var(--hr-danger);
+  border: 1px solid color-mix(in srgb, var(--hr-danger) 30%, transparent);
 }
 
 /* Feedback das ações */
-.acao-resultado.ok { background: rgba(46, 204, 113, 0.12); border: 1px solid rgba(46, 204, 113, 0.3); }
-.acao-resultado.erro { background: rgba(231, 76, 60, 0.12); border: 1px solid rgba(231, 76, 60, 0.3); }
-.acao-resultado.loading { background: rgba(241, 196, 15, 0.08); border: 1px solid rgba(241, 196, 15, 0.2); }
+.acao-resultado.ok { background: color-mix(in srgb, var(--hr-success) 12%, transparent); border: 1px solid color-mix(in srgb, var(--hr-success) 30%, transparent); }
+.acao-resultado.erro { background: color-mix(in srgb, var(--hr-danger) 12%, transparent); border: 1px solid color-mix(in srgb, var(--hr-danger) 30%, transparent); }
+.acao-resultado.loading { background: color-mix(in srgb, var(--hr-warn) 8%, transparent); border: 1px solid color-mix(in srgb, var(--hr-warn) 20%, transparent); }
 .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Texto dim (subtítulo) */
@@ -772,11 +772,11 @@ body {
 .content ul, .content ol { margin: 4px 0; padding-left: 20px; }
 .content li { margin: 2px 0; }
 .content code {
-  background: rgba(128,128,255,0.12);
+  background: rgba(230,166,93,0.10);
   border-radius: 4px;
   padding: 1px 5px;
   font-size: 0.9em;
-  font-family: monospace;
+  font-family: var(--hr-mono);
 }
 .content pre {
   background: rgba(0,0,0,0.35);
@@ -791,11 +791,11 @@ body {
   display: block;
 }
 .content blockquote {
-  border-left: 3px solid rgba(128,128,255,0.4);
+  border-left: 3px solid color-mix(in srgb, var(--hr-accent) 40%, transparent);
   margin: 6px 0;
   padding: 2px 10px;
   opacity: 0.85;
 }
-.content hr { border: none; border-top: 1px solid rgba(128,128,255,0.2); margin: 8px 0; }
-.content a { color: var(--accent, #7aa2f7); text-decoration: underline; }
-.content strong { font-weight: 700; }
+.content hr { border: none; border-top: 1px solid var(--hr-border); margin: 8px 0; }
+.content a { color: var(--accent, #E6A65D); text-decoration: underline; }
+.content strong { font-weight: 590; }
