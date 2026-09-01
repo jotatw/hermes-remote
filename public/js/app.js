@@ -8,9 +8,10 @@ const modelSelect = document.getElementById('modelSelect');
 const themeBtn = document.getElementById('themeBtn');
 const themeMenu = document.getElementById('themeMenu');
 
-let conversando = false;
-let modeloSelecionado = '';
-let abortController = null;
+// Estado centralizado (state.js): app.state.conversando, .modeloSelecionado, .abortController
+let conversando = app.state.conversando;
+let modeloSelecionado = app.state.modeloSelecionado;
+let abortController = app.state.abortController;
 
 // ── Roteamento SPA ─────────────────────────────────────────────
 function irPara(view) {
@@ -117,6 +118,7 @@ function updateMessageContent(div, content, final) {
 
 function setLoading(loading) {
   conversando = loading;
+  if (app.syncState) app.syncState();
   sendBtn.disabled = loading || !modeloSelecionado;
   inputEl.disabled = loading;
   document.getElementById('stopBtn').style.display = loading ? 'inline-block' : 'none';
@@ -147,6 +149,7 @@ function handleKey(event) {
 
 function salvarModeloSelecionado() {
   modeloSelecionado = modelSelect.value;
+  if (app.syncState) app.syncState();
   sendBtn.disabled = !modeloSelecionado || conversando;
   localStorage.setItem('chatWebModel', modeloSelecionado);
 }
@@ -277,10 +280,12 @@ async function enviarMensagem() {
   }
   setLoading(false);
   abortController = null;
+  if (app.syncState) app.syncState();
 }
 
 function pararResposta() {
   if (abortController) { abortController.abort(); abortController = null; }
+  if (app.syncState) app.syncState();
   setLoading(false);
 }
 

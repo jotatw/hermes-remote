@@ -1,23 +1,12 @@
-const STORAGE_KEY = 'chatWebData';
-
-let dados = carregarDados();
-
-function carregarDados() {
-  try {
-    const salvo = localStorage.getItem(STORAGE_KEY);
-    if (salvo) return JSON.parse(salvo);
-  } catch (e) {
-    console.error('Erro ao ler dados salvos:', e);
-  }
-  return { conversas: [], conversaAtivaId: null, contextoGlobal: '' };
-}
+// Estado centralizado: `dados` aponta para app.state (state.js)
+let dados = app.state;
 
 function salvarDados() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+  app.salvarEstado();
 }
 
 function gerarId() {
-  return 'c' + Date.now() + Math.floor(Math.random() * 1000);
+  return app.gerarId();
 }
 
 function getConversaAtiva() {
