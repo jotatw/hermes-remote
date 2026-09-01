@@ -1,0 +1,254 @@
+/* ── Hermes Remote — Home (view v2) ───────────────────────────
+   Estilos da view Início. Aprovados em mockup (mobile + desktop).
+   Usa tokens de tokens.css. Responsivo: 3 cards sempre,
+   ações 2x2 no mobile / 4 em linha no desktop. */
+
+/* ── Greeting ─────────────────────────────────────────────────── */
+.home-greeting { margin-bottom: 22px; }
+.home-hello {
+  display: block;
+  font-size: 26px; font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--hr-fg);
+  text-wrap: balance;
+}
+.home-sub {
+  display: block;
+  font-size: 14px; color: var(--hr-text-dim);
+  margin-top: 5px;
+}
+
+/* ── Summary ──────────────────────────────────────────────────── */
+.home-summary {
+  display: flex; flex-wrap: wrap; gap: 6px 14px;
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 13px 16px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: var(--hr-text-dim);
+}
+.home-summary .summary-line {
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.home-summary .summary-line b { color: var(--hr-fg); font-weight: 600; }
+.home-summary .summary-line .icon-sm { color: var(--hr-accent); }
+.home-summary .summary-sep { color: var(--hr-border); }
+
+/* ── Ask Hermes ───────────────────────────────────────────────── */
+.home-ask { display: flex; gap: 9px; margin-bottom: 26px; }
+.home-ask-input {
+  flex: 1; min-width: 0;
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius-pill);
+  padding: 13px 17px;
+  font-size: 14px; font-family: var(--hr-font);
+  color: var(--hr-fg);
+  outline: none;
+  transition: border-color .15s ease;
+}
+.home-ask-input::placeholder { color: var(--hr-text-dim); }
+.home-ask-input:focus { border-color: var(--hr-accent); }
+.home-ask-btn {
+  width: 48px; height: 48px; flex-shrink: 0;
+  border-radius: 50%; border: none;
+  background: var(--hr-accent); color: #111;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform .12s ease;
+}
+.home-ask-btn:hover { filter: brightness(1.06); }
+.home-ask-btn:active { transform: scale(.94); }
+.home-ask-btn:focus-visible { outline: 2px solid var(--hr-accent); outline-offset: 2px; }
+
+/* ── Section title ────────────────────────────────────────────── */
+.home-section-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--hr-text-dim);
+  margin-bottom: 12px;
+}
+.home-section-title .icon-sm { color: var(--hr-text-dim); }
+
+/* ── Nodes (3 cards) ──────────────────────────────────────────── */
+.home-nodes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 26px;
+}
+.node-card {
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 16px 14px;
+  min-height: 118px;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.node-card .node-name {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 600; color: var(--hr-fg);
+}
+.node-card .node-name .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.node-card .dot.on { background: #4ADE80; box-shadow: 0 0 0 3px rgba(74,222,128,.15); }
+.node-card .dot.off { background: #6B7280; }
+.node-card .dot.warn { background: var(--hr-accent); box-shadow: 0 0 0 3px rgba(230,166,93,.15); }
+.node-card .node-metric {
+  font-size: 12.5px; color: var(--hr-text-dim);
+  line-height: 1.75;
+}
+.node-card .node-metric b {
+  color: var(--hr-fg); font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.node-card .node-erro { font-size: 12px; color: #F87171; line-height: 1.5; }
+
+/* ── Conexões (chips) ─────────────────────────────────────────── */
+.home-conn { margin-bottom: 26px; }
+.conn-chips { display: flex; flex-wrap: wrap; gap: 9px; }
+.conn-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px;
+  border-radius: var(--hr-radius-pill);
+  font-size: 12.5px; font-weight: 500;
+  border: 1px solid var(--hr-border);
+  background: var(--hr-panel);
+  color: var(--hr-text-dim);
+}
+.conn-chip.ativa {
+  color: var(--hr-fg);
+  border-color: rgba(74,222,128,.3);
+  background: rgba(74,222,128,.08);
+}
+.conn-chip .cd { width: 7px; height: 7px; border-radius: 50%; }
+.conn-chip.ativa .cd { background: #4ADE80; }
+.conn-chip.inativa .cd { background: #6B7280; }
+
+/* ── Atividade recente ────────────────────────────────────────── */
+.home-activity { margin-bottom: 26px; }
+.activity-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  font-size: 13.5px;
+}
+.activity-item:hover { background: var(--hr-surface); }
+.activity-item .a-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--hr-surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--hr-accent);
+}
+.activity-item .a-icon.ok { color: #4ADE80; }
+.activity-item .a-icon.fail { color: #F87171; }
+.activity-item .a-text { flex: 1; min-width: 0; }
+.activity-item .a-text .t {
+  color: var(--hr-fg); font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.activity-item .a-text .d {
+  color: var(--hr-text-dim); font-size: 12.5px; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.activity-item .a-time {
+  font-size: 12px; color: var(--hr-text-dim);
+  font-variant-numeric: tabular-nums; flex-shrink: 0;
+}
+.home-empty {
+  color: var(--hr-text-dim); font-size: 13px;
+  padding: 12px 14px;
+  background: var(--hr-panel);
+  border: 1px dashed var(--hr-border);
+  border-radius: var(--hr-radius);
+}
+
+/* ── Ações rápidas ────────────────────────────────────────────── */
+.home-actions { margin-bottom: 26px; }
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 11px;
+}
+.action-btn {
+  display: flex; align-items: center; gap: 11px;
+  padding: 13px 15px;
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  color: var(--hr-fg);
+  font-size: 13.5px; font-weight: 500;
+  font-family: var(--hr-font);
+  cursor: pointer;
+  transition: background .15s ease, transform .12s ease;
+}
+.action-btn:hover { background: var(--hr-surface); }
+.action-btn:active { transform: scale(.97); }
+.action-btn:focus-visible { outline: 2px solid var(--hr-accent); outline-offset: 2px; }
+.action-btn:disabled { opacity: .6; cursor: not-allowed; }
+.action-btn .a-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 9px;
+  background: var(--hr-surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--hr-accent);
+}
+.action-btn .a-icon.neutral { color: var(--hr-text-dim); }
+
+/* Resultado de ação */
+.acao-resultado {
+  margin-bottom: 22px;
+  padding: 12px 15px;
+  border-radius: var(--hr-radius);
+  font-size: 13px;
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  color: var(--hr-fg);
+  white-space: pre-wrap;
+}
+.acao-resultado.erro { border-color: rgba(248,113,113,.4); color: #F87171; }
+.acao-resultado.oculto { display: none; }
+
+/* ── Agenda ───────────────────────────────────────────────────── */
+.home-agenda {
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 15px 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.home-agenda .a-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--hr-surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--hr-accent);
+}
+.home-agenda .a-text { flex: 1; min-width: 0; }
+.home-agenda .a-text .t {
+  font-size: 14px; font-weight: 600; color: var(--hr-fg);
+}
+.home-agenda .a-text .d {
+  font-size: 13px; color: var(--hr-text-dim); margin-top: 3px;
+}
+
+/* ── Desktop (>= 768px) ───────────────────────────────────────── */
+@media (min-width: 768px) {
+  .home-hello { font-size: 28px; }
+  .main-inner { max-width: 820px; }
+  .home-actions .actions-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .action-btn {
+    flex-direction: column; align-items: center; gap: 10px;
+    padding: 20px 14px;
+  }
+  .home-nodes { gap: 14px; }
+  .node-card { min-height: 128px; padding: 18px 16px; }
+}

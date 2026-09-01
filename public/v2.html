@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hermes Remote — v2 (preview)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/home.css">
+<style>
+  /* ═══ Shell v2 (topbar + sidebar/bottom-nav) ═══ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--hr-font);
+    background: var(--hr-bg);
+    color: var(--hr-fg);
+    -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  .topbar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--hr-border);
+    background: var(--hr-panel);
+  }
+  .topbar .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 16px; letter-spacing: -0.02em;
+  }
+  .topbar .brand svg { flex-shrink: 0; }
+  .topbar .spacer { flex: 1; }
+  .topbar .conn { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--hr-text-dim); }
+  .topbar .conn .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ADE80; }
+
+  .app-body { display: flex; flex: 1; min-height: 0; }
+
+  .sidebar {
+    width: 200px; flex-shrink: 0;
+    border-right: 1px solid var(--hr-border);
+    background: var(--hr-panel);
+    padding: 16px 10px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .sidebar button {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px; border: none;
+    background: none; color: var(--hr-text-dim);
+    font-size: 13.5px; font-weight: 500; font-family: var(--hr-font);
+    cursor: pointer;
+  }
+  .sidebar button:hover { background: var(--hr-surface); color: var(--hr-fg); }
+  .sidebar button.active { background: rgba(230,166,93,.1); color: var(--hr-accent); }
+
+  .main { flex: 1; overflow-y: auto; }
+  .main-inner { max-width: 640px; margin: 0 auto; padding: 28px 24px; }
+
+  /* Bottom nav (mobile) */
+  .bottom-nav {
+    display: none;
+    border-top: 1px solid var(--hr-border);
+    background: var(--hr-panel);
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  }
+  .bottom-nav button {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    background: none; border: none; color: var(--hr-text-dim);
+    font-size: 10.5px; font-family: var(--hr-font); padding: 6px 0; cursor: pointer;
+  }
+  .bottom-nav button.active { color: var(--hr-accent); }
+
+  @media (max-width: 767px) {
+    .sidebar { display: none; }
+    .bottom-nav { display: flex; }
+    .main-inner { padding: 20px 16px; }
+  }
+
+  /* Stub views (chat/servidor ainda não implementados) */
+  .view-stub {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; min-height: 50vh; text-align: center;
+    color: var(--hr-text-dim); font-size: 14px;
+  }
+  .view-stub h2 { color: var(--hr-fg); font-size: 20px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#E6A65D" stroke-width="1.5"/><circle cx="12" cy="12" r="3.5" fill="#E6A65D"/></svg>
+      Hermes Remote
+    </div>
+    <div class="spacer"></div>
+    <div class="conn"><span class="dot"></span><span id="connText">Conectado</span></div>
+  </header>
+
+  <div class="app-body">
+    <!-- Sidebar (desktop) -->
+    <nav class="sidebar" id="sidebar">
+      <button data-route="/home" class="active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>
+        Início
+      </button>
+      <button data-route="/chat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 21l2-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg>
+        Chat
+      </button>
+      <button data-route="/servidor">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+        Servidor
+      </button>
+      <button data-route="/config">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h.1a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        Config
+      </button>
+    </nav>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="main-inner" id="viewRoot"></div>
+    </main>
+  </div>
+
+  <!-- Bottom nav (mobile) -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button data-route="/home" class="active">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>Início
+    </button>
+    <button data-route="/chat">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 21l2-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg>Chat
+    </button>
+    <button data-route="/servidor">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>Servidor
+    </button>
+    <button data-route="/config">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h.1a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Config
+    </button>
+  </nav>
+
+  <!-- Scripts: base v2 + view Home -->
+  <script src="js/store.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/views/home.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var root = document.getElementById('viewRoot');
+      var navBtns = document.querySelectorAll('[data-route]');
+
+      function setActive(rota) {
+        navBtns.forEach(function (btn) {
+          btn.classList.toggle('active', btn.dataset.route === rota);
+        });
+      }
+
+      // Stubs para views ainda não implementadas
+      function stub(titulo, texto) {
+        return function (container) {
+          container.innerHTML =
+            '<div class="view-stub">' +
+            '  <h2>' + titulo + '</h2>' +
+            '  <p>' + texto + '</p>' +
+            '</div>';
+        };
+      }
+
+      // Registra rotas
+      router.mount(root);
+      router.on('/home', function (container) {
+        setActive('/home');
+        if (window.HomeView) HomeView.render(container);
+      });
+      router.on('/chat', stub('Chat', 'Em breve — view de conversas com streaming.'));
+      router.on('/servidor', stub('Servidor', 'Em breve — detalhes do servidor, containers e temperatura.'));
+      router.on('/config', stub('Config', 'Em breve — configurações.'));
+      router.onUnknown(function () { router.go('/home'); });
+      router.init();
+
+      // Health check (mostra status no topbar)
+      api.get('/api/health').then(function () {
+        document.getElementById('connText').textContent = 'Conectado';
+      }).catch(function () {
+        document.getElementById('connText').textContent = 'Offline';
+        var dot = document.querySelector('.topbar .conn .dot');
+        if (dot) dot.style.background = '#F87171';
+      });
+
+      // Navegação pelos botões
+      navBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          router.go(btn.dataset.route);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
