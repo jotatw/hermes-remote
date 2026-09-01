@@ -66,7 +66,7 @@ Luminância stepping (como Linear) — o escuro é o canvas nativo, não um tema
 
 - Família: Inter (`--hr-font`) + mono (`--hr-mono`)
 - OpenType: `'cv01', 'ss03'` (assinatura Linear)
-- Escala semântica: `text-xs (11)` → `text-2xl (24)`
+- Escala semântica: `text-xs (11)` → `text-2xl (24)`, body `16px`
 - Pesos: 400/500/590 (nunca 700)
 - Letter-spacing negativo em display
 
