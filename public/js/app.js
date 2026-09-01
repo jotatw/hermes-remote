@@ -373,6 +373,12 @@ document.addEventListener('keydown', function (e) {
     e.preventDefault();
     if (typeof enviarMensagem === 'function') enviarMensagem();
   }
+  // Ask Hermes from the home input
+  if (e.key === 'Enter' && e.target && e.target.id === 'homeAskInput') {
+    e.preventDefault();
+    const btn = document.querySelector('[data-action="ask-hermes"]');
+    if (btn) btn.click();
+  }
 });
 
 // ── Event Delegation ────────────────────────────────────────
@@ -439,6 +445,20 @@ document.addEventListener('click', function (e) {
     case 'enviar':
       if (typeof enviarMensagem === 'function') enviarMensagem();
       break;
+    case 'ask-hermes': {
+      const input = document.getElementById('homeAskInput');
+      if (input && input.value.trim()) {
+        const texto = input.value.trim();
+        input.value = '';
+        if (typeof irPara === 'function') {
+          // Se não houver modelo selecionado, só navega e preenche
+          irPara('chat');
+          inputEl.value = texto;
+          if (modeloSelecionado && typeof enviarMensagem === 'function') enviarMensagem();
+        }
+      }
+      break;
+    }
     case 'copiar':
       if (typeof copiarTexto === 'function') copiarTexto(btn);
       break;

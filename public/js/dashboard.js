@@ -8,6 +8,7 @@ async function carregarDashboard() {
     cota: document.getElementById('card-cota-body'),
   };
   Object.values(corpo).forEach(el => { if (el) el.textContent = 'Carregando...'; });
+  saudacaoHome();
 
   try {
     const [res, resDetalhes] = await Promise.all([
@@ -15,6 +16,7 @@ async function carregarDashboard() {
       fetch('/api/servidor').then(function (r) { return r.json(); })
     ]);
     const data = res;
+    atualizarResumoHome(data, resDetalhes);
 
     // Notebook
     if (data.notebook && data.notebook.erro) {
@@ -96,7 +98,7 @@ async function carregarPowerSchedule() {
 
 // ── Histórico de ações ─────────────────────────────────────────
 async function carregarHistoricoAcoes() {
-  const el = document.getElementById('historico-acoes');
+  const el = document.getElementById('home-activity-list') || document.getElementById('historico-acoes');
   if (!el) return;
   try {
     const res = await fetch('/api/acoes');
@@ -270,4 +272,53 @@ async function carregarConfig() {
   } catch (e) {
     el.innerHTML = ui.icono('cross', 'icon-sm') + ' ' + ui.escapeHtml(e.message);
   }
+}
+
+// ── Home: saudação e resumo ─────────────────────────────────────
+function saudacaoHome() {
+  const el = document.getElementById('home-hello');
+  if (!el) return;
+  const h = new Date().getHours();
+  let saudacao;
+  if (h < 6) saudacao = 'Boa madrugada, João.';
+  else if (h < 12) saudacao = 'Bom dia, João.';
+  else if (h < 18) saudacao = 'Boa tarde, João.';
+  else saudacao = 'Boa noite, João.';
+  el.textContent = saudacao;
+}
+
+function atualizarResumoHome(data, resDetalhes) {
+  // Nodes online
+  const elNodes = document.getElementById('summary-nodes');
+  if (elNodes) {
+    var online = 0;
+    if (data.notebook && !data.notebook.erro && !data.notebook.offline) online++;
+    if (data.servidor && !data.servidor.erro && !data.servidor.offline) online++;
+    elNodes.textContent = online + ' node' + (online !== 1 ? 's' : '') + ' online';
+  }
+
+  // Provedores IA
+  const elProv = document.getElementById('summary-providers');
+  if (elProv) {
+    var n = (data.cota && data.cota.modelos) ? data.cota.modelos : 1;
+    elProv.textContent = n + ' provedor' + (n !== 1 ? 'es' : '') + ' de IA disponível' + (n !== 1 ? 'is' : '');
+  }
+
+  atualizarConexoes();
+}
+
+// ── Home: conexões (Telegram, Discord, WhatsApp) ────────────────
+function atualizarConexoes() {
+  const el = document.getElementById('home-connections-body');
+  if (!el) return;
+  var chips = [
+    { nome: 'Telegram', ativa: true },
+    { nome: 'Discord', ativa: false },
+    { nome: 'WhatsApp', ativa: false }
+  ];
+  el.innerHTML = chips.map(function (c) {
+    return '<span class="conn-chip ' + (c.ativa ? 'ativa' : 'inativa') + '">' +
+      (c.ativa ? ui.icono('check', 'icon-sm') : ui.icono('cross', 'icon-sm')) +
+      ' ' + c.nome + '</span>';
+  }).join('');
 }

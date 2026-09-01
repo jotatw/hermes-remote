@@ -649,7 +649,137 @@ body {
 .view { padding: 16px; }
 .hidden { display: none !important; }
 
-/* Dashboard */
+/* ── Home (Connected Intelligence) ─────────────────────────────── */
+.home-greeting { padding: 8px 0 4px; }
+.home-hello {
+  display: block;
+  font-size: var(--hr-text-2xl);
+  font-weight: 590;
+  letter-spacing: -0.02em;
+  color: var(--hr-text);
+  text-wrap: balance;
+}
+.home-sub {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--hr-text-base);
+  color: var(--hr-text-2);
+}
+.home-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 16px 0;
+}
+.summary-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--hr-text-sm);
+  color: var(--hr-text-2);
+}
+.summary-line .icon { color: var(--hr-accent); }
+
+/* CTA Ask Hermes */
+.home-ask {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 24px;
+}
+.home-ask-input {
+  flex: 1;
+  background: var(--hr-surface);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius-md);
+  color: var(--hr-text);
+  font-size: 16px;
+  font-family: var(--hr-font);
+  padding: 12px 16px;
+  min-width: 0;
+}
+.home-ask-input:focus {
+  outline: none;
+  border-color: var(--hr-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hr-accent) 20%, transparent);
+}
+.home-ask-btn {
+  background: var(--hr-accent);
+  color: #111111;
+  border: none;
+  border-radius: var(--hr-radius-md);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+.home-ask-btn:hover { background: var(--hr-accent-hover); }
+.home-ask-btn .icon { color: #111111; }
+
+/* Seções da Home */
+.home-section { margin-bottom: 20px; }
+.home-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--hr-text-sm);
+  font-weight: 500;
+  color: var(--hr-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+.home-section-title .icon { color: var(--hr-accent); }
+.home-activity-list { font-size: var(--hr-text-sm); line-height: 1.6; color: var(--hr-text-2); }
+
+/* Cards de Nodes / Conexões */
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.home-card {
+  background: var(--hr-surface-trans);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius-md);
+  padding: 16px;
+}
+.home-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--hr-text-lg);
+  font-weight: 500;
+  color: var(--hr-text);
+  margin-bottom: 12px;
+}
+.home-card-header .icon { color: var(--hr-accent); }
+.home-card-body { font-size: var(--hr-text-sm); color: var(--hr-text-2); }
+#card-connections .home-card-body { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+.conn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--hr-radius-pill);
+  font-size: var(--hr-text-sm);
+  border: 1px solid var(--hr-border);
+}
+.conn-chip.ativa { border-color: color-mix(in srgb, var(--hr-success) 40%, transparent); }
+.conn-chip.inativa { opacity: 0.5; }
+
+/* Ações rápidas (Home) */
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ── Dashboard (visão detalhada) ──────────────────────────────── */
 .dashboard { max-width: 720px; margin: 0 auto; }
 .view-title { margin: 4px 0 14px; font-size: var(--hr-text-xl); font-weight: 600; letter-spacing: -0.24px; text-wrap: balance; }
 .view-subtitle { margin: 18px 0 10px; font-size: var(--hr-text-lg); font-weight: 500; color: var(--hr-text-2); text-wrap: balance; }
