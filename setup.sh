@@ -187,7 +187,7 @@ set_env() {
 set_env "HERMES_URL"     "$HERMES_URL"
 set_env "HERMES_API_KEY" "$HERMES_API_KEY"
 [ -n "${HOMESERVER_IP:-}" ] && set_env "HOMESERVER_IP" "$HOMESERVER_IP"
-# Path padrão dos scripts do servidor (configurável — veja docs/contrato-homeserver.md)
+# Path padrão dos scripts do servidor (configurável — veja docs/reference/backend-contract.md)
 set_env "HOMESERVER_PATH" "/opt/homeserver"
 [ "$IS_HOMESERVER" = "1" ] && set_env "HOMESERVER_SSH_USER" "${USER:-usuario}"
 ok ".env atualizado"
