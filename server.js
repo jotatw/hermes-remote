@@ -360,3 +360,22 @@ app.post('/api/acao/acordar', (req, res) => {
     res.json({ ok: true, ja_acordado: jaAcordado, output: out });
   });
 });
+
+// ── Middleware 404 ──────────────────────────────────────────────
+// Rota não encontrada → JSON padronizado em vez do HTML do Express.
+app.use(function (req, res) {
+  res.status(404).json({ error: 'Rota não encontrada: ' + req.method + ' ' + req.path });
+});
+
+// ── Middleware de erro global ────────────────────────────────────
+// Captura qualquer exceção não tratada nas rotas e devolve JSON
+// padronizado ({ error }) em vez do HTML default do Express.
+// Deve ser registrado DEPOIS de todas as rotas.
+app.use(function (err, req, res, next) {
+  // Erro de CORS — responde com status apropriado (403) e mensagem clara
+  if (err && err.message && err.message.indexOf('CORS:') === 0) {
+    return res.status(403).json({ error: err.message });
+  }
+  console.error('Erro não tratado em', req.method, req.path, ':', err.message || err);
+  res.status(err.status || 500).json({ error: err.message || 'Erro interno do servidor' });
+});
