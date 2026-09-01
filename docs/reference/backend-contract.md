@@ -1,4 +1,4 @@
-# 🔌 Contrato de Backend — Homeserver
+# Contrato de Backend — Homeserver
 
 > O Hermes Remote **não é um servidor de infraestrutura** — ele **consome** comandos
 > do seu servidor. Este documento define o **contrato**: o que o app espera do
@@ -26,7 +26,7 @@ HS_WAKE_CMD    →  envia magic packet WOL
 ## Variáveis do contrato
 
 | Variável | O que o comando deve fazer | Saída esperada |
-|---|---|---|
+|----------|----------------------------|----------------|
 | `HS_HEALTH_CMD` | Reportar saúde/temperatura | Texto com `NN C` ou `NN°C` (regex `(\d+)C`) |
 | `HS_POWER_CMD` | Ler agendamento de energia | **JSON** (ver formato abaixo) |
 | `HS_DIARIO_CMD` | Gerar o diário de saúde | Texto livre (exibido no app) |
@@ -57,17 +57,17 @@ echo '{"dorme": "22:00", "acorda": "08:00", "habilitado": true}'
 ## Como o app decide local vs SSH
 
 | Onde o app roda | Comando executado |
-|---|---|
-| **No próprio homeserver** (hostname contém "homeserver") | `HS_*_CMD` direto (local) |
-| **Em outra máquina** (notebook, desktop) | `ssh SSH_USER@HOMESERVER_IP 'HS_*_CMD'` |
+|-----------------|-------------------|
+| No próprio homeserver (hostname contém "homeserver") | `HS_*_CMD` direto (local) |
+| Em outra máquina (notebook, desktop) | `ssh SSH_USER@HOMESERVER_IP 'HS_*_CMD'` |
 
 O `HOMESERVER_SSH_USER` e o `HOMESERVER_IP` precisam estar no `.env` para o modo
 remoto.
 
-## Defaults (setup do autor — substitua pelos seus)
+## Defaults
 
 | Variável | Default |
-|---|---|
+|----------|---------|
 | `HS_HEALTH_CMD` | `bash ${HOMESERVER_PATH}/scripts/health-check.sh 2>/dev/null` |
 | `HS_POWER_CMD` | `sudo -n ${HOMESERVER_PATH}/core/hs.sh power status 2>/dev/null` |
 | `HS_DIARIO_CMD` | `bash ${HOMESERVER_PATH}/scripts/health-check.sh 2>/dev/null` |
@@ -75,12 +75,12 @@ remoto.
 | `HS_SLEEP_CMD` | `sudo /usr/sbin/rtcwake -m mem -t $(date -d "tomorrow 08:00" +%s) ...` |
 | `HS_WAKE_CMD` | `bash ${HOME}/.hermes/scripts/server-wol.sh 2>&1` |
 
-> 💡 **Sem homeserver?** Não configure as vars — o app funciona no modo chat
+> Sem homeserver? Não configure as vars — o app funciona no modo chat
 > (dashboard mostra "servidor offline" e ações retornam erro amigável).
 
 ## Exemplo: plugar um servidor diferente
 
-Se o seu servidor usa `systemctl` para energia e um script próprio de saúde:
+Se o seu servidor usa comandos próprios:
 
 ```bash
 # .env

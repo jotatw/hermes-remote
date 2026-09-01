@@ -1,31 +1,17 @@
-# Documentação — Hermes Remote
+# Repositório Hermes Remote — Documentação
 
-> 🧭 **Comece pelo [guia geral](guia-geral.md)** — explica o ecossistema, dependências,
-> para quem serve e como começar.
+Este repositório contém a documentação completa da aplicação **Hermes Remote** (PWA vanilla JS).
+Cada seção abaixo tem um objetivo específico; nada deve ser duplicado.
 
----
+- **Arquitetura** — [architecture/ARCHITECTURE.md](architecture/ARCHITECTURE.md) — topologia, camadas, decisões
+- **Decisões (ADRs)** — [decisions/](decisions/) — registros de decisão de arquitetura
+- **Design** — [design/design-foundation-v1.md](design/design-foundation-v1.md) (identidade) e [design/tokens.md](design/tokens.md) (tokens) e [design/UI_GUIDELINES.md](design/UI_GUIDELINES.md) (regras de interface)
+- **Referência** — [reference/API.md](reference/API.md) (endpoints), [reference/AUTH.md](reference/AUTH.md) (autenticação), [reference/ENV_VARS.md](reference/ENV_VARS.md) (variáveis de ambiente), [reference/backend-contract.md](reference/backend-contract.md) (contrato de comandos do servidor)
+- **Como-fazer** — [how-to/](how-to/) — setup, deploy, desenvolvimento local, segurança
+- **Troubleshooting** — [troubleshooting/FAQ.md](troubleshooting/FAQ.md) e [troubleshooting/KNOWN_ISSUES.md](troubleshooting/KNOWN_ISSUES.md)
+- **Contribuição** — [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Changelog** — [CHANGELOG.md](CHANGELOG.md)
+- **Arquivo** — [archive/](archive/) — documentos obsoletos mantidos para referência histórica
 
-## Índice
-
-| Documento | O que é |
-|---|---|
-| [`guia-geral.md`](guia-geral.md) | 🧭 **Comece aqui** — ecossistema, dependências, modos de uso |
-| [`contrato-homeserver.md`](contrato-homeserver.md) | 🔌 **Contrato de backend** — como plugar QUALQUER servidor |
-| [`design/tokens.md`](design/tokens.md) | Design tokens (camadas A1/A2/B-slot, tema light) |
-| [`plano-publicacao.md`](plano-publicacao.md) | Plano de publicação + auditoria de segurança |
-| [`checklist-publicacao.md`](checklist-publicacao.md) | Checklist final antes de tornar público |
-| [`plano-reformulacao.md`](plano-reformulacao.md) | Histórico: transformação do chat-web → Hermes Remote |
-| [`planejamento-melhorias.md`](planejamento-melhorias.md) | Planejamento de melhorias (leves, sem peso) |
-
-## Documentos raiz
-
-| Documento | O que é |
-|---|---|
-| [`README.md`](../README.md) | Visão geral curta + instalação |
-| [`SECURITY.md`](../SECURITY.md) | Política de segurança |
-| [`scripts/scan-secrets.sh`](../scripts/scan-secrets.sh) | Varredura de segredos no histórico |
-
-## Links úteis
-
-- [Repositório no GitHub](https://github.com/usuario/hermes-remote)
-- [Hermes Agent](https://hermes-agent.nousresearch.com)
+> **Atenção:** Evite inserir nomes reais ou endereços IP neste repositório.
+> Use `[REDACTED]` ou `usuario` sempre que precisar referenciar identidade ou endereço.
