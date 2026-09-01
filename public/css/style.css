@@ -646,7 +646,7 @@ body {
 .nav-btn:hover { opacity: 0.9; }
 
 /* Views */
-.view { padding: 16px; }
+.view { padding: 24px; }
 .hidden { display: none !important; }
 
 /* ── Home (Connected Intelligence) ─────────────────────────────── */
