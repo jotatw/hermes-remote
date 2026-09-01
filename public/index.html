@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/home.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -136,81 +137,10 @@
         </div>
       </div>
 
-      <!-- ── View: Home (Connected Intelligence) ── ──>
-            <section id="view-dashboard" class="view">
-              <div class="dashboard">
-
-                <!-- Greeting -->
-                <div id="home-greeting" class="home-greeting">
-                  <span class="home-hello" id="home-hello">Boa tarde.</span>
-                  <span class="home-sub" id="home-sub">Hermes está pronto.</span>
-                </div>
-
-                <!-- Summary -->
-                <div id="home-summary" class="home-summary" aria-live="polite">
-                                  <!-- resumo será preenchido por JS -->
-                                </div>
-
-                <!-- CTA Ask Hermes -->
-                <div class="home-ask">
-                  <input id="homeAskInput" class="home-ask-input" type="text" placeholder="Ask Hermes..." maxlength="200" autocomplete="off">
-                  <button class="home-ask-btn" data-action="ask-hermes" title="Perguntar"><svg class="icon"><use href="#icon-send"/></use></svg></button>
-                </div>
-
-                <!-- Activity -->
-                <div class="home-section" role="region" aria-label="Atividade recente">
-                  <div class="home-section-title"><svg class="icon-sm"><use href="#icon-activity"/></use></svg> Atividade recente</div>
-                  <div id="home-activity-list" class="home-activity-list"><span class="dim">Carregando...</span></div>
-                </div>
-
-                <!-- Nodes + Connections cards -->
-                <div class="home-cards">
-                  <div class="home-card" id="card-nodes">
-                    <div class="home-card-header"><svg class="icon"><use href="#icon-node"/></use></svg> Nodes</div>
-                    <div class="home-card-body" id="home-nodes-body">
-                      <div class="cards-grid">
-                        <div class="card" id="card-notebook">
-                          <div class="card-header"><svg class="icon-sm"><use href="#icon-node"/></use></svg> <b>Notebook</b></div>
-                          <div class="card-body" id="card-notebook-body">Carregando...</div>
-                        </div>
-                        <div class="card" id="card-servidor">
-                          <div class="card-header"><svg class="icon-sm"><use href="#icon-server"/></use></svg> <b>Servidor</b></div>
-                          <div class="card-body" id="card-servidor-body">Carregando...</div>
-                        </div>
-                        <div class="card" id="card-cota">
-                          <div class="card-header"><svg class="icon-sm"><use href="#icon-target"/></use></svg> <b>Cota IA</b></div>
-                          <div class="card-body" id="card-cota-body">Carregando...</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="home-section" role="region" aria-label="Conexões">
-                  <div class="home-section-title"><svg class="icon-sm"><use href="#icon-node"/></use></svg> Conexões</div>
-                  <div class="home-card-body" id="home-connections-body"><!-- chips serão inseridos por JS --></div>
-                </div>
-                </div>
-
-                <!-- Quick actions (colapsado) -->
-                <div class="home-section">
-                  <div class="home-section-title"><svg class="icon-sm"><use href="#icon-activity"/></use></svg> Ações rápidas</div>
-                  <div class="home-actions">
-                    <button class="action-btn" data-action="diario"><svg class="icon-sm"><use href="#icon-activity"/></use></svg> Diário</button>
-                    <button class="action-btn" data-action="revisar"><svg class="icon-sm"><use href="#icon-refresh"/></use></svg> Code Review</button>
-                    <button class="action-btn" data-action="dormir"><svg class="icon-sm"><use href="#icon-sleep"/></use></svg> Dormir</button>
-                    <button class="action-btn" data-action="acordar"><svg class="icon-sm"><use href="#icon-wake"/></use></svg> Acordar</button>
-                    <button class="action-btn" data-action="navegar" data-view-alvo="chat"><svg class="icon-sm"><use href="#icon-chat"/></use></svg> Conversar</button>
-                  </div>
-                </div>
-
-                <div id="acao-resultado" class="acao-resultado hidden"></div>
-
-                <div class="card" style="margin-top:14px">
-                  <div class="card-header"><svg class="icon"><use href="#icon-clock"/></use></svg> <b>Agenda</b></div>
-                  <div class="card-body" id="power-schedule-info">Carregando...</div>
-                </div>
-
-              </div>
-            </section>
+      <!-- ── View: Home (v2) ── -->
+      <section id="view-dashboard" class="view">
+        <div id="home-root" class="main-inner"></div>
+      </section>
 
       <!-- ── View: Chat (estilo Intercom/Linear) ── -->
       <section id="view-chat" class="view hidden">
@@ -321,6 +251,7 @@
   <script src="js/sidebar.js"></script>
   <script src="js/todos.js"></script>
   <script src="js/dashboard.js"></script>
+  <script src="js/views/home.js"></script>
   <script src="js/app.js"></script>
   <script>
     // PWA: registra service worker

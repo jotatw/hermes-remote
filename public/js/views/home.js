@@ -329,6 +329,12 @@ window.HomeView = (function () {
   return {
     render: render,
     destroy: destroy,
+    // Recarrega dados sem re-renderizar o template (preserva input/foco)
+    refresh: function () {
+      carregarStatus();
+      carregarAcoes();
+      carregarPower();
+    },
     _test: { icon: icon, esc: esc, saudacao: saudacao },
   };
 

@@ -32,7 +32,15 @@ function irPara(view) {
   const themeMenu = document.getElementById('themeMenu');
   if (themeMenu && themeMenu.classList.contains('open')) themeMenu.classList.remove('open');
 
-  if (view === 'dashboard') { carregarDashboard(); carregarPowerSchedule(); carregarHistoricoAcoes(); }
+  if (view === 'dashboard') {
+    // Home v2: renderiza a HomeView no mount point
+    const root = document.getElementById('home-root');
+    if (root && typeof HomeView !== 'undefined') {
+      HomeView.render(root);
+    } else {
+      carregarDashboard(); carregarPowerSchedule(); carregarHistoricoAcoes();
+    }
+  }
   if (view === 'servidor') carregarServidor();
   if (view === 'chat') carregarModelos();
   if (view === 'config') carregarConfig();
@@ -324,7 +332,11 @@ function agendarAutoRefresh() {
   refreshTimer = setInterval(function () {
     const dashboardVisivel = !document.getElementById('view-dashboard').classList.contains('hidden');
     if (dashboardVisivel) {
-      carregarDashboard();
+      if (typeof HomeView !== 'undefined' && typeof HomeView.refresh === 'function') {
+        HomeView.refresh();
+      } else {
+        carregarDashboard();
+      }
     }
   }, 30000);
 }
@@ -387,6 +399,11 @@ document.addEventListener('click', function (e) {
   const btn = e.target.closest('[data-action]');
   if (!btn) return;
   const action = btn.dataset.action;
+
+  // A Home v2 (HomeView) gerencia os próprios cliques dentro de #home-root.
+  // Ignora aqui para não duplicar execução de ações.
+  if (btn.closest('#home-root')) return;
+
   switch (action) {
     case 'navegar':
       if (btn.dataset && btn.dataset.viewAlvo) irPara(btn.dataset.viewAlvo);
@@ -481,7 +498,21 @@ document.addEventListener('change', function (e) {
 (function init() {
   var theme = localStorage.getItem('chatWebTheme') || '';
   setTheme(theme);
-  irPara('dashboard');
+
+  // Router (v2): registra rotas que delegam para o irPara v1.
+  // Permite que a HomeView (Ask Hermes) navegue via router.go('/chat')
+  // e também que deep links (#/chat, #/servidor) funcionem.
+  if (typeof router !== 'undefined' && typeof router.on === 'function') {
+    router.mount(document.getElementById('home-root') || document.createElement('div'));
+    router.on('/home', function () { irPara('dashboard'); });
+    router.on('/chat', function () { irPara('chat'); });
+    router.on('/servidor', function () { irPara('servidor'); });
+    router.on('/config', function () { irPara('config'); });
+    router.init();
+  } else {
+    irPara('dashboard');
+  }
+
   verificarConexao();
   agendarAutoRefresh();
   setInterval(verificarConexao, 60000); // re-checa conexão a cada minuto
