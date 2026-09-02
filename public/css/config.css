@@ -1,0 +1,84 @@
+/* ── Hermes Remote — Config (view v2) ──────────────────────────
+   Estilos da view Configurações. Aprovados em mockup (mobile + desktop).
+   Overview numérico + info-rows + hint de configuração. */
+
+/* ── Overview ─────────────────────────────────────────────────── */
+.cfg-overview {
+  display: flex; gap: 12px;
+  margin-bottom: 20px;
+}
+.cfg-overview-item {
+  flex: 1;
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 14px 10px;
+  text-align: center;
+  min-width: 0;
+}
+.cfg-overview-item .num {
+  font-size: 22px; font-weight: 700;
+  color: var(--hr-fg);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cfg-overview-item .lbl {
+  font-size: 11px; color: var(--hr-text-dim);
+  margin-top: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── Info card (linhas label/valor) ───────────────────────────── */
+.cfg-section-title {
+  font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--hr-text-dim);
+  margin-bottom: 10px;
+}
+.cfg-card {
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 4px 16px;
+  margin-bottom: 16px;
+}
+.cfg-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid var(--hr-border);
+}
+.cfg-row:last-child { border-bottom: none; }
+.cfg-row .label { font-size: 13px; color: var(--hr-text-dim); flex-shrink: 0; }
+.cfg-row .value {
+  font-size: 13px; color: var(--hr-fg);
+  text-align: right; max-width: 62%;
+  word-break: break-all;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.cfg-row .value .ok { color: #4ADE80; }
+.cfg-row .value .warn { color: var(--hr-accent); }
+.cfg-row .value .fail { color: #F87171; }
+
+/* ── Hint ─────────────────────────────────────────────────────── */
+.cfg-hint {
+  font-size: 12.5px; color: var(--hr-text-dim); line-height: 1.6;
+  background: var(--hr-surface);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.cfg-hint code {
+  background: rgba(230,166,93,.1);
+  color: var(--hr-accent);
+  padding: 2px 6px; border-radius: 4px;
+  font-size: 12px;
+  font-family: var(--hr-font-mono, monospace);
+}
+
+/* ── Desktop (>= 768px) ───────────────────────────────────────── */
+@media (min-width: 768px) {
+  .cfg-overview-item { padding: 18px 14px; }
+  .cfg-overview-item .num { font-size: 26px; }
+  .cfg-overview-item .lbl { font-size: 12px; }
+  .cfg-card { padding: 6px 20px; }
+}

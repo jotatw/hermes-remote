@@ -54,7 +54,16 @@ function irPara(view) {
       carregarModelos();
     }
   }
-  if (view === 'config') carregarConfig();
+  if (view === 'config') {
+    var configRoot = document.getElementById('config-root');
+    if (configRoot && typeof ConfigView !== 'undefined' && typeof ConfigView.render === 'function') {
+      document.getElementById('view-config').classList.add('hidden');
+      document.getElementById('view-config-v2').classList.remove('hidden');
+      ConfigView.render(configRoot);
+    } else {
+      carregarConfig();
+    }
+  }
 }
 
 // ── Chat ───────────────────────────────────────────────────────
