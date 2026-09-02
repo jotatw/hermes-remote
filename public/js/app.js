@@ -41,7 +41,16 @@ function irPara(view) {
       carregarDashboard(); carregarPowerSchedule(); carregarHistoricoAcoes();
     }
   }
-  if (view === 'servidor') carregarServidor();
+  if (view === 'servidor') {
+    var servidorRoot = document.getElementById('servidor-root');
+    if (servidorRoot && typeof ServidorView !== 'undefined' && typeof ServidorView.render === 'function') {
+      document.getElementById('view-servidor').classList.add('hidden');
+      document.getElementById('view-servidor-v2').classList.remove('hidden');
+      ServidorView.render(servidorRoot);
+    } else {
+      carregarServidor();
+    }
+  }
   if (view === 'chat') {
     // Chat v2: se disponível, renderiza no #chat-root
     var chatRoot = document.getElementById('chat-root-v2') || document.getElementById('chat-root');

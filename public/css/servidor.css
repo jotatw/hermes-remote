@@ -1,0 +1,146 @@
+/* ── Hermes Remote — Servidor (view v2) ─────────────────────────
+   Estilos da view Servidor. Stats grid, temperatura, containers,
+   acesso rápido via links, ações de energia. */
+
+/* ── Stats grid (2x2) ─────────────────────────────────────────── */
+.srv-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.srv-stat {
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 14px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.srv-stat .stat-icon {
+  width: 26px; height: 26px; flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--hr-surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--hr-accent);
+}
+.srv-stat .stat-label {
+  font-size: 11px; color: var(--hr-text-dim);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.srv-stat .stat-value {
+  font-size: 16px; font-weight: 600;
+  color: var(--hr-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Temperatura ──────────────────────────────────────────────── */
+.srv-temp {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.srv-temp .temp-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--hr-surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--hr-accent);
+}
+.srv-temp .temp-text { flex: 1; min-width: 0; }
+.srv-temp .temp-text .t { font-size: 14px; font-weight: 600; color: var(--hr-fg); }
+.srv-temp .temp-text .d { font-size: 12px; color: var(--hr-text-dim); margin-top: 2px; }
+.srv-temp .temp-badge {
+  padding: 6px 12px;
+  border-radius: var(--hr-radius-pill);
+  font-size: 12px; font-weight: 600;
+  flex-shrink: 0;
+}
+.srv-temp .temp-badge.ok { background: rgba(74,222,128,.12); color: #4ADE80; }
+.srv-temp .temp-badge.alta { background: rgba(248,113,113,.15); color: #F87171; }
+
+/* ── Containers ───────────────────────────────────────────────── */
+.srv-section-title {
+  font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--hr-text-dim);
+  margin-bottom: 10px;
+}
+.srv-containers { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.srv-container {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: 10px;
+  padding: 11px 13px;
+}
+.srv-container .c-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.srv-container .c-dot.ok { background: #4ADE80; }
+.srv-container .c-dot.warn { background: var(--hr-accent); }
+.srv-container .c-dot.down { background: #6B7280; }
+.srv-container .c-name { font-size: 13px; font-weight: 600; color: var(--hr-fg); flex: 1; }
+.srv-container .c-status { font-size: 12px; color: var(--hr-text-dim); }
+
+/* ── Acesso rápido (links para serviços) ──────────────────────── */
+.srv-links { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.srv-link {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: 10px;
+  padding: 11px 13px;
+  text-decoration: none;
+  color: var(--hr-fg);
+  cursor: pointer;
+  transition: background .12s;
+}
+.srv-link:hover { background: var(--hr-surface); }
+.srv-link .l-icon {
+  width: 30px; height: 30px; flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--hr-surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--hr-accent);
+}
+.srv-link .l-name { font-size: 13px; font-weight: 600; flex: 1; }
+.srv-link .l-url { font-size: 12px; color: var(--hr-text-dim); }
+.srv-link .l-external {
+  color: var(--hr-text-dim);
+  font-size: 12px;
+}
+.srv-link:active { transform: scale(.98); }
+
+/* ── Ações de energia ─────────────────────────────────────────── */
+.srv-energy { display: flex; gap: 10px; margin-bottom: 20px; }
+.srv-energy .action-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 14px 10px;
+  background: var(--hr-panel);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  color: var(--hr-fg);
+  font-size: 13px; font-weight: 500;
+  font-family: var(--hr-font);
+  cursor: pointer;
+  transition: background .12s, transform .12s;
+}
+.srv-energy .action-btn:hover { background: var(--hr-surface); }
+.srv-energy .action-btn:active { transform: scale(.97); }
+.srv-energy .action-btn .a-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 9px;
+  background: var(--hr-surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--hr-accent);
+}
+
+/* ── Desktop (>= 768px) ───────────────────────────────────────── */
+@media (min-width: 768px) {
+  .srv-stats { gap: 14px; }
+  .srv-stat { padding: 18px; }
+  .srv-stat .stat-value { font-size: 18px; }
+}

@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/chat.css">
   <link rel="stylesheet" href="css/config.css">
+  <link rel="stylesheet" href="css/servidor.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -218,6 +219,11 @@
         </div>
       </section>
 
+      <!-- ── View: Servidor (v2) — mount point ── -->
+      <section id="view-servidor-v2" class="view hidden">
+        <div id="servidor-root" class="main-inner"></div>
+      </section>
+
       <!-- ── View: Configurações ── -->
       <section id="view-config" class="view hidden">
         <div class="dashboard">
@@ -267,6 +273,7 @@
   <script src="js/views/home.js"></script>
   <script src="js/views/chat.js"></script>
   <script src="js/views/config.js"></script>
+  <script src="js/views/servidor.js"></script>
   <script src="js/app.js"></script>
   <script>
     // PWA: registra service worker
