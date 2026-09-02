@@ -1,0 +1,119 @@
+/* ── Hermes Remote — Chat (view v2) ───────────────────────────
+   Estilos da view Chat. Aprovados em mockup (mobile + desktop).
+   Modelo único no topbar, sidebar de conversas no desktop.
+   Bolhas assimétricas estilo Intercom. */
+
+/* ── Messages area ────────────────────────────────────────────── */
+.chat-messages {
+  flex: 1; padding: 16px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.chat-msg {
+  display: flex; gap: 10px;
+  max-width: 85%;
+}
+.chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.chat-msg .avatar {
+  width: 30px; height: 30px; flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--hr-surface);
+  display: flex; align-items: center; justify-content: center;
+}
+.chat-msg.user .avatar { background: var(--hr-accent); color: #111; }
+.chat-msg .bubble {
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap; word-wrap: break-word;
+}
+.chat-msg.user .bubble {
+  background: var(--hr-accent); color: #111;
+  border-bottom-right-radius: 4px;
+}
+.chat-msg.assistant .bubble {
+  background: var(--hr-surface);
+  border: 1px solid var(--hr-border);
+  border-bottom-left-radius: 4px;
+}
+.chat-msg .bubble.streaming { animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+.chat-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 30vh; gap: 12px; text-align: center;
+  color: var(--hr-text-dim); font-size: 14px; line-height: 1.6;
+}
+.chat-empty b { color: var(--hr-fg); }
+
+/* ── Input area ───────────────────────────────────────────────── */
+.chat-input {
+  padding: 12px 16px;
+  border-top: 1px solid var(--hr-border);
+  background: var(--hr-panel);
+}
+.chat-model-row {
+  margin-bottom: 8px;
+}
+.chat-model-select {
+  width: 100%;
+  background: var(--hr-surface);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 8px 12px;
+  font-size: 13px; font-family: var(--hr-font);
+  color: var(--hr-fg);
+  outline: none;
+}
+.chat-model-select:focus { border-color: var(--hr-accent); }
+.chat-input-row {
+  display: flex; align-items: flex-end; gap: 8px;
+}
+.chat-input-row textarea {
+  flex: 1; min-height: 44px; max-height: 160px;
+  background: var(--hr-surface);
+  border: 1px solid var(--hr-border);
+  border-radius: var(--hr-radius);
+  padding: 10px 12px;
+  font-size: 14px; font-family: var(--hr-font);
+  color: var(--hr-fg);
+  resize: vertical; outline: none; line-height: 1.5;
+}
+.chat-input-row textarea::placeholder { color: var(--hr-text-dim); }
+.chat-input-row textarea:focus { border-color: var(--hr-accent); }
+.chat-input-row .send-btn {
+  width: 44px; height: 44px; flex-shrink: 0;
+  border-radius: 50%; border: none;
+  background: var(--hr-accent); color: #111;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform .12s ease;
+}
+.chat-input-row .send-btn:disabled { opacity: .5; cursor: not-allowed; }
+.chat-input-row .send-btn:active { transform: scale(.94); }
+.chat-input-row .stop-btn {
+  height: 44px; padding: 0 16px;
+  border-radius: var(--hr-radius-pill);
+  border: 1px solid var(--hr-border);
+  background: var(--hr-surface);
+  color: var(--hr-fg);
+  font-size: 12.5px; font-weight: 500; font-family: var(--hr-font);
+  cursor: pointer;
+}
+.chat-input-row .stop-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── Desktop (>= 768px) ───────────────────────────────────────── */
+@media (min-width: 768px) {
+  .chat-messages { padding: 24px; gap: 16px; }
+  .chat-msg { max-width: 80%; }
+  .chat-msg .avatar { width: 36px; height: 36px; }
+  .chat-msg .bubble {
+    padding: 14px 18px;
+    font-size: 14.5px; line-height: 1.55;
+    border-radius: 18px;
+  }
+  .chat-msg.user .bubble { border-bottom-right-radius: 6px; }
+  .chat-msg.assistant .bubble { border-bottom-left-radius: 6px; }
+  .chat-input { padding: 14px 24px; }
+  .chat-input-row textarea { min-height: 48px; font-size: 15px; }
+  .chat-input-row .stop-btn { height: 48px; }
+}

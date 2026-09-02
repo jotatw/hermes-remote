@@ -42,7 +42,18 @@ function irPara(view) {
     }
   }
   if (view === 'servidor') carregarServidor();
-  if (view === 'chat') carregarModelos();
+  if (view === 'chat') {
+    // Chat v2: se disponível, renderiza no #chat-root
+    var chatRoot = document.getElementById('chat-root-v2') || document.getElementById('chat-root');
+    if (chatRoot && typeof ChatView !== 'undefined' && typeof ChatView.render === 'function') {
+      // Oculta v1, mostra v2
+      document.getElementById('view-chat').classList.add('hidden');
+      document.getElementById('view-chat-v2').classList.remove('hidden');
+      ChatView.render(chatRoot);
+    } else {
+      carregarModelos();
+    }
+  }
   if (view === 'config') carregarConfig();
 }
 
@@ -406,7 +417,16 @@ document.addEventListener('click', function (e) {
 
   switch (action) {
     case 'navegar':
-      if (btn.dataset && btn.dataset.viewAlvo) irPara(btn.dataset.viewAlvo);
+      if (btn.dataset && btn.dataset.viewAlvo) {
+        // Se o router está disponível, navega via hash (URL reflete o estado)
+        if (typeof router !== 'undefined' && typeof router.go === 'function') {
+          // 'dashboard' é a view v1; a rota canônica da Home é '/home'
+          var rota = btn.dataset.viewAlvo === 'dashboard' ? '/home' : '/' + btn.dataset.viewAlvo;
+          router.go(rota);
+        } else {
+          irPara(btn.dataset.viewAlvo);
+        }
+      }
       break;
     case 'parar':
       if (typeof pararResposta === 'function') pararResposta();
@@ -505,6 +525,7 @@ document.addEventListener('change', function (e) {
   if (typeof router !== 'undefined' && typeof router.on === 'function') {
     router.mount(document.getElementById('home-root') || document.createElement('div'));
     router.on('/home', function () { irPara('dashboard'); });
+    router.on('/dashboard', function () { irPara('dashboard'); });
     router.on('/chat', function () { irPara('chat'); });
     router.on('/servidor', function () { irPara('servidor'); });
     router.on('/config', function () { irPara('config'); });
