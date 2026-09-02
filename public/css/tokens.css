@@ -80,6 +80,7 @@
   --hr-text-2: #A8A39A;               /* B: texto secundário (quente) */
   --hr-text-3: #8A847B;               /* B: terciário / placeholder */
   --hr-text-4: #6B665E;               /* B: quaternário / timestamps */
+  --hr-text-dim: var(--hr-text-2);    /* B: alias dim (compat v2) */
 
   /* ── C-EXTENSIONS ── específico do Hermes Remote ───────────── */
   --hr-surface-trans: rgba(255,255,255,0.02); /* card translúcido */

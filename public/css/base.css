@@ -1,0 +1,267 @@
+/* ── Hermes Remote — Base / Shell ────────────────────────────────
+   Reset + layout do shell (header, nav, tema, conexão) + utilitários.
+   Extraído do v1 (style.css + responsive.css) após a limpeza v1.
+   Views v2 ficam em home.css / chat.css / config.css / servidor.css.
+   Tokens em tokens.css. */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ── Ícones SVG ──────────────────────────────────────────────── */
+.icon { width: 20px; height: 20px; flex-shrink: 0; vertical-align: -4px; }
+.nav-icon { width: 22px; height: 22px; display: inline-block; flex-shrink: 0; }
+.icon-sm { width: 16px; height: 16px; vertical-align: -3px; }
+.icon-lg { width: 26px; height: 26px; }
+button .icon, .nav-btn .nav-icon { pointer-events: none; }
+
+/* ── Mapeamento de aliases (compat com tokens) ───────────────── */
+:root {
+  --bg: var(--hr-bg);
+  --surface: var(--hr-panel);
+  --text: var(--hr-text);
+  --text-secondary: var(--hr-text-3);
+  --border: var(--hr-border);
+  --accent: var(--hr-accent-bright);
+}
+
+body {
+  font-family: var(--hr-font);
+  background: var(--bg);
+  height: 100vh;
+  display: flex;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  width: 100%;
+  height: 100vh;
+  background: var(--surface);
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.header h1 {
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+.header select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  max-width: 300px;
+  min-width: 120px;
+}
+.header select:disabled { opacity: 0.5; cursor: wait; }
+
+/* ── Botões ──────────────────────────────────────────────────── */
+.btn-new {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.btn-new:hover { background: var(--bg); }
+
+/* ── Tema ────────────────────────────────────────────────────── */
+.theme-picker { position: relative; margin-left: auto; }
+.theme-picker .theme-btn { padding: 8px 12px; }
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 140px;
+  z-index: 10;
+}
+.theme-menu.open { display: flex; }
+.theme-menu button {
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+.theme-menu button:hover { background: var(--bg); }
+.theme-menu button.active { background: var(--bg); font-weight: 600; }
+
+/* ── Nav (desktop: no header) ────────────────────────────────── */
+.topnav { display: flex; gap: 4px; margin-left: 8px; }
+.nav-btn {
+  background: none;
+  border: none;
+  font-size: 1.3em;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--hr-radius);
+  opacity: 0.55;
+  color: var(--hr-text);
+  transition: opacity var(--hr-transition), background var(--hr-transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.nav-btn .nav-icon { line-height: 1; }
+.nav-btn .nav-label { display: none; }  /* label só no mobile */
+.nav-btn.active { opacity: 1; background: var(--hr-accent); color: #fff; }
+.nav-btn:hover { opacity: 0.9; }
+
+/* ── Views & utilitários ─────────────────────────────────────── */
+.view { padding: 24px; }
+.hidden { display: none !important; }
+
+.conexao-status {
+  font-size: 0.75em;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+.conexao-status.online {
+  background: color-mix(in srgb, var(--hr-success) 15%, transparent);
+  color: var(--hr-success);
+  border: 1px solid color-mix(in srgb, var(--hr-success) 30%, transparent);
+}
+.conexao-status.offline {
+  background: color-mix(in srgb, var(--hr-danger) 15%, transparent);
+  color: var(--hr-danger);
+  border: 1px solid color-mix(in srgb, var(--hr-danger) 30%, transparent);
+}
+
+.action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Texto dim (subtítulo) */
+.dim { opacity: 0.6; font-size: 0.85em; }
+
+/* ── Mobile (<= 767px) ───────────────────────────────────────── */
+@media (max-width: 767px) {
+  .header {
+    flex-wrap: nowrap;
+    padding: 10px 12px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+    gap: 6px;
+    min-height: 56px;
+  }
+  .header h1 {
+    font-size: 15px;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: auto;
+  }
+  .header select {
+    max-width: 100%;
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  /* Nav: vira bottom nav fixa */
+  .topnav {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 30;
+    display: flex;
+    justify-content: space-around;
+    gap: 0;
+    margin-left: 0;
+    background: var(--hr-panel);
+    border-top: 1px solid var(--hr-border);
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.3);
+  }
+  .nav-btn {
+    flex: 1;
+    max-width: 120px;
+    padding: 8px 4px;
+    font-size: 1.15em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border-radius: var(--hr-radius);
+  }
+  .nav-btn .nav-icon { font-size: 1.3em; }
+  .nav-btn .nav-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+  }
+  .nav-btn.active { background: var(--hr-accent); color: #fff; }
+
+  /* Conteúdo não fica atrás da bottom nav */
+  .main { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+
+  .view { padding: 24px; }
+
+  .theme-menu { right: 0; left: auto; min-width: 160px; }
+  .theme-picker .theme-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 18px;
+  }
+  #themeBtn { width: 44px; height: 44px; }
+
+  .conexao-status { font-size: 0.7em; padding: 2px 8px; margin-left: 4px; }
+
+  #installBtn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+}
