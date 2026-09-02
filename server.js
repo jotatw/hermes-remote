@@ -77,6 +77,10 @@ app.get('/api/health', (req, res) => {
 app.get('/api/models', async (req, res) => {
   try {
     const response = await fetch(`${HERMES_URL}/v1/models`, { headers: hermesHeaders() });
+    if (!response.ok) {
+      const errText = await response.text();
+      return res.status(response.status).json({ error: 'Hermes API: ' + errText });
+    }
     const data = await response.json();
     res.json(data);
   } catch (error) {
@@ -105,12 +109,25 @@ app.post('/api/chat', async (req, res) => {
       res.setHeader('Connection', 'keep-alive');
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        res.write(decoder.decode(value));
+      // Se o cliente fechar a conexão (PWA navegou, atualizou, fechou),
+      // aborta o reader e para de ler — não gasta recursos do Hermes.
+      let clienteFechou = false;
+      req.on('close', () => {
+        clienteFechou = true;
+        try { reader.cancel(); } catch (e) { /* best effort */ }
+      });
+      try {
+        while (!clienteFechou) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          res.write(decoder.decode(value));
+        }
+      } catch (e) {
+        // EPIPE (cliente sumiu) ou reader cancelado — sai silenciosamente
+        if (e && e.name !== 'AbortError') console.warn('Stream /api/chat encerrado:', e.message || e);
+      } finally {
+        if (!res.writableEnded) res.end();
       }
-      res.end();
     } else {
       const data = await response.json();
       res.json(data);
@@ -149,12 +166,24 @@ const HS_CONTAINERS_CMD = process.env.HS_CONTAINERS_CMD !== undefined && process
   : "docker ps -a --format '{{.Names}}|{{.Status}}' 2>/dev/null";
 const HS_CONTAINERS_ENABLED = !(process.env.HS_CONTAINERS_CMD === '');
 
+// Lê cada métrica com try/catch individual: um comando que falha
+// (ex.: free/df indisponível) não derruba o endpoint inteiro.
+function execMetric(cmd) {
+  try {
+    return execSync(cmd, { timeout: 5000 }).toString().trim();
+  } catch (e) {
+    return null;
+  }
+}
+
 function localStatus() {
-  const uptime = execSync('uptime -p', { timeout: 5000 }).toString().trim().replace(/^up\s+/, '');
-  const load = execSync("uptime | grep -oP 'load average:.*' | cut -d: -f2", { timeout: 5000 }).toString().trim();
-  const ram = execSync("free -h | grep Mem | awk '{print $3 \"/\" $2}'", { timeout: 5000 }).toString().trim();
-  const disco = execSync("df -h / | tail -1 | awk '{print $3 \"/\" $2 \" (\" $5 \")\"}'", { timeout: 5000 }).toString().trim();
-  return { uptime, load, ram, disco };
+  const uptime = execMetric("uptime -p");
+  return {
+    uptime: (uptime || 'indisponível').replace(/^up\s+/, ''),
+    load: execMetric("uptime | grep -oP 'load average:.*' | cut -d: -f2") || 'indisponível',
+    ram: execMetric("free -h | grep Mem | awk '{print $3 \"/\" $2}'") || 'indisponível',
+    disco: execMetric("df -h / | tail -1 | awk '{print $3 \"/\" $2 \" (\" $5 \")\"}'") || 'indisponível',
+  };
 }
 
 function sshStatus(host) {
@@ -288,7 +317,13 @@ function registrarAcao(nome, ok, detalhe, output) {
   const out = output ? String(output).slice(0, 600) : '';
   lista.unshift({ acao: nome, ok: !!ok, detalhe: detalhe || '', output: out, quando: agora });
   lista = lista.slice(0, 30); // mantém só as 30 últimas
-  try { fs.writeFileSync(ACOES_LOG, JSON.stringify(lista, null, 2)); } catch (e) { /* best effort */ }
+  // Escrita atômica: grava num arquivo temporário e renomeia por cima.
+  // Evita que duas ações simultâneas corrompam o log (read-modify-write).
+  try {
+    const tmp = ACOES_LOG + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(lista, null, 2));
+    fs.renameSync(tmp, ACOES_LOG);
+  } catch (e) { /* best effort */ }
 }
 
 app.get('/api/acoes', (req, res) => {
