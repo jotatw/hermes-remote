@@ -15,6 +15,16 @@
   border-radius: var(--hr-radius);
   padding: 14px;
   display: flex; flex-direction: column; gap: 6px;
+  animation: srv-card-fade 0.4s ease both;
+  transform-origin: top;
+}
+.srv-stat:nth-child(1) { animation-delay: 0.04s; }
+.srv-stat:nth-child(2) { animation-delay: 0.1s; }
+.srv-stat:nth-child(3) { animation-delay: 0.16s; }
+.srv-stat:nth-child(4) { animation-delay: 0.22s; }
+@keyframes srv-card-fade {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 .srv-stat .stat-icon {
   width: 26px; height: 26px; flex-shrink: 0;

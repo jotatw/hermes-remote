@@ -44,9 +44,17 @@ function irPara(view) {
   if (!cfg) view = 'dashboard';
 
   // Alterna seções
-  document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+  document.querySelectorAll('.view').forEach(v => {
+    v.classList.remove('view-enter');
+    v.classList.add('hidden');
+  });
   const secao = document.getElementById(cfg.id);
-  if (secao) secao.classList.remove('hidden');
+  if (secao) {
+    secao.classList.remove('hidden');
+    // Adiciona classe de fade-in (remove no fim da animação)
+    secao.classList.add('view-enter');
+    setTimeout(function () { if (secao) secao.classList.remove('view-enter'); }, 300);
+  }
 
   // Nav ativa
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));

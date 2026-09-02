@@ -46,7 +46,7 @@ window.HomeView = (function () {
       '  <span class="home-sub" id="homeSub">Conectando...</span>' +
       '</div>' +
       '<div class="home-summary" id="homeSummary" aria-live="polite">' +
-      '  <span class="dim">Carregando resumo...</span>' +
+      '  <div class="skeleton skeleton-line w60"></div>' +
       '</div>' +
       '<div class="home-ask">' +
       '  <input class="home-ask-input" id="homeAskInput" type="text" placeholder="Ask Hermes..." maxlength="200" autocomplete="off" aria-label="Perguntar ao Hermes">' +
@@ -54,9 +54,9 @@ window.HomeView = (function () {
       '</div>' +
       '<div class="home-section-title">' + icon('node', 'icon-sm') + 'Nodes</div>' +
       '<div class="home-nodes" id="homeNodes">' +
-      '  <div class="node-card"><div class="node-name"><span class="dot off"></span>Notebook</div><div class="node-metric dim">Carregando...</div></div>' +
-      '  <div class="node-card"><div class="node-name"><span class="dot off"></span>Servidor</div><div class="node-metric dim">Carregando...</div></div>' +
-      '  <div class="node-card"><div class="node-name"><span class="dot off"></span>Cota IA</div><div class="node-metric dim">Carregando...</div></div>' +
+      '  <div class="node-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w40"></div></div>' +
+      '  <div class="node-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w40"></div></div>' +
+      '  <div class="node-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w40"></div></div>' +
       '</div>' +
       '<div class="home-section-title home-conn">' + icon('link', 'icon-sm') + 'Conexões</div>' +
       '<div class="conn-chips" id="homeConns">' +
@@ -66,7 +66,9 @@ window.HomeView = (function () {
       '</div>' +
       '<div class="home-section-title">' + icon('refresh', 'icon-sm') + 'Atividade recente</div>' +
       '<div class="home-activity" id="homeActivity">' +
-      '  <span class="dim">Carregando...</span>' +
+      '  <div class="skeleton skeleton-line"></div>' +
+      '  <div class="skeleton skeleton-line w60"></div>' +
+      '  <div class="skeleton skeleton-line w40"></div>' +
       '</div>' +
       '<div class="home-section-title">' + icon('bolt', 'icon-sm') + 'Ações rápidas</div>' +
       '<div class="home-actions">' +
@@ -80,7 +82,7 @@ window.HomeView = (function () {
       '<div class="acao-resultado oculto" id="acaoResultado" role="status"></div>' +
       '<div class="home-agenda" id="homeAgenda">' +
       '  <div class="a-icon">' + icon('clock', 'icon') + '</div>' +
-      '  <div class="a-text"><div class="t">Energia programada</div><div class="d dim">Carregando...</div></div>' +
+      '  <div class="a-text"><div class="t">Energia programada</div><div class="d dim"><span class="skeleton skeleton-line w40"></span></div></div>' +
       '</div>';
   }
 

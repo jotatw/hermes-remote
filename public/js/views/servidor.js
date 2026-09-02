@@ -56,14 +56,18 @@ window.ServidorView = (function () {
   function template() {
     return '' +
       '<div class="srv-stats" id="srvStats">' +
-      '  <div class="srv-stat"><div class="stat-icon">' + icon('clock') + '</div><div class="stat-label">Uptime</div><div class="stat-value dim">-</div></div>' +
-      '  <div class="srv-stat"><div class="stat-icon">' + icon('ram') + '</div><div class="stat-label">RAM</div><div class="stat-value dim">-</div></div>' +
-      '  <div class="srv-stat"><div class="stat-icon">' + icon('disk') + '</div><div class="stat-label">Disco</div><div class="stat-value dim">-</div></div>' +
-      '  <div class="srv-stat"><div class="stat-icon">' + icon('activity') + '</div><div class="stat-label">Load</div><div class="stat-value dim">-</div></div>' +
+      '  <div class="srv-stat"><div class="stat-icon">' + icon('clock') + '</div><div class="stat-label">Uptime</div><div class="stat-value"><span class="skeleton skeleton-line w60"></span></div></div>' +
+      '  <div class="srv-stat"><div class="stat-icon">' + icon('ram') + '</div><div class="stat-label">RAM</div><div class="stat-value"><span class="skeleton skeleton-line w60"></span></div></div>' +
+      '  <div class="srv-stat"><div class="stat-icon">' + icon('disk') + '</div><div class="stat-label">Disco</div><div class="stat-value"><span class="skeleton skeleton-line w60"></span></div></div>' +
+      '  <div class="srv-stat"><div class="stat-icon">' + icon('activity') + '</div><div class="stat-label">Load</div><div class="stat-value"><span class="skeleton skeleton-line w60"></span></div></div>' +
       '</div>' +
       '<div class="srv-temp" id="srvTemp"></div>' +
       '<div class="srv-section-title">Containers</div>' +
-      '<div class="srv-containers" id="srvContainers"><span class="dim">Carregando...</span></div>' +
+      '<div class="srv-containers" id="srvContainers">' +
+      '  <div class="srv-container"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w40"></div></div>' +
+      '  <div class="srv-container"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w40"></div></div>' +
+      '  <div class="srv-container"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w40"></div></div>' +
+      '</div>' +
       '<div class="srv-section-title">Acesso rápido</div>' +
       '<div class="srv-links" id="srvLinks">' + linksHTML() + '</div>' +
       '<div class="srv-section-title">Energia</div>' +

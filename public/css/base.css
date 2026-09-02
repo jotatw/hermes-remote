@@ -154,6 +154,63 @@ body {
 .view { padding: 24px; }
 .hidden { display: none !important; }
 
+/* ── Transição de views ──────────────────────────────────────── */
+/* A view recém-mostrada recebe .view-enter e faz fade-in suave.
+   A classe é adicionada pelo app.js ao navegar e removida no fim. */
+.view-enter {
+  animation: view-fade var(--hr-transition-slow) ease both;
+}
+@keyframes view-fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Respeita preferência de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .view-enter { animation: none; }
+  .skeleton { animation: none; }
+  .node-card { animation: none; }
+  .srv-stat { animation: none; }
+}
+
+/* ── Scrollbar (discreta, dark) ──────────────────────────────── */
+* { scrollbar-width: thin; scrollbar-color: var(--hr-border-solid) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--hr-border-solid);
+  border-radius: var(--hr-radius-pill);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--hr-text-3); }
+
+/* ── Skeleton loading ────────────────────────────────────────── */
+/* Placeholder animado enquanto os dados carregam. Usa .skeleton em
+   qualquer elemento; width/height definidos pelo contexto. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--hr-radius);
+  background: var(--hr-surface);
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--hr-surface-2), transparent);
+  animation: skeleton-shimmer 1.4s infinite;
+}
+@keyframes skeleton-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* Variantes de tamanho */
+.skeleton-line { height: 12px; margin: 6px 0; }
+.skeleton-line.w60 { width: 60%; }
+.skeleton-line.w40 { width: 40%; }
+.skeleton-block { height: 72px; }
+.skeleton-card { height: 88px; border-radius: var(--hr-radius-lg); }
+
 .conexao-status {
   font-size: 0.75em;
   padding: 3px 10px;
